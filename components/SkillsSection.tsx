@@ -22,11 +22,8 @@ export function SkillsSection() {
           Skills & languages
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-zinc-400">
-          Click or hover cards to see linked projects. Replace copy in{" "}
-          <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-[var(--accent)]">
-            data/skills.ts
-          </code>
-          .
+          Hover or tap a card to see related projects. Stacks align with my coursework and
+          industry work at WPI.
         </p>
 
         <div className="mx-auto flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:grid md:snap-none md:grid-cols-2 md:overflow-visible lg:grid-cols-3">

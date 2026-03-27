@@ -22,11 +22,8 @@ export function ProjectsSection() {
           Projects
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-zinc-400">
-          Selected work — swap in your repos and demos via{" "}
-          <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-[var(--accent)]">
-            data/projects.ts
-          </code>
-          .
+          Selected roles and shipped systems — research platforms, accessibility, and healthcare
+          tooling.
         </p>
 
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

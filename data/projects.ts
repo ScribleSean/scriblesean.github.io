@@ -8,32 +8,42 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    name: "Example API",
+    name: "ReVISit — Interactive visualization platform",
     description:
-      "A RESTful API placeholder you can replace with your own backend project.",
-    tech: ["Node.js", "TypeScript"],
-    github: "https://github.com",
-    live: "https://example.com",
+      "Software engineer on AI-powered video analysis for screen-recording studies — automated annotation and tagging over 100+ hours of recordings, ML-driven insights from behavioral data, and heavy issue triage (80+ resolved) to improve repo health and team velocity.",
+    tech: [
+      "TypeScript",
+      "React",
+      "Node.js",
+      "Python",
+      "ML",
+      "LLM APIs",
+    ],
+    github: "https://github.com/ScribleSean",
   },
   {
-    name: "Portfolio Site",
+    name: "Eye-tracking accessibility interface",
     description:
-      "This portfolio — built with Next.js, Tailwind, and Framer Motion.",
-    tech: ["Next.js", "React", "Tailwind CSS"],
-    github: "https://github.com",
+      "Research developer building dual-mode assistive tech for 50+ students with disabilities — OpenCV/MediaPipe tracking with higher precision than traditional eye-tracking, user research, and documentation for deployment.",
+    tech: ["Python", "OpenCV", "MediaPipe", "Research"],
+    github: "https://github.com/ScribleSean",
   },
   {
-    name: "CLI Tool",
+    name: "Brigham and Women’s Hospital kiosk application",
     description:
-      "A small command-line utility for automating repetitive tasks.",
-    tech: ["TypeScript", "Node.js"],
-    github: "https://github.com",
-  },
-  {
-    name: "Data Dashboard",
-    description:
-      "Visualization dashboard for metrics and analytics (placeholder).",
-    tech: ["Python", "React"],
-    live: "https://example.com",
+      "Lead engineer for a full-stack hospital kiosk (10+ features): Auth0 with RBAC for 1,000+ daily users, AWS EC2 + Docker + PostgreSQL at 99.9% uptime, wayfinding, appointments, and payments — cutting patient check-in time by 35%.",
+    tech: [
+      "Next.js",
+      "React",
+      "Node.js",
+      "Express",
+      "PostgreSQL",
+      "Prisma",
+      "Auth0",
+      "Docker",
+      "AWS",
+    ],
+    github:
+      "https://github.com/ScribleSean/Brigham-and-Womens-Hospital-Web-Application",
   },
 ];

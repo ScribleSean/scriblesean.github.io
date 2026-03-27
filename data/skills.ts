@@ -7,45 +7,45 @@ export interface Skill {
 
 export const skills: Skill[] = [
   {
-    name: "Node.js",
+    name: "TypeScript & JavaScript",
     description:
-      "Runtime of choice for tooling, scripts, and server-side work. Replace with your experience.",
+      "Strong typing and modern ES features for web apps, tooling, and APIs — paired with semantic HTML/CSS.",
     proficiency: "proficient",
-    projects: ["Example API", "CLI Tool"],
+    projects: ["ReVISit", "Brigham hospital kiosk", "Portfolio"],
   },
   {
-    name: "TypeScript",
+    name: "React & Next.js",
     description:
-      "Typed JavaScript for safer refactors and clearer APIs across projects.",
+      "Component-driven UIs with React.js and Next.js, plus Bootstrap and Bulma where they fit the stack.",
     proficiency: "proficient",
-    projects: ["Example API", "CLI Tool", "Portfolio Site"],
+    projects: ["ReVISit", "Brigham hospital kiosk", "Portfolio"],
   },
   {
-    name: "React / Next.js",
+    name: "Node.js & Express",
     description:
-      "Component-driven UIs and the App Router for this site and web apps.",
+      "Server-side JavaScript with Express for APIs and full-stack features alongside PostgreSQL and Prisma.",
+    proficiency: "proficient",
+    projects: ["ReVISit", "Brigham hospital kiosk"],
+  },
+  {
+    name: "Data, auth & cloud",
+    description:
+      "MongoDB and PostgreSQL with Prisma, Auth0 for identity, Docker, and AWS (EC2, RDS) for deployment.",
+    proficiency: "proficient",
+    projects: ["Brigham hospital kiosk"],
+  },
+  {
+    name: "Python & systems languages",
+    description:
+      "Python for ML and tooling; Java, C/C++, and C# for coursework, systems, and application work.",
+    proficiency: "proficient",
+    projects: ["ReVISit", "Eye-Tracking Accessibility Interface"],
+  },
+  {
+    name: "AI / ML integrations",
+    description:
+      "LLM integration with OpenAI, Anthropic, and Gemini APIs for intelligent features in research tooling.",
     proficiency: "intermediate",
-    projects: ["Portfolio Site", "Data Dashboard"],
-  },
-  {
-    name: "Python",
-    description:
-      "Scripts, automation, and data-oriented work. Customize with your stack.",
-    proficiency: "intermediate",
-    projects: ["Data Dashboard"],
-  },
-  {
-    name: "Flutter",
-    description:
-      "Cross-platform mobile UIs when you need native-feeling apps on iOS and Android.",
-    proficiency: "learning",
-    projects: [],
-  },
-  {
-    name: "HTML / CSS / JS",
-    description:
-      "Foundations of the web — layout, semantics, and progressive enhancement.",
-    proficiency: "proficient",
-    projects: ["Portfolio Site"],
+    projects: ["ReVISit"],
   },
 ];

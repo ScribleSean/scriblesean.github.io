@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     template: "%s · Sean Arackal",
   },
   description:
-    "Personal developer portfolio — terminal aesthetic, projects, and contact.",
+    "Sean Arackal — WPI B.S. Computer Science ('26). Full-stack, AI tooling, and accessibility-focused projects in Greater Boston.",
   openGraph: {
     title: "Sean Arackal",
     description:
-      "Personal developer portfolio — terminal aesthetic, projects, and contact.",
+      "WPI computer science student — full-stack web, research visualization, and healthcare engineering.",
     url: siteUrl,
     siteName: "Sean Arackal",
     locale: "en_US",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sean Arackal",
     description:
-      "Personal developer portfolio — terminal aesthetic, projects, and contact.",
+      "WPI computer science student — full-stack web, research visualization, and healthcare engineering.",
   },
 };
 
