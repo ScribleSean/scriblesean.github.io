@@ -15,23 +15,23 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Developer Portfolio",
-    template: "%s · Developer Portfolio",
+    default: "Sean Arackal",
+    template: "%s · Sean Arackal",
   },
   description:
     "Personal developer portfolio — terminal aesthetic, projects, and contact.",
   openGraph: {
-    title: "Developer Portfolio",
+    title: "Sean Arackal",
     description:
       "Personal developer portfolio — terminal aesthetic, projects, and contact.",
     url: siteUrl,
-    siteName: "Developer Portfolio",
+    siteName: "Sean Arackal",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Developer Portfolio",
+    title: "Sean Arackal",
     description:
       "Personal developer portfolio — terminal aesthetic, projects, and contact.",
   },
@@ -43,8 +43,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={mono.variable}>
-      <body className="min-h-screen font-mono antialiased">{children}</body>
+    <html lang="en" className={mono.variable} suppressHydrationWarning>
+      <body
+        className="min-h-screen font-mono antialiased"
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
     </html>
   );
 }

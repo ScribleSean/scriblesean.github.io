@@ -4,8 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useState } from "react";
 
 import type { Skill } from "@/data/skills";
-
-const spring = { type: "spring" as const, stiffness: 300 };
+import { transition } from "@/lib/motion";
 
 type SkillCardProps = {
   skill: Skill;
@@ -28,7 +27,10 @@ export function SkillCard({ skill }: SkillCardProps) {
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
-      transition={spring}
+      transition={{
+        layout: transition.layout,
+        ...transition.hover,
+      }}
       whileHover={{
         boxShadow: "0 0 24px color-mix(in srgb, var(--accent) 22%, transparent)",
         borderColor: "color-mix(in srgb, var(--accent) 45%, transparent)",
@@ -56,7 +58,7 @@ export function SkillCard({ skill }: SkillCardProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={spring}
+            transition={transition.expand}
             className="overflow-hidden"
           >
             <div className="mt-4 border-t border-zinc-800 pt-4">

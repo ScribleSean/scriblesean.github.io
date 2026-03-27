@@ -3,11 +3,10 @@
 import { motion } from "framer-motion";
 
 import { TypingAnimation } from "@/components/TypingAnimation";
+import { easeFloat, easeSmooth, transition } from "@/lib/motion";
 
 const logo = "{ Sean Arackal }";
 const chars = logo.split("");
-
-const spring = { type: "spring" as const, stiffness: 300 };
 
 export function HeroSection() {
   return (
@@ -15,13 +14,17 @@ export function HeroSection() {
       id="hero"
       className="relative flex min-h-screen flex-col items-center justify-center px-6 pb-24 pt-20"
     >
-      <div className="mb-10 flex max-w-[min(100%,42rem)] flex-wrap select-none items-center justify-center gap-x-0.5 gap-y-1 text-center text-3xl font-medium leading-tight text-[var(--accent)] sm:text-4xl md:text-5xl lg:text-7xl">
+      <div className="mb-10 flex w-full max-w-full flex-nowrap items-center justify-center gap-x-[0.08em] whitespace-nowrap px-4 text-center font-medium leading-none text-[var(--accent)] [font-size:clamp(0.75rem,calc(0.2rem+3.6vw),4.75rem)] sm:px-6">
         {chars.map((ch, i) => (
           <motion.span
             key={`hero-char-${i}`}
-            initial={{ opacity: 0, y: 24 }}
+            className="inline-block shrink-0"
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ...spring, delay: i * 0.08 }}
+            transition={{
+              ...transition.heroChar,
+              delay: i * 0.058,
+            }}
           >
             {ch === " " ? "\u00a0" : ch}
           </motion.span>
@@ -30,9 +33,9 @@ export function HeroSection() {
 
       <motion.div
         className="mb-16 w-full max-w-3xl"
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ ...spring, delay: 0.45 }}
+        transition={{ ...transition.heroSub, delay: 0.4 }}
       >
         <TypingAnimation />
       </motion.div>
@@ -41,14 +44,18 @@ export function HeroSection() {
         className="absolute bottom-12 flex flex-col items-center gap-2 text-zinc-500"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
+        transition={{ delay: 1.05, duration: 1.05, ease: easeSmooth }}
         aria-hidden
       >
         <span className="text-xs uppercase tracking-[0.3em]">Scroll</span>
         <motion.span
           className="text-[var(--accent)]"
           animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+          transition={{
+            repeat: Infinity,
+            duration: 3,
+            ease: easeFloat,
+          }}
         >
           ↓
         </motion.span>

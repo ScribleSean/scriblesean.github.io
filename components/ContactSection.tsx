@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-const spring = { type: "spring" as const, stiffness: 300 };
+import { transition } from "@/lib/motion";
 
 const email = "hello@example.com";
 
@@ -48,10 +48,10 @@ export function ContactSection() {
       className="relative scroll-mt-8 border-t border-zinc-900 px-6 py-24 md:scroll-mt-12"
     >
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
+        initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={spring}
+        transition={transition.enter}
         className="mx-auto max-w-3xl text-center"
       >
         <h2 className="mb-10 text-sm uppercase tracking-[0.35em] text-zinc-500">Contact</h2>

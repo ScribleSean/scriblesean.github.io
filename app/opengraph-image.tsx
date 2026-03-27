@@ -1,6 +1,9 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Developer Portfolio";
+/** Required when using `output: "export"` (static HTML export). */
+export const dynamic = "force-static";
+
+export const alt = "Sean Arackal";
 
 export const size = {
   width: 1200,
@@ -45,7 +48,7 @@ export default function OpenGraphImage() {
             fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
           }}
         >
-          Developer Portfolio
+          Portfolio
         </div>
       </div>
     ),

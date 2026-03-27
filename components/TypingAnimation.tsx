@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 const PREFIX = "I'm a developer who builds ";
-const SUFFIX = " things.";
+const SUFFIX = " projects.";
 const WORDS = [
   "Node.js",
   "TypeScript",

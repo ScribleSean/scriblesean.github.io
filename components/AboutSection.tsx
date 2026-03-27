@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-const spring = { type: "spring" as const, stiffness: 300 };
+import { transition } from "@/lib/motion";
 
 const OTHER = ["Java", "C++", "SQL", "Git", "Linux"];
 
@@ -10,10 +10,10 @@ export function AboutSection() {
   return (
     <section className="relative px-6 py-24">
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
+        initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={spring}
+        transition={transition.enter}
         className="mx-auto max-w-3xl"
       >
         <h2 className="mb-4 text-center text-sm uppercase tracking-[0.35em] text-zinc-500">

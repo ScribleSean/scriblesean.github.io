@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 
 import { SkillCard } from "@/components/SkillCard";
 import { skills } from "@/data/skills";
-
-const spring = { type: "spring" as const, stiffness: 300 };
+import { transition } from "@/lib/motion";
 
 export function SkillsSection() {
   return (
@@ -14,10 +13,10 @@ export function SkillsSection() {
       className="relative scroll-mt-8 px-6 py-24 md:scroll-mt-12"
     >
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
+        initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={spring}
+        transition={transition.enter}
       >
         <h2 className="mb-4 text-center text-sm uppercase tracking-[0.35em] text-zinc-500">
           Skills & languages
