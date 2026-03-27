@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --accent: #00ff88;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--background);
+  color: #e4e4e7;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: #fafafa;
+}
