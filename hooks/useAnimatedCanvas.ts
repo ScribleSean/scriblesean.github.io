@@ -3,8 +3,8 @@
 import { type RefObject, useEffect } from "react";
 
 const BG = "#0a0a0a";
-const DOT = "rgba(0, 255, 136, 0.14)";
-const DOT_DIM = "rgba(60, 60, 60, 0.35)";
+const DOT = "rgba(0, 255, 136, 0.169)";
+const DOT_DIM = "rgba(60, 60, 60, 0.424)";
 
 const spacing = 28;
 const influenceRadius = 140;

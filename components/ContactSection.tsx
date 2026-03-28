@@ -6,7 +6,6 @@ import { transition } from "@/lib/motion";
 
 const email = "sean.arackal@gmail.com";
 const schoolEmail = "sarackal@wpi.edu";
-const phone = "(774) 232-5365";
 const location = "Greater Boston Area";
 
 const social = [
@@ -76,8 +75,6 @@ export function ContactSection() {
           <a href={`mailto:${schoolEmail}`} className="hover:text-zinc-300">
             {schoolEmail}
           </a>
-          {" · "}
-          <span>{phone}</span>
           {" · "}
           <span>{location}</span>
         </p>
