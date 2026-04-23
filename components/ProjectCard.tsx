@@ -7,16 +7,20 @@ import { transition } from "@/lib/motion";
 
 type ProjectCardProps = {
   project: Project;
+  /** Stagger entrance; avoids per-card `whileInView` missing the viewport and staying hidden. */
+  index?: number;
 };
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
   return (
     <motion.article
       className="flex h-full flex-col rounded-lg border border-zinc-800/90 bg-zinc-950/50 p-6"
       initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={transition.card}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        ...transition.card,
+        delay: index * 0.09,
+      }}
       whileHover={{
         y: -6,
         boxShadow: "0 0 28px color-mix(in srgb, var(--accent) 18%, transparent)",

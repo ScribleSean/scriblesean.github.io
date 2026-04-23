@@ -27,8 +27,8 @@ export function ProjectsSection() {
         </p>
 
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
-            <ProjectCard key={p.name} project={p} />
+          {projects.map((p, i) => (
+            <ProjectCard key={p.name} project={p} index={i} />
           ))}
         </div>
       </motion.div>
