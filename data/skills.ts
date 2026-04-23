@@ -39,13 +39,17 @@ export const skills: Skill[] = [
     description:
       "Python for ML and tooling; Java, C/C++, and C# for coursework, systems, and application work.",
     proficiency: "proficient",
-    projects: ["ReVISit", "Eye-Tracking Accessibility Interface"],
+    projects: [
+      "Exercise Form Classification System",
+      "ReVISit",
+      "Eye-Tracking Accessibility Interface",
+    ],
   },
   {
     name: "AI / ML integrations",
     description:
-      "LLM integration with OpenAI, Anthropic, and Gemini APIs for intelligent features in research tooling.",
+      "LLM APIs (OpenAI, Anthropic, Gemini) for research tooling, plus deep learning and computer vision pipelines for video and pose-based models.",
     proficiency: "intermediate",
-    projects: ["ReVISit"],
+    projects: ["Exercise Form Classification System", "ReVISit"],
   },
 ];

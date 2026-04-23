@@ -8,6 +8,20 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: "Exercise Form Classification System",
+    description:
+      "Deep Learning Engineer (January 2026). Architected and implemented a robust backend using OpenCV for image processing, enabling seamless integration of deep learning models and scalable real-time classification of 148 exercise types. Designed efficient data structures and preprocessing pipelines, optimizing analysis of 289,000 video clips and 650,000 annotations for model training. Developed and deployed a video classification model with YOLO pose estimation and LSTM networks in TensorFlow, achieving 80% accuracy in exercise form assessment.",
+    tech: [
+      "Python",
+      "OpenCV",
+      "TensorFlow",
+      "YOLO",
+      "LSTM",
+      "Deep learning",
+    ],
+    github: "https://github.com/ScribleSean",
+  },
+  {
     name: "ReVISit — Interactive visualization platform",
     description:
       "Software engineer on AI-powered video analysis for screen-recording studies — automated annotation and tagging over 100+ hours of recordings, ML-driven insights from behavioral data, and heavy issue triage (80+ resolved) to improve repo health and team velocity.",
