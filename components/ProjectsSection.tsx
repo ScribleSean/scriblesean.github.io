@@ -22,8 +22,7 @@ export function ProjectsSection() {
           Projects
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-zinc-400">
-          Selected roles and shipped systems — research platforms, accessibility, and healthcare
-          tooling.
+          Shipped systems — exercise ML, research video AI, accessibility, and healthcare kiosks.
         </p>
 
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

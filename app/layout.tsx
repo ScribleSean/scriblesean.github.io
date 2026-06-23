@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     template: "%s · Sean Arackal",
   },
   description:
-    "Sean Arackal — WPI B.S. Computer Science ('26). Full-stack, AI tooling, and accessibility-focused projects in Greater Boston.",
+    "Sean Arackal — WPI B.S. Computer Science ('26). AI software engineering, full-stack web, and accessibility research in Greater Boston.",
   openGraph: {
     title: "Sean Arackal",
     description:
-      "WPI computer science student — full-stack web, research visualization, and healthcare engineering.",
+      "AI Software Engineer at ReVISit — full-stack, computer vision, and LLM-powered research tooling.",
     url: siteUrl,
     siteName: "Sean Arackal",
     locale: "en_US",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sean Arackal",
     description:
-      "WPI computer science student — full-stack web, research visualization, and healthcare engineering.",
+      "AI Software Engineer at ReVISit — full-stack, computer vision, and LLM-powered research tooling.",
   },
 };
 

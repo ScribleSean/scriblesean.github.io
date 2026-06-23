@@ -22,8 +22,7 @@ export function SkillsSection() {
           Skills & languages
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-zinc-400">
-          Hover or tap a card to see related projects. Stacks align with my coursework and
-          industry work at WPI.
+          Stacks from production work and coursework — hover or tap a card to see linked projects.
         </p>
 
         <div className="mx-auto flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:grid md:snap-none md:grid-cols-2 md:overflow-visible lg:grid-cols-3">

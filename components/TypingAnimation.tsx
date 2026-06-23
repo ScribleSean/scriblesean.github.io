@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 const PREFIX = "I'm a developer who builds ";
 const SUFFIX = " projects.";
 const WORDS = [
+  "AI video analysis",
   "TypeScript",
   "React",
-  "Next.js",
   "full-stack",
   "Python",
-  "AI/ML",
-  "Node.js",
+  "LLM pipelines",
+  "computer vision",
 ];
 
 const TYPING_MS = 55;

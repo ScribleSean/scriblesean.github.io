@@ -28,6 +28,15 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       }}
     >
       <h3 className="text-lg font-medium text-zinc-100">{project.name}</h3>
+      {(project.role || project.period) && (
+        <p className="mt-1 text-xs text-zinc-500">
+          {project.role}
+          {project.role && project.period && (
+            <span className="text-zinc-600"> · </span>
+          )}
+          {project.period}
+        </p>
+      )}
       <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-500">
         {project.description}
       </p>
