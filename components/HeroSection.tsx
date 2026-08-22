@@ -25,7 +25,7 @@ export function HeroSection() {
         </motion.p>
 
         <motion.h1
-          className="max-w-4xl font-serif text-[clamp(3.4rem,9vw,8.5rem)] leading-[0.9] tracking-tight text-[var(--ink)]"
+          className="max-w-4xl font-serif text-[clamp(3.4rem,9vw,8.5rem)] leading-[0.9] tracking-tight text-[var(--ink)] [text-shadow:0_10px_50px_rgba(12,9,8,0.65)]"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...transition.heroChar, delay: 0.18 }}

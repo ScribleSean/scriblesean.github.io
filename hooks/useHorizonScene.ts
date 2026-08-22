@@ -200,8 +200,8 @@ export function useHorizonScene(canvasRef: RefObject<HTMLCanvasElement | null>) 
       alpha: false,
       powerPreference: "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.25 : 1.75));
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.1 : 1.5));
+    renderer.setSize(window.innerWidth, window.innerHeight, true);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.12;
@@ -294,7 +294,7 @@ export function useHorizonScene(canvasRef: RefObject<HTMLCanvasElement | null>) 
       const h = window.innerHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
+      renderer.setSize(w, h, true);
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
