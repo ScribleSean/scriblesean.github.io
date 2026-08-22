@@ -2,35 +2,52 @@
 
 import { motion } from "framer-motion";
 
-import { SkillCard } from "@/components/SkillCard";
-import { skills } from "@/data/skills";
+import { SectionHeader } from "@/components/SectionHeader";
+import { skillGroups } from "@/data/skills";
 import { transition } from "@/lib/motion";
 
 export function SkillsSection() {
   return (
-    <section
-      id="skills"
-      className="relative scroll-mt-8 px-6 py-24 md:scroll-mt-12"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={transition.enter}
-      >
-        <h2 className="mb-4 text-center text-sm uppercase tracking-[0.35em] text-zinc-500">
-          Skills & languages
-        </h2>
-        <p className="mx-auto mb-12 max-w-2xl text-center text-zinc-400">
-          Stacks from production work and coursework — hover or tap a card to see linked projects.
-        </p>
+    <section id="skills" className="relative scroll-mt-20 px-5 py-24 md:px-8 md:py-32">
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          kicker="Capabilities"
+          title={
+            <>
+              A stack that survives{" "}
+              <span className="italic text-[var(--accent-strong)]">production.</span>
+            </>
+          }
+          description="From LLM pipelines and pose models to React, Postgres, and AWS — used on shipped systems, not just coursework."
+        />
 
-        <div className="mx-auto flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:grid md:snap-none md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
-          {skills.map((skill) => (
-            <SkillCard key={skill.name} skill={skill} />
+        <div className="grid gap-4 md:grid-cols-2">
+          {skillGroups.map((group, i) => (
+            <motion.div
+              key={group.label}
+              className="panel rounded-3xl p-6"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ ...transition.card, delay: i * 0.05 }}
+            >
+              <h3 className="text-[11px] uppercase tracking-[0.24em] text-[var(--accent)]">
+                {group.label}
+              </h3>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {group.items.map((item) => (
+                  <li
+                    key={item}
+                    className="rounded-full bg-white/5 px-3 py-1.5 text-sm text-[var(--ink)]"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -13,8 +13,21 @@ export const experience: Experience[] = [
     location: "Remote",
     period: "Aug 2025 – May 2026",
     highlights: [
-      "Contract role building AI video analysis integrated into revisit.dev (100,000+ users; cited in 13 IEEE/CHI papers).",
-      "83% faster manual review via confusion timelines; semantic search and cross-clip dashboards with sentence-transformer embeddings.",
+      "Built AI video analysis into revisit.dev (100,000+ users; cited in 13 IEEE/CHI papers).",
+      "83% faster manual review via confusion timelines spanning six event types.",
+      "Benchmarked four AI pipelines (Gemini 2.67/3.0 summary quality; GPT-4o ~4.5× the per-clip cost).",
+      "Multi-signal fusion (audio, OCR, scene) plus semantic search with sentence-transformer embeddings.",
+    ],
+  },
+  {
+    title: "Research Engineer",
+    company: "Sri Sangwan School",
+    location: "Bangkok, Thailand",
+    period: "Jan 2025 – Aug 2025",
+    highlights: [
+      "Webcam-based assistive gaze interface deployed to 50+ students; scaled to 100+ daily users.",
+      "User research with 200+ participants comparing eye tracking, switch, and head controls.",
+      "Real-time gaze estimation with OpenCV and MediaPipe; full technical documentation.",
     ],
   },
   {
@@ -34,16 +47,6 @@ export const experience: Experience[] = [
     period: "Jun 2025 – Aug 2025",
     highlights: [
       "Managed 18+ instructors across 6+ New England campuses (MIT, UMass, UConn) for 200+ students.",
-    ],
-  },
-  {
-    title: "Research Engineer",
-    company: "Sri Sangwan School",
-    location: "Bangkok, Thailand",
-    period: "Jan 2025 – Aug 2025",
-    highlights: [
-      "Contract: webcam-based assistive gaze interface deployed to 50+ students; scaled to 100+ daily users.",
-      "User research with 200+ participants comparing eye tracking, switch, and head controls.",
     ],
   },
   {

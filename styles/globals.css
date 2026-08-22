@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --accent: #00ff88;
+  --background: #0c0908;
+  --surface: #14100e;
+  --ink: #f4ece2;
+  --muted: #b7aaa0;
+  --faint: #7d726b;
+  --line: rgba(244, 236, 226, 0.12);
+  --accent: #e8a15a;
+  --accent-strong: #ffc07a;
 }
 
 html {
@@ -14,10 +20,27 @@ html {
 body {
   overflow-x: hidden;
   background-color: var(--background);
-  color: #e4e4e7;
+  color: var(--ink);
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--accent) 35%, transparent);
-  color: #fafafa;
+  background-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: #1a120c;
+}
+
+.grain::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.panel {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(18px);
 }

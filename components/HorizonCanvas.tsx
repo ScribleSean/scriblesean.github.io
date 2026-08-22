@@ -2,11 +2,11 @@
 
 import { useRef } from "react";
 
-import { useAnimatedCanvas } from "@/hooks/useAnimatedCanvas";
+import { useHorizonScene } from "@/hooks/useHorizonScene";
 
-export function AnimatedBackground() {
+export default function HorizonCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  useAnimatedCanvas(canvasRef);
+  useHorizonScene(canvasRef);
 
   return (
     <canvas

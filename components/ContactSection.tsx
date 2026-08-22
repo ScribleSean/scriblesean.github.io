@@ -1,44 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";  
+import { motion } from "framer-motion";
 
 import { transition } from "@/lib/motion";
-
-const email = "sean.arackal@gmail.com";
-const schoolEmail = "sarackal@wpi.edu";
-const location = "Greater Boston Area";
+import { site } from "@/lib/site";
 
 const social = [
-  {
-    label: "GitHub",
-    handle: "ScribleSean",
-    href: "https://github.com/ScribleSean",
-    icon: (
-      <svg
-        className="h-5 w-5"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden
-      >
-        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-      </svg>
-    ),
-  },
-  {
-    label: "LinkedIn",
-    handle: "seanarackal",
-    href: "https://www.linkedin.com/in/seanarackal/",
-    icon: (
-      <svg
-        className="h-5 w-5"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden
-      >
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-      </svg>
-    ),
-  },
+  { label: "GitHub", handle: site.githubHandle, href: site.github },
+  { label: "LinkedIn", handle: site.linkedinHandle, href: site.linkedin },
 ];
 
 export function ContactSection() {
@@ -47,65 +16,71 @@ export function ContactSection() {
   return (
     <footer
       id="contact"
-      className="relative scroll-mt-8 border-t border-zinc-900 px-6 py-24 md:scroll-mt-12"
+      className="relative scroll-mt-20 px-5 pb-10 pt-24 md:px-8 md:pt-32"
     >
       <motion.div
+        className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-[var(--line)] bg-[var(--surface)]/80 px-6 py-16 text-center backdrop-blur-xl md:px-12 md:py-24"
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={transition.enter}
-        className="mx-auto max-w-3xl text-center"
       >
-        <h2 className="mb-10 text-sm uppercase tracking-[0.35em] text-zinc-500">
+        <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--accent)]">
           Contact
+        </p>
+        <h2 className="mx-auto mt-5 max-w-3xl font-serif text-4xl leading-tight text-[var(--ink)] md:text-6xl">
+          Hiring for AI, vision, or full-stack?{" "}
+          <span className="italic text-[var(--accent-strong)]">Let&apos;s talk.</span>
         </h2>
+        <p className="mx-auto mt-6 max-w-lg text-[var(--muted)]">
+          {site.location}. Open to full-time software engineering roles after May 2026.
+        </p>
 
-        <ul className="mb-14 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-12">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={`mailto:${site.email}`}
+            className="rounded-full bg-[var(--ink)] px-6 py-3 text-sm text-[var(--background)] transition hover:bg-white"
+          >
+            {site.email}
+          </a>
+          <a
+            href={site.resume}
+            className="rounded-full border border-[var(--line)] px-6 py-3 text-sm text-[var(--ink)] transition hover:border-[var(--accent)]"
+          >
+            Résumé
+          </a>
+        </div>
+
+        <ul className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-[var(--muted)]">
           {social.map((s) => (
             <li key={s.label}>
               <a
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 text-zinc-400 transition-colors hover:text-[var(--accent)]"
+                className="transition hover:text-[var(--ink)]"
               >
-                <span className="text-zinc-500 transition-colors group-hover:text-[var(--accent)]">
-                  {s.icon}
+                <span className="block text-[10px] uppercase tracking-[0.2em] text-[var(--faint)]">
+                  {s.label}
                 </span>
-                <span className="text-left">
-                  <span className="block text-xs uppercase tracking-wider text-zinc-600">
-                    {s.label}
-                  </span>
-                  <span className="font-medium text-zinc-200">{s.handle}</span>
-                </span>
+                {s.handle}
               </a>
             </li>
           ))}
+          <li>
+            <a href={`mailto:${site.schoolEmail}`} className="transition hover:text-[var(--ink)]">
+              <span className="block text-[10px] uppercase tracking-[0.2em] text-[var(--faint)]">
+                School
+              </span>
+              {site.schoolEmail}
+            </a>
+          </li>
         </ul>
-
-        <p className="mb-6 text-sm text-zinc-500">
-          <a href={`mailto:${schoolEmail}`} className="hover:text-zinc-300">
-            {schoolEmail}
-          </a>
-          {" · "}
-          <span>{location}</span>
-        </p>
-
-        <p className="text-lg text-zinc-300">
-          Business inquiry?{" "}
-          <a
-            href={`mailto:${email}`}
-            className="text-[var(--accent)] underline-offset-4 transition-colors hover:underline"
-          >
-            Email me
-          </a>
-          .
-        </p>
-
-        <p className="mt-12 text-xs text-zinc-600">
-          © {year} — Built with Next.js.
-        </p>
       </motion.div>
+
+      <p className="mx-auto mt-8 max-w-6xl px-2 text-center text-xs text-[var(--faint)]">
+        © {year} {site.name}. Cinematic 3D inspired by Meng To / ThreeUI.
+      </p>
     </footer>
   );
 }

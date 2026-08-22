@@ -1,9 +1,8 @@
 import { ImageResponse } from "next/og";
 
-/** Required when using `output: "export"` (static HTML export). */
 export const dynamic = "force-static";
 
-export const alt = "Sean Arackal";
+export const alt = "Sean Arackal — AI Software Engineer";
 
 export const size = {
   width: 1200,
@@ -21,39 +20,47 @@ export default function OpenGraphImage() {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#0a0a0a",
+          justifyContent: "space-between",
+          backgroundColor: "#0c0908",
+          backgroundImage:
+            "radial-gradient(circle at 78% 28%, rgba(232,161,90,0.35), transparent 42%)",
+          padding: 72,
         }}
       >
         <div
           style={{
-            fontSize: 72,
-            fontWeight: 500,
-            color: "#00ff88",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-            letterSpacing: "-0.02em",
-            textAlign: "center",
-            paddingLeft: 48,
-            paddingRight: 48,
+            fontSize: 18,
+            letterSpacing: "0.32em",
+            textTransform: "uppercase",
+            color: "#e8a15a",
           }}
         >
-          {"{ Sean Arackal }"}
+          AI Software Engineer
         </div>
-        <div
-          style={{
-            marginTop: 32,
-            fontSize: 28,
-            color: "#a1a1aa",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-          }}
-        >
-          Portfolio
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              fontSize: 88,
+              color: "#f4ece2",
+              lineHeight: 0.95,
+              fontFamily: "Georgia, ui-serif, serif",
+            }}
+          >
+            Sean Arackal
+          </div>
+          <div
+            style={{
+              marginTop: 28,
+              fontSize: 28,
+              color: "#b7aaa0",
+              maxWidth: 820,
+            }}
+          >
+            I build the systems that make models useful.
+          </div>
         </div>
       </div>
     ),
-    {
-      ...size,
-    },
+    { ...size },
   );
 }
