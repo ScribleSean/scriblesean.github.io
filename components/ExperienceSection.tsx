@@ -2,56 +2,100 @@
 
 import { motion } from "framer-motion";
 
+import { SectionHeader } from "@/components/SectionHeader";
 import { experience } from "@/data/experience";
 import { transition } from "@/lib/motion";
 
-export function ExperienceSection() {
-  return (
-    <section id="experience" className="relative scroll-mt-8 px-6 py-24 md:scroll-mt-12">
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={transition.enter}
-        className="mx-auto max-w-3xl"
-      >
-        <h2 className="mb-4 text-center text-sm uppercase tracking-[0.35em] text-zinc-500">
-          Experience
-        </h2>
-        <p className="mx-auto mb-12 max-w-2xl text-center text-zinc-400">
-          Contract, part-time, and full-time roles across research software, teaching, and AI
-          engineering.
-        </p>
+type GroupedRole = {
+  company: string;
+  roles: typeof experience;
+};
 
-        <ol className="space-y-8 border-l border-zinc-800 pl-6">
-          {experience.map((job) => (
-            <li key={`${job.company}-${job.period}-${job.title}`} className="relative">
-              <span
-                className="absolute -left-[calc(1.5rem+5px)] top-1.5 h-2.5 w-2.5 rounded-full bg-[var(--accent)]"
-                aria-hidden
-              />
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                <div>
-                  <h3 className="font-medium text-zinc-100">{job.title}</h3>
-                  <p className="text-sm text-zinc-400">
-                    {job.company}
-                    <span className="text-zinc-600"> · </span>
-                    {job.location}
-                  </p>
-                </div>
-                <p className="shrink-0 text-xs uppercase tracking-wider text-zinc-500">
-                  {job.period}
-                </p>
-              </div>
-              <ul className="mt-3 list-inside list-disc space-y-1.5 text-sm leading-relaxed text-zinc-500">
-                {job.highlights.map((line) => (
-                  <li key={line}>{line}</li>
+function groupByCompany(items: typeof experience): GroupedRole[] {
+  const order: string[] = [];
+  const map = new Map<string, typeof experience>();
+
+  for (const job of items) {
+    const current = map.get(job.company);
+    if (current) {
+      current.push(job);
+    } else {
+      map.set(job.company, [job]);
+      order.push(job.company);
+    }
+  }
+
+  return order.map((company) => ({
+    company,
+    roles: map.get(company) ?? [],
+  }));
+}
+
+export function ExperienceSection() {
+  const groups = groupByCompany(experience);
+
+  return (
+    <section
+      id="experience"
+      className="relative scroll-mt-20 px-5 py-24 md:px-8 md:py-32"
+    >
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          kicker="Experience"
+          title={
+            <>
+              Where the work{" "}
+              <span className="italic text-[var(--accent-strong)]">happened.</span>
+            </>
+          }
+          description="Contract, part-time, and teaching roles across research software, accessibility, and AI engineering."
+        />
+
+        <ol className="space-y-4">
+          {groups.map((group, i) => (
+            <motion.li
+              key={group.company}
+              className="panel rounded-3xl p-6 md:p-8"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ ...transition.card, delay: i * 0.05 }}
+            >
+              <h3 className="font-serif text-2xl text-[var(--ink)] md:text-3xl">
+                {group.company}
+              </h3>
+
+              <div className="mt-6 space-y-8">
+                {group.roles.map((job) => (
+                  <article
+                    key={`${job.company}-${job.period}-${job.title}`}
+                    className="grid gap-3 border-t border-[var(--line)] pt-6 md:grid-cols-[minmax(0,1fr)_220px]"
+                  >
+                    <div>
+                      <h4 className="text-base text-[var(--ink)]">{job.title}</h4>
+                      <p className="mt-1 text-sm text-[var(--faint)]">{job.location}</p>
+                      <ul className="mt-4 space-y-2 text-sm leading-relaxed text-[var(--muted)]">
+                        {job.highlights.map((line) => (
+                          <li key={line} className="flex gap-3">
+                            <span
+                              className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]"
+                              aria-hidden
+                            />
+                            <span>{line}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-[var(--faint)] md:text-right">
+                      {job.period}
+                    </p>
+                  </article>
                 ))}
-              </ul>
-            </li>
+              </div>
+            </motion.li>
           ))}
         </ol>
-      </motion.div>
+      </div>
     </section>
   );
 }

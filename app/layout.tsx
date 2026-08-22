@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, Outfit } from "next/font/google";
 
 import "@/styles/globals.css";
 
-const mono = JetBrains_Mono({
+const sans = Outfit({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -15,15 +23,15 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Sean Arackal",
+    default: "Sean Arackal — AI Software Engineer",
     template: "%s · Sean Arackal",
   },
   description:
-    "Sean Arackal — WPI B.S. Computer Science ('26). AI software engineering, full-stack web, and accessibility research in Greater Boston.",
+    "Sean Arackal — WPI B.S. Computer Science ('26). AI software engineering, computer vision, and full-stack systems in Greater Boston.",
   openGraph: {
-    title: "Sean Arackal",
+    title: "Sean Arackal — AI Software Engineer",
     description:
-      "AI Software Engineer at ReVISit — full-stack, computer vision, and LLM-powered research tooling.",
+      "AI Software Engineer at ReVISit — video analysis, computer vision, and LLM-powered research tooling.",
     url: siteUrl,
     siteName: "Sean Arackal",
     locale: "en_US",
@@ -31,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sean Arackal",
+    title: "Sean Arackal — AI Software Engineer",
     description:
-      "AI Software Engineer at ReVISit — full-stack, computer vision, and LLM-powered research tooling.",
+      "AI Software Engineer at ReVISit — video analysis, computer vision, and LLM-powered research tooling.",
   },
 };
 
@@ -43,11 +51,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={mono.variable} suppressHydrationWarning>
-      <body
-        className="min-h-screen font-mono antialiased"
-        suppressHydrationWarning
-      >
+    <html
+      lang="en"
+      className={`${sans.variable} ${serif.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="grain min-h-screen font-sans antialiased" suppressHydrationWarning>
         {children}
       </body>
     </html>

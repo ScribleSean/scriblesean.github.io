@@ -2,57 +2,66 @@
 
 import { motion } from "framer-motion";
 
+import { SectionHeader } from "@/components/SectionHeader";
 import { transition } from "@/lib/motion";
-
-const TOOLS = ["Git", "Unity", "Bootstrap", "Bulma", "Oracle SQL Developer"];
+import { site } from "@/lib/site";
 
 export function AboutSection() {
   return (
-    <section className="relative px-6 py-24">
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={transition.enter}
-        className="mx-auto max-w-3xl"
-      >
-        <h2 className="mb-4 text-center text-sm uppercase tracking-[0.35em] text-zinc-500">
-          About
-        </h2>
-        <p className="text-center leading-relaxed text-zinc-400">
-          I&apos;m Sean Arackal — a computer science student at Worcester Polytechnic Institute,
-          based in the Greater Boston area. I ship AI-powered research tools, full-stack web
-          systems, and accessibility interfaces, with a focus on measurable outcomes and clean
-          engineering.
-        </p>
+    <section id="about" className="relative scroll-mt-20 px-5 py-24 md:px-8 md:py-32">
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          kicker="About"
+          title={
+            <>
+              Built in labs, classrooms,{" "}
+              <span className="italic text-[var(--accent-strong)]">and production.</span>
+            </>
+          }
+        />
 
-        <div className="mt-10 text-left text-sm leading-relaxed text-zinc-400">
-          <h3 className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
-            Education
-          </h3>
-          <p>
-            <span className="text-zinc-200">Worcester Polytechnic Institute</span> — Bachelor of
-            Science in Computer Science (Aug 2022 – May 2026). GPA{" "}
-            <span className="text-zinc-200">3.53</span>.
-          </p>
-        </div>
+        <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+          <motion.div
+            className="panel rounded-3xl p-6 md:p-8"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={transition.enter}
+          >
+            <p className="text-lg leading-relaxed text-[var(--muted)]">
+              I&apos;m {site.name} — a computer science student at {site.school}, based
+              in the Greater Boston area. I ship AI-powered research tools, full-stack
+              web systems, and accessibility interfaces, with a focus on measurable
+              outcomes and clean engineering.
+            </p>
+            <p className="mt-5 text-lg leading-relaxed text-[var(--muted)]">
+              Recent work sits at the overlap of computer vision and product: making
+              models inspectable, faster to review, and usable by people who are not
+              ML engineers.
+            </p>
+          </motion.div>
 
-        <div className="mt-10">
-          <p className="mb-3 text-center text-xs uppercase tracking-wider text-zinc-500">
-            Also used regularly
-          </p>
-          <ul className="flex flex-wrap justify-center gap-2">
-            {TOOLS.map((item) => (
-              <li
-                key={item}
-                className="rounded border border-zinc-800 bg-zinc-950/60 px-3 py-1 text-sm text-zinc-400"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+          <motion.div
+            className="panel rounded-3xl p-6 md:p-8"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ ...transition.enter, delay: 0.08 }}
+          >
+            <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--accent)]">
+              Education
+            </p>
+            <h3 className="mt-4 font-serif text-3xl text-[var(--ink)]">{site.school}</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              {site.degree}
+              <span className="text-[var(--faint)]"> · GPA {site.gpa}</span>
+            </p>
+            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--faint)]">
+              {site.dates} · Worcester, MA
+            </p>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
