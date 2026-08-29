@@ -1,13 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
-
 import "@/styles/globals.css";
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
@@ -19,11 +11,11 @@ export const metadata: Metadata = {
     template: "%s · Sean Arackal",
   },
   description:
-    "Sean Arackal — WPI B.S. Computer Science ('26). AI software engineering, full-stack web, and accessibility research in Greater Boston.",
+    "Sean Arackal - WPI computer science graduate building AI systems, research tools, and accessible software.",
   openGraph: {
     title: "Sean Arackal",
     description:
-      "AI Software Engineer at ReVISit — full-stack, computer vision, and LLM-powered research tooling.",
+      "AI systems, research tools, and accessible software with measurable outcomes.",
     url: siteUrl,
     siteName: "Sean Arackal",
     locale: "en_US",
@@ -33,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sean Arackal",
     description:
-      "AI Software Engineer at ReVISit — full-stack, computer vision, and LLM-powered research tooling.",
+      "AI systems, research tools, and accessible software with measurable outcomes.",
   },
 };
 
@@ -43,13 +35,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={mono.variable} suppressHydrationWarning>
-      <body
-        className="min-h-screen font-mono antialiased"
-        suppressHydrationWarning
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         {children}
       </body>
     </html>
   );
 }
+
