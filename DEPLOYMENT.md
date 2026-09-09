@@ -1,0 +1,29 @@
+# Preview and deployment
+
+The repository still exports to GitHub Pages using the existing workflow. Merging into main deploys the `out/` directory. This branch has not been published.
+
+## Verification
+
+Run `npm run lint`, `npx tsx --test tests/*.test.ts`, and `npm run build`. Serve `out/` with an ordinary static server to inspect the production result. The 3D renderer draws on demand; camera damping stops after movement settles. Shadows use a bounded 1024px map. Apps are loaded on first open and kept mounted while hidden. Video is silent and pauses behind the desktop or in a hidden document.
+
+## Email activation
+
+Messages has an explicit transcript submission adapter and an email-app fallback. Automatic delivery is intentionally unconfigured until an endpoint is activated and tested.
+
+1. Activate an email form endpoint for `sean.arackal@gmail.com`, for example the FormSubmit AJAX endpoint described at https://formsubmit.co/ajax-documentation.
+2. Confirm the activation email as the mailbox owner and send a clearly labelled test conversation. Verify receipt before presenting delivery as working.
+3. Set the GitHub repository variable `NEXT_PUBLIC_CONTACT_ENDPOINT` to the activated endpoint. For local development, put the same variable in `.env.local`, which is ignored by Git.
+4. Rebuild. Public environment variables are compiled into the static site. Do not put a private API key in this variable.
+
+Until activation, the UI preserves drafts and offers the visitor's email app; it does not show a false sent state.
+
+## Resume
+
+`/resume/` is a printable rendition of the repository's existing resume content. No PDF download is advertised because the original iCloud-backed PDF could not be copied successfully during this build.
+
+## Assets
+
+- Approved silent Melee video: https://www.youtube.com/watch?v=TFmpEWb0Nqk&t=17s. READY was visually verified at 0:17. The segment ends at 1:08 and loops back to READY. YouTube restrictions may require the visible fallback link.
+- Approved wallpaper reference: https://www.bubbleblabber.com/2024/03/the-big-lez-show-teases-six-part-mini-series/.
+- The phone loading still comes from the approved concept image. The interactive desktop scene is actual Three.js geometry.
+- Melee case cover reference: https://i.ebayimg.com/images/g/LGsAAeSw8rRpwa7d/s-l1200.webp.

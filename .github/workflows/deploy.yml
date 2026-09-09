@@ -36,6 +36,7 @@ jobs:
       - name: Build static site
         env:
           NEXT_PUBLIC_SITE_URL: https://scriblesean.github.io
+          NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ vars.NEXT_PUBLIC_CONTACT_ENDPOINT }}
         run: npm run build
 
       - name: Upload Pages artifact
