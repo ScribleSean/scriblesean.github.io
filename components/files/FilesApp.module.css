@@ -1,0 +1,60 @@
+.filesApp {
+  min-height: 100%;
+  background: #f7f7f4;
+  color: #20201e;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.filesApp *, .filesApp *::before, .filesApp *::after { box-sizing: border-box; }
+.filesApp button, .filesApp a { font: inherit; }
+.header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid #d7d7d1; background: rgba(247, 247, 244, .96); padding: 18px clamp(18px, 4vw, 42px); }
+.appName { margin: 0 0 5px; font-size: 19px; font-weight: 700; }
+.breadcrumbs { display: flex; flex-wrap: wrap; gap: 7px; color: #686861; font-size: 12px; }
+.breadcrumbs button { border: 0; padding: 0; background: transparent; color: #494942; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.resumeAction { display: inline-flex; flex: none; align-items: center; justify-content: center; min-height: 35px; border: 1px solid #393935; border-radius: 7px; padding: 8px 11px; background: #393935; color: white; cursor: pointer; font-size: 12px; font-weight: 700; text-decoration: none; }
+.content { width: min(1040px, 100%); margin: 0 auto; padding: clamp(24px, 5vw, 58px); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 220px)); gap: 18px; }
+.fileCard { display: grid; min-height: 164px; justify-items: start; align-content: start; gap: 10px; border: 1px solid #d0d0ca; border-radius: 12px; padding: 20px; background: #fff; color: #222; cursor: pointer; text-align: left; box-shadow: 0 2px 8px rgba(0, 0, 0, .04); }
+.fileCard:hover, .fileCard:focus-visible { border-color: #5d568e; box-shadow: 0 5px 16px rgba(48, 43, 90, .14); }
+.fileCard small { color: #6e6e68; }
+.folderIcon, .documentIcon { color: #5e5793; font-size: 32px; line-height: 1; }
+.documentIcon { color: #707069; }
+.projectList { border-top: 1px solid #d2d2cc; }
+.listIntro { margin: 0; padding: 0 0 20px; color: #5f5f5a; font-size: 14px; line-height: 1.45; }
+.projectRow { display: grid; grid-template-columns: 34px minmax(0, 1fr) 20px; align-items: center; gap: 12px; width: 100%; border: 0; border-bottom: 1px solid #d2d2cc; padding: 17px 4px; background: transparent; color: inherit; cursor: pointer; text-align: left; }
+.projectRow:hover strong, .projectRow:focus-visible strong { text-decoration: underline; text-underline-offset: 4px; }
+.projectRow strong, .projectRow small { display: block; }
+.projectRow small { margin-top: 4px; color: #6b6b65; font-size: 12px; }
+.projectDetail, .resume { max-width: 780px; }
+.back { border: 0; padding: 0; background: transparent; color: #4f4980; cursor: pointer; font-size: 13px; }
+.kicker { margin: 30px 0 10px; color: #686861; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.projectDetail h1, .resume h1 { margin: 0; font-size: clamp(2rem, 5vw, 4rem); letter-spacing: -.05em; line-height: .98; }
+.summary { max-width: 700px; font-size: 18px; line-height: 1.5; }
+.projectDetail h2, .resumeSection h2 { margin: 32px 0 12px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.projectDetail ul { padding-left: 20px; line-height: 1.55; }
+.tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 26px; }
+.tags span { border: 1px solid #aaa9a2; border-radius: 99px; padding: 6px 9px; color: #55554f; font-size: 11px; }
+.openLink { display: inline-block; margin-top: 28px; border-bottom: 1px solid #222; color: #222; font-weight: 700; text-decoration: none; }
+.resumeHeader { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
+.resumeHeader .kicker { margin-top: 0; }
+.contactLine { margin: 8px 0; color: #565650; font-size: 13px; line-height: 1.4; }
+.contactLine a { color: inherit; text-underline-offset: 3px; }
+.resumeSection { margin-top: 34px; border-top: 1px solid #bbbcb5; }
+.resumeEntry { margin: 18px 0; font-size: 14px; line-height: 1.45; }
+.resumeEntry p { margin: 4px 0; }
+.resumeEntry ul { margin: 7px 0; padding-left: 18px; }
+
+@media (max-width: 560px) {
+  .header { align-items: start; }
+  .resumeAction { min-height: 32px; padding: 7px 9px; font-size: 11px; }
+  .content { padding: 24px 18px 38px; }
+  .resumeHeader { align-items: start; flex-direction: column; }
+}
+
+@media print {
+  .header, .breadcrumbs, .resumeAction, .back { display: none !important; }
+  .filesApp { background: white; color: black; }
+  .content { width: auto; max-width: none; padding: 0; }
+  .resume { max-width: none; }
+  .resumeSection { break-inside: avoid; }
+}
