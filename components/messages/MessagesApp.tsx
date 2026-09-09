@@ -229,6 +229,7 @@ export default function MessagesApp({
         <label className={styles.composerLabel} htmlFor="message-composer">
           Your message
         </label>
+        <div className={styles.inputRow}>
         <textarea
           id="message-composer"
           value={composerText}
@@ -243,7 +244,6 @@ export default function MessagesApp({
           aria-describedby={showLimitHint ? "message-limits" : undefined}
           disabled={submissionState === "sending"}
         />
-        <div className={styles.composerActions}>
           <button
             type="button"
             className={styles.secondaryButton}
@@ -254,7 +254,9 @@ export default function MessagesApp({
           >
             ↑
           </button>
+        </div>
           {messages.length > 0 && (
+          <div className={styles.composerActions}>
             <button
               type="submit"
               className={styles.sendButton}
@@ -265,8 +267,8 @@ export default function MessagesApp({
             >
               {submissionState === "sending" ? "Sending…" : "Send conversation to Sean"}
             </button>
+          </div>
           )}
-        </div>
         {showLimitHint && (
           <p
             className={composerLimitError ? styles.limitError : styles.limitHint}

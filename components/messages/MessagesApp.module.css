@@ -120,3 +120,7 @@
 .status { color: #24713c; }
 .error { color: #ae2736; }
 .emailFallback { display: inline-block; color: var(--purple-dark); font-size: 0.82rem; text-decoration: underline; text-underline-offset: 0.2rem; }
+
+.inputRow { display: flex; align-items: flex-end; gap: 0.5rem; min-width: 0; }
+.inputRow textarea { flex: 1; min-width: 0; }
+.inputRow .secondaryButton { flex: 0 0 2.55rem; width: 2.55rem; height: 2.55rem; padding: 0; }
