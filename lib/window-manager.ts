@@ -50,13 +50,16 @@ export function createWindowState(): WindowState {
 }
 
 export function clampFrame(frame: Pick<WindowFrame, "x" | "y" | "width" | "height">, viewport: Viewport) {
-  const maxWidth = Math.max(1, viewport.width - EDGE_GAP * 2);
-  const maxHeight = Math.max(1, viewport.height - EDGE_GAP * 2);
+  const left = viewport.width > 640 ? 86 : EDGE_GAP;
+  const top = 46;
+  const bottom = viewport.width > 640 ? EDGE_GAP : 76;
+  const maxWidth = Math.max(1, viewport.width - left - EDGE_GAP);
+  const maxHeight = Math.max(1, viewport.height - top - bottom);
   const width = Math.min(Math.max(MIN_WIDTH, frame.width), maxWidth);
   const height = Math.min(Math.max(MIN_HEIGHT, frame.height), maxHeight);
   return {
-    x: Math.min(Math.max(EDGE_GAP, frame.x), Math.max(EDGE_GAP, viewport.width - width - EDGE_GAP)),
-    y: Math.min(Math.max(EDGE_GAP, frame.y), Math.max(EDGE_GAP, viewport.height - height - EDGE_GAP)),
+    x: Math.min(Math.max(left, frame.x), Math.max(left, viewport.width - width - EDGE_GAP)),
+    y: Math.min(Math.max(top, frame.y), Math.max(top, viewport.height - height - bottom)),
     width,
     height,
   };

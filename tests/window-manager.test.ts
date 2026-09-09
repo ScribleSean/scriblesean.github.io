@@ -33,10 +33,10 @@ test("moves and resizes clamp to the visible desktop", () => {
   const moved = windowReducer(open, { type: "move", app: "messages", x: -500, y: 9999, viewport });
   const resized = windowReducer(moved, { type: "resize", app: "messages", width: 9000, height: 9000, viewport });
 
-  assert.equal(moved.messages.x, 12);
+  assert.equal(moved.messages.x, 86);
   assert.equal(moved.messages.y, viewport.height - moved.messages.height - 12);
-  assert.equal(resized.messages.width, viewport.width - 24);
-  assert.equal(resized.messages.height, viewport.height - 24);
+  assert.equal(resized.messages.width, viewport.width - 98);
+  assert.equal(resized.messages.height, viewport.height - 58);
 });
 
 test("a closed app keeps its mounted instance when the dock restores it", () => {
@@ -56,4 +56,17 @@ test("pointer deltas use the logical desktop coordinate system after CRT scaling
 
   assert.deepEqual(scale, { x: 2, y: 2 });
   assert.deepEqual(fallback, { x: 1, y: 1 });
+});
+
+
+test("maximized apps stay below the top bar and beside the dock after reflow", () => {
+  for (const app of ["chrome", "files", "messages", "settings"] as const) {
+    const open = windowReducer(createWindowState(), { type: "open", app, viewport });
+    const max = windowReducer(open, { type: "toggle-maximize", app, viewport });
+    assert.ok(max[app].x >= 86);
+    assert.ok(max[app].y >= 46);
+    const narrow = windowReducer(max, { type: "reflow", viewport: { width: 600, height: 720 } });
+    assert.ok(narrow[app].y >= 46);
+    assert.ok(narrow[app].y + narrow[app].height <= 644);
+  }
 });

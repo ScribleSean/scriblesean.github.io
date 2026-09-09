@@ -98,6 +98,26 @@ export default function DesktopShell({ portfolio, files, messages, onRestoreGame
 }
 
 function DesktopWindow({ app, title, frame, viewport, onAction, children }: { app: DesktopAppId; title: string; frame: ReturnType<typeof createWindowState>[DesktopAppId]; viewport: Viewport; onAction: (action: Parameters<typeof windowReducer>[1]) => void; children: ReactNode }) {
+  const bodyRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const scrollable = (element: HTMLElement) => element.clientHeight > 0 && element.scrollHeight > element.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(element).overflowY);
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey) return;
+      let target = event.target instanceof HTMLElement ? event.target : null;
+      while (target && body.contains(target) && !scrollable(target)) target = target.parentElement;
+      if (!target || !body.contains(target)) target = Array.from(body.querySelectorAll<HTMLElement>("*")).find(scrollable) ?? (scrollable(body) ? body : null);
+      if (!target) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? target.clientHeight : 1;
+      target.scrollTop += event.deltaY * unit;
+      target.scrollLeft += event.deltaX * unit;
+    };
+    body.addEventListener("wheel", onWheel, { passive: false });
+    return () => body.removeEventListener("wheel", onWheel);
+  }, []);
   const dragRef = useRef<{ pointerX: number; pointerY: number; x: number; y: number } | null>(null);
   const resizeRef = useRef<{ pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const style = { display: frame.status === "open" || frame.status === "maximized" ? undefined : "none", left: frame.x, top: frame.y, width: frame.width, height: frame.height, zIndex: frame.z };
@@ -138,7 +158,7 @@ function DesktopWindow({ app, title, frame, viewport, onAction, children }: { ap
         <button type="button" onClick={() => onAction({ type: "close", app })} aria-label={`Close ${title}`}>×</button>
       </div>
     </div>
-    <div className={styles.windowBody}>{children}</div>
+    <div ref={bodyRef} className={styles.windowBody}>{children}</div>
     {frame.status === "open" && <button type="button" className={styles.resizeHandle} aria-label={`Resize ${title}`} onPointerDown={startResize} onPointerMove={moveResize} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onKeyDown={(event) => { const amount = event.shiftKey ? 32 : 12; if (event.key === "ArrowRight" || event.key === "ArrowDown") { event.preventDefault(); onAction({ type: "resize", app, width: frame.width + (event.key === "ArrowRight" ? amount : 0), height: frame.height + (event.key === "ArrowDown" ? amount : 0), viewport }); } if (event.key === "ArrowLeft" || event.key === "ArrowUp") { event.preventDefault(); onAction({ type: "resize", app, width: frame.width - (event.key === "ArrowLeft" ? amount : 0), height: frame.height - (event.key === "ArrowUp" ? amount : 0), viewport }); } }} />}
   </article>;
 }
