@@ -1,10 +1,15 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useMemo, useState } from "react";
+import { FormEvent, KeyboardEvent, useMemo, useRef, useState } from "react";
 
 import {
   defaultMessageTransport,
   formatConversation,
+  getMessageLimitError,
+  getMessageTextLength,
+  MAX_CONVERSATION_LENGTH,
+  MAX_MESSAGE_COUNT,
+  MAX_MESSAGE_LENGTH,
   Message,
   MessageDeliveryUnavailableError,
   MessageSubmission,
@@ -25,7 +30,7 @@ export type MessagesAppProps = {
 function createMessage(text: string): Message {
   return {
     id: crypto.randomUUID(),
-    text: text.trim(),
+    text,
     createdAt: new Date().toISOString(),
   };
 }
@@ -47,26 +52,51 @@ export default function MessagesApp({
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [submissionState, setSubmissionState] = useState<SubmissionState>("draft");
   const [statusMessage, setStatusMessage] = useState("");
+  const [showEmailFallback, setShowEmailFallback] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const isComposerEmpty = !composerText.trim();
+  const messagesWithComposer = useMemo(() => {
+    if (isComposerEmpty) {
+      return messages;
+    }
+
+    if (editingMessageId) {
+      return messages.map((message) =>
+        message.id === editingMessageId ? { ...message, text: composerText } : message,
+      );
+    }
+
+    return [...messages, { id: "composer", text: composerText, createdAt: new Date().toISOString() }];
+  }, [composerText, editingMessageId, isComposerEmpty, messages]);
+  const composerLimitError = getMessageLimitError(messagesWithComposer);
+  const canAddOrUpdateMessage = !isComposerEmpty && !composerLimitError;
   const fallbackHref = useMemo(
-    () => (messages.length ? makeMailtoHref(messages) : "mailto:sean.arackal@gmail.com"),
-    [messages],
+    () =>
+      messagesWithComposer.length
+        ? makeMailtoHref(messagesWithComposer)
+        : "mailto:sean.arackal@gmail.com",
+    [messagesWithComposer],
   );
 
   function resetStatus() {
-    if (submissionState !== "sending") {
+    if (!isSubmittingRef.current && submissionState !== "sent") {
       setSubmissionState("draft");
       setStatusMessage("");
+      setShowEmailFallback(false);
     }
   }
 
   function addOrUpdateMessage() {
-    if (isComposerEmpty || submissionState === "sending" || submissionState === "sent") {
+    if (
+      !canAddOrUpdateMessage ||
+      isSubmittingRef.current ||
+      submissionState === "sent"
+    ) {
       return;
     }
 
-    const text = composerText.trim();
+    const text = composerText;
     if (editingMessageId) {
       setMessages((current) =>
         current.map((message) =>
@@ -82,7 +112,10 @@ export default function MessagesApp({
   }
 
   function editMessage(message: Message) {
-    if (submissionState !== "draft" && submissionState !== "error") {
+    if (
+      isSubmittingRef.current ||
+      (submissionState !== "draft" && submissionState !== "error")
+    ) {
       return;
     }
 
@@ -92,7 +125,10 @@ export default function MessagesApp({
   }
 
   function deleteMessage(id: string) {
-    if (submissionState !== "draft" && submissionState !== "error") {
+    if (
+      isSubmittingRef.current ||
+      (submissionState !== "draft" && submissionState !== "error")
+    ) {
       return;
     }
 
@@ -106,30 +142,48 @@ export default function MessagesApp({
 
   async function submitConversation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submissionState === "sending" || messages.length === 0) {
+    if (isSubmittingRef.current || submissionState === "sent") {
+      return;
+    }
+
+    const messagesToSubmit = messagesWithComposer;
+    if (messagesToSubmit.length === 0 || composerLimitError) {
+      setSubmissionState("error");
+      setShowEmailFallback(false);
+      setStatusMessage(
+        composerLimitError ?? "Write at least one message before sending.",
+      );
       return;
     }
 
     const submission: MessageSubmission = {
-      messages,
+      messages: messagesToSubmit,
       submittedAt: new Date().toISOString(),
     };
+    isSubmittingRef.current = true;
     setSubmissionState("sending");
+    setShowEmailFallback(false);
     setStatusMessage("Sending conversation…");
 
     try {
       await transport(submission);
+      setMessages(messagesToSubmit);
+      setComposerText("");
+      setEditingMessageId(null);
       setSubmissionState("sent");
       setStatusMessage("Sent to Sean. He’ll reply using any contact details you included.");
     } catch (error) {
       setSubmissionState("error");
+      setShowEmailFallback(true);
       setStatusMessage(
         error instanceof MessageDeliveryUnavailableError
           ? "Message delivery is not configured yet. You can still send this conversation by email."
           : error instanceof Error
             ? error.message
-            : "Your conversation could not be sent. Please try again.",
+          : "Your conversation could not be sent. Please try again.",
       );
+    } finally {
+      isSubmittingRef.current = false;
     }
   }
 
@@ -181,6 +235,8 @@ export default function MessagesApp({
           onKeyDown={handleComposerKeyDown}
           placeholder="Type anything. Include an email or handle if you want a reply."
           rows={3}
+          maxLength={MAX_MESSAGE_LENGTH}
+          aria-describedby="message-limits"
           disabled={submissionState === "sending" || submissionState === "sent"}
         />
         <div className={styles.composerActions}>
@@ -188,18 +244,31 @@ export default function MessagesApp({
             type="button"
             className={styles.secondaryButton}
             onClick={addOrUpdateMessage}
-            disabled={isComposerEmpty || submissionState === "sending" || submissionState === "sent"}
+            disabled={!canAddOrUpdateMessage || submissionState === "sending" || submissionState === "sent"}
           >
             {editingMessageId ? "Save message" : "Add message"}
           </button>
           <button
             type="submit"
             className={styles.sendButton}
-            disabled={messages.length === 0 || submissionState === "sending" || submissionState === "sent"}
+            disabled={
+              messagesWithComposer.length === 0 ||
+              Boolean(composerLimitError) ||
+              submissionState === "sending" ||
+              submissionState === "sent"
+            }
           >
             {submissionState === "sending" ? "Sending…" : "Send conversation to Sean"}
           </button>
         </div>
+        <p
+          className={composerLimitError ? styles.limitError : styles.limitHint}
+          id="message-limits"
+          role={composerLimitError ? "alert" : undefined}
+        >
+          {composerLimitError ??
+            `${messagesWithComposer.length}/${MAX_MESSAGE_COUNT} messages · ${getMessageTextLength(messagesWithComposer).toLocaleString()}/${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`}
+        </p>
       </form>
 
       {statusMessage && (
@@ -207,7 +276,7 @@ export default function MessagesApp({
           {statusMessage}
         </p>
       )}
-      {submissionState === "error" && (
+      {submissionState === "error" && showEmailFallback && (
         <a className={styles.emailFallback} href={fallbackHref}>
           Send this conversation by email instead
         </a>

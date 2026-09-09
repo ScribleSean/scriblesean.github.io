@@ -89,6 +89,9 @@
 }
 .composer textarea:focus-visible { outline: 3px solid rgb(102 84 213 / 28%); border-color: var(--purple); }
 .composerActions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem; }
+.limitHint, .limitError { margin: 0; font-size: 0.72rem; line-height: 1.3; }
+.limitHint { color: var(--muted); }
+.limitError { color: #ae2736; }
 .composer button {
   min-height: 2.55rem;
   border-radius: 999px;
