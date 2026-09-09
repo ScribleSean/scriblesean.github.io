@@ -3,6 +3,7 @@
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { RoundedBox, useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import FoxFigurine from "./FoxFigurine";
 
 type Vec3 = [number, number, number];
 const CREAM = "#ddd3bf";
@@ -211,55 +212,6 @@ export function Controller() {
   </group>;
 }
 
-function Limb({ from, to, radius, color }: { from: Vec3; to: Vec3; radius: number; color: string }) {
-  const start = new THREE.Vector3(...from);
-  const end = new THREE.Vector3(...to);
-  const middle = start.clone().add(end).multiplyScalar(.5);
-  const rotation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
-  return <mesh position={middle} quaternion={rotation} castShadow>
-    <capsuleGeometry args={[radius, Math.max(.01, start.distanceTo(end) - radius * 2), 4, 10]} />
-    <meshStandardMaterial color={color} roughness={.67} />
-  </mesh>;
-}
-
-export function FoxCollectible() {
-  return <group position={[-2.55, 1.12, .82]} rotation={[0, .18, 0]} scale={.85}>
-    <Disc top at={[0, .04, 0]} radius={.32} color="#272829" depth={.09} />
-    <Disc top at={[0, .095, 0]} radius={.28} color="#b2a173" depth={.02} />
-    {/* Fox is crouched with one boot forward and both hands raised in his fighting guard. */}
-    <Limb from={[-.10, .54, .01]} to={[-.27, .32, .13]} radius={.095} color="#607150" />
-    <Limb from={[-.27, .32, .13]} to={[-.38, .15, .22]} radius={.08} color="#607150" />
-    <Limb from={[.11, .54, -.02]} to={[.27, .34, -.11]} radius={.095} color="#607150" />
-    <Limb from={[.27, .34, -.11]} to={[.18, .15, .10]} radius={.08} color="#607150" />
-    <Box at={[-.42, .14, .24]} size={[.24, .13, .36]} color="#3f4347" radius={.055} roughness={.5} />
-    <Box at={[.17, .14, .13]} size={[.23, .13, .34]} color="#3f4347" radius={.055} roughness={.5} />
-    <group position={[0, .72, .02]} rotation={[0, 0, .13]}>
-      <Box size={[.39, .40, .28]} color="#e0d9c6" radius={.08} roughness={.58} />
-      <Box at={[0, .03, .156]} size={[.20, .25, .025]} color="#4c6f4f" radius={.009} />
-      <Box at={[0, -.15, .16]} size={[.34, .055, .035]} color="#4b4b43" radius={.012} />
-      <Box at={[.04, -.15, .185]} size={[.06, .09, .018]} color="#c6ac6e" radius={.009} metalness={.45} />
-    </group>
-    <Limb from={[-.18, .83, .02]} to={[-.36, .78, .18]} radius={.075} color="#e0d9c6" />
-    <Limb from={[-.36, .78, .18]} to={[-.31, 1.03, .25]} radius={.064} color="#e0d9c6" />
-    <Limb from={[.18, .84, -.01]} to={[.34, .75, .16]} radius={.075} color="#e0d9c6" />
-    <Limb from={[.34, .75, .16]} to={[.20, .99, .27]} radius={.064} color="#e0d9c6" />
-    {[["left", -.31, 1.04], ["right", .20, 1.00]].map(([key, x, y]) => <mesh key={key as string} position={[x as number, y as number, .25]} castShadow><sphereGeometry args={[.078, 12, 8]} /><meshStandardMaterial color="#41433c" roughness={.58} /></mesh>)}
-    <mesh position={[.02, 1.17, .05]} scale={[1, 1.03, .86]} castShadow><sphereGeometry args={[.22, 18, 12]} /><meshStandardMaterial color="#bd8544" roughness={.78} /></mesh>
-    <mesh position={[.02, 1.11, .235]} scale={[1, .62, 1]} castShadow><sphereGeometry args={[.14, 16, 10]} /><meshStandardMaterial color="#ede3c8" /></mesh>
-    <mesh position={[.02, 1.133, .35]} scale={[1, .7, .6]}><sphereGeometry args={[.042, 12, 8]} /><meshStandardMaterial color="#302c28" /></mesh>
-    {[-1, 1].map((side) => <group key={side}>
-      <mesh position={[.02 + side * .155, 1.38, .025]} rotation={[0, 0, -side * .24]} castShadow><coneGeometry args={[.1, .26, 4]} /><meshStandardMaterial color="#bd8544" /></mesh>
-      <mesh position={[.02 + side * .155, 1.40, .07]} rotation={[0, 0, -side * .24]}><coneGeometry args={[.055, .17, 3]} /><meshStandardMaterial color="#e6d7b7" /></mesh>
-      <mesh position={[.02 + side * .106, 1.205, .23]} scale={[1, .45, .35]}><sphereGeometry args={[.066, 12, 8]} /><meshStandardMaterial color="#efe5cf" /></mesh>
-      <mesh position={[.02 + side * .103, 1.205, .25]} scale={[1, .65, .45]}><sphereGeometry args={[.024, 10, 8]} /><meshStandardMaterial color="#3d6755" /></mesh>
-    </group>)}
-    <Box at={[.02, 1.025, .12]} size={[.23, .055, .085]} color="#a94536" radius={.015} />
-    <mesh position={[.08, .97, .151]} rotation={[0, 0, -.1]}><coneGeometry args={[.064, .18, 3]} /><meshStandardMaterial color="#a94536" /></mesh>
-    <Limb from={[-.08, .57, -.13]} to={[-.37, .48, -.42]} radius={.13} color="#bd8544" />
-    <Limb from={[-.37, .48, -.42]} to={[-.49, .66, -.43]} radius={.09} color="#e5d9b9" />
-  </group>;
-}
-
 function MeleeCover() {
   const source = useTexture("/scene/melee-case-cover.jpg");
   const texture = useMemo(() => {
@@ -296,7 +248,7 @@ export default function DeskModels() {
     <GameCube />
     <Controller />
     <GameCase />
-    <FoxCollectible />
+    <FoxFigurine />
     {/* Controller lead: top center of controller to front port one. */}
     <Cable points={[[.95, 1.25, .65], [1.12, .98, .50], [2.92, .96, 1.22], [3.04, 1.0, 1.03], [1.57, 1.64, .98], [1.57, 1.64, .87]]} />
     {/* RCA inputs: short separate tails join a cable along the TV side to the rear of the console. */}

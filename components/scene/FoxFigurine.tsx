@@ -6,7 +6,6 @@ import * as THREE from "three";
 type Vec3 = [number, number, number];
 
 const FUR = "#bd7437";
-const FUR_DARK = "#8f4d29";
 const MUZZLE = "#eadfc8";
 const JACKET = "#d8d2c2";
 const PANTS = "#5b6b4a";
@@ -52,7 +51,7 @@ function TaperedLimb({ from, to, topRadius, bottomRadius, color }: {
   );
 
   return <mesh position={center} quaternion={orientation} castShadow receiveShadow>
-    <cylinderGeometry args={[topRadius, bottomRadius, length, 10, 2]} />
+    <cylinderGeometry args={[topRadius, bottomRadius, length, 24, 3]} />
     <meshStandardMaterial color={color} roughness={.64} />
   </mesh>;
 }
@@ -134,11 +133,11 @@ export default function FoxFigurine() {
     <TaperedLimb from={[-.43, .53, -.40]} to={[-.53, .71, -.42]} topRadius={.085} bottomRadius={.05} color={MUZZLE} />
 
     <mesh position={[0, 1.19, .03]} scale={[1.0, 1.06, .87]} castShadow receiveShadow>
-      <sphereGeometry args={[.235, 24, 16]} />
+      <sphereGeometry args={[.235, 40, 28]} />
       <meshStandardMaterial color={FUR} roughness={.68} />
     </mesh>
     <mesh position={[0, 1.13, .205]} scale={[1.0, .60, .84]} castShadow>
-      <sphereGeometry args={[.152, 20, 14]} />
+      <sphereGeometry args={[.152, 32, 20]} />
       <meshStandardMaterial color={MUZZLE} roughness={.72} />
     </mesh>
     <mesh position={[0, 1.135, .335]} scale={[1.12, .72, .62]} castShadow>
