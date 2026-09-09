@@ -8,6 +8,7 @@ export interface Project {
   tech: string[];
   github?: string;
   live?: string;
+  linkLabel?: string;
 }
 
 export const projects: Project[] = resumeProjects.map(project => ({
@@ -16,5 +17,6 @@ export const projects: Project[] = resumeProjects.map(project => ({
   period: project.period,
   description: project.portfolioSummary,
   tech: project.tags,
-  ...(project.href.startsWith("https://github.com/") ? { github: project.href } : { live: project.href }),
+  linkLabel: project.linkLabel,
+  ...(project.linkKind === "source" ? { github: project.href } : project.href ? { live: project.href } : {}),
 }));

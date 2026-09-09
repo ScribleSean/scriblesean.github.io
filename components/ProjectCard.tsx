@@ -68,7 +68,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             rel="noopener noreferrer"
             className="text-zinc-300 underline-offset-4 hover:underline"
           >
-            Live demo
+            {project.linkLabel ?? "Visit project"}
           </a>
         )}
       </div>

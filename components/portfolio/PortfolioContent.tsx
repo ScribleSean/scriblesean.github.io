@@ -102,7 +102,8 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
         <span className={styles.projectIndex}>{project.period}</span>
         <div className={styles.researchMain}><p className={styles.meta}>{project.role}</p><h3>{project.name}</h3><p className={styles.projectSummary}>{project.portfolioSummary}</p>
           <details className={styles.projectDetails}><summary>What I worked on <span>+</span></summary><ul>{project.outcomes.map(outcome => <li key={outcome}>{outcome}</li>)}</ul><div className={styles.buildDetail}>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></details>
-        </div><a className={styles.projectArrow} href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.name}`}>↗</a>
+          <p className={styles.meta}>{project.href ? <a href={project.href} target="_blank" rel="noreferrer">{project.linkLabel} ↗</a> : project.linkLabel}</p>
+        </div>
       </article>)}</div>
     </section>
 

@@ -34,7 +34,9 @@
         "Python",
         "Multimodal AI",
         "Semantic search"
-      ]
+      ],
+      "linkKind": "platform",
+      "linkLabel": "reVISit platform"
     },
     {
       "name": "Exercise Form Classification System",
@@ -47,14 +49,16 @@
         "Contributed labeling, YOLO pose extraction, training pipelines, and exploratory data analysis.",
         "Worked on Skeleton CNN and ST-GCN experiments using the Qualcomm exercise-video dataset."
       ],
-      "href": "https://github.com/ScribleSean/Exercise-Form-Classification-System",
+      "href": "",
       "tags": [
         "Python",
         "PyTorch",
         "YOLO",
         "Skeleton CNN",
         "ST-GCN"
-      ]
+      ],
+      "linkKind": "private",
+      "linkLabel": "Source currently private"
     },
     {
       "name": "Hospital Kiosk",
@@ -72,7 +76,9 @@
         "Team development",
         "Back-end development",
         "Agile/Scrum"
-      ]
+      ],
+      "linkKind": "source",
+      "linkLabel": "View source code"
     },
     {
       "name": "Reimagining Digital Education at Sri Sangwan School",
@@ -90,7 +96,9 @@
         "Qualitative research",
         "Inclusive education",
         "Research writing"
-      ]
+      ],
+      "linkKind": "report",
+      "linkLabel": "Read team report"
     }
   ],
   "experience": [

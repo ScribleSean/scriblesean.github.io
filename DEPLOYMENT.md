@@ -1,6 +1,6 @@
 # Preview and deployment
 
-The repository still exports to GitHub Pages using the existing workflow. Merging into main deploys the `out/` directory. This branch has not been published.
+The repository exports to GitHub Pages using the existing workflow. Pushing to main deploys the `out/` directory. The public site is https://scriblesean.github.io/.
 
 ## Verification
 
@@ -8,7 +8,7 @@ Run `npm run lint`, `npx tsx --test tests/*.test.ts`, and `npm run build`. Serve
 
 ## Email activation
 
-Messages has an explicit transcript submission adapter and an email-app fallback. Automatic delivery is intentionally unconfigured until an endpoint is activated and tested.
+Messages has an explicit transcript submission adapter and an email-app fallback. The published site has a configured endpoint; the mailbox owner confirmed activation. Inbox receipt has not been independently verified. For another deployment:
 
 1. Activate an email form endpoint for `sean.arackal@gmail.com`, for example the FormSubmit AJAX endpoint described at https://formsubmit.co/ajax-documentation.
 2. Confirm the activation email as the mailbox owner and send a clearly labelled test conversation. Verify receipt before presenting delivery as working.

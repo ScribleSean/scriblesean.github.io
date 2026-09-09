@@ -127,7 +127,7 @@ function ProjectDetail({ project }: { project: (typeof projects)[number] }) {
       <h3>Highlights</h3>
       <ul>{project.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul>
       <div className={styles.tags}>{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-      <a className={styles.openLink} href={project.href} target="_blank" rel="noreferrer">Open project link ↗</a>
+      {project.href ? <a className={styles.openLink} href={project.href} target="_blank" rel="noreferrer">{project.linkLabel} ↗</a> : <p>{project.linkLabel}</p>}
     </article>
   );
 }
