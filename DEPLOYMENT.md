@@ -27,3 +27,7 @@ Until activation, the UI preserves drafts and offers the visitor's email app; it
 - Approved wallpaper reference: https://www.bubbleblabber.com/2024/03/the-big-lez-show-teases-six-part-mini-series/.
 - The phone loading still comes from the approved concept image. The interactive desktop scene is actual Three.js geometry.
 - Melee case cover reference: https://i.ebayimg.com/images/g/LGsAAeSw8rRpwa7d/s-l1200.webp.
+
+## Embedded browser
+
+Chrome supports typed website addresses, Google searches, reload, portfolio home, and back/forward through addresses entered in its toolbar. The approach follows the iframe browser in https://yoshik-portfolio.vercel.app/. External pages remain subject to their embedding policies; an external-tab link is always available. Cross-origin navigation inside a page cannot synchronize the toolbar address or its history. Google search and example.com were verified in the production preview.

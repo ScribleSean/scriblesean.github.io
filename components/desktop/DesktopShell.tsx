@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { type DesktopAppId, type Viewport, createWindowState, getViewportScale, windowReducer } from "@/lib/window-manager";
+import BrowserApp from "@/components/browser/BrowserApp";
 import styles from "./DesktopShell.module.css";
 
 type Props = {
@@ -74,9 +75,9 @@ export default function DesktopShell({ portfolio, files, messages, onRestoreGame
 
   const openApp = (app: DesktopAppId) => dispatch({ type: "open", app, viewport });
   const windowContent = useMemo(() => ({
-    chrome: <><div className={styles.browserBar}><div className={styles.browserActions}><span>‹</span><span>›</span><span>↻</span></div><div className={styles.address}>⌕&nbsp; scriblesean.github.io/portfolio/</div><span className={styles.browserMenu}>⋮</span></div><div className={styles.browserContent}>{portfolio}</div></>,
+    chrome: <BrowserApp portfolio={portfolio} />,
     files: <div className={styles.appContent}>{files}</div>,
-    messages: <div className={styles.appContent}>{messages}</div>,
+    messages: <div className={styles.messageContent}>{messages}</div>,
     settings: <div className={styles.settingsContent}><h2>Settings</h2><p>Accessibility</p><label className={styles.motionControl}><span><strong>Reduce motion</strong><small>Keep desktop movement minimal</small></span><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} aria-label="Reduce motion"/><span className={styles.switch} aria-hidden="true"/></label></div>,
   }), [files, messages, onReducedMotionChange, portfolio, reducedMotion]);
 
