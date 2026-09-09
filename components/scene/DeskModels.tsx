@@ -12,7 +12,10 @@ const GREEN = "#427a5b";
 function Box({ size, at = [0, 0, 0], color, radius = .06, roughness = .66, metalness = 0 }: {
   size: Vec3; at?: Vec3; color: string; radius?: number; roughness?: number; metalness?: number;
 }) {
-  return <RoundedBox args={size} position={at} radius={radius} smoothness={3} castShadow receiveShadow>
+  // drei's RoundedBox produces invalid geometry when a corner radius exceeds half
+  // of a thin dimension. Several detail strips are intentionally very thin.
+  const safeRadius = Math.max(.001, Math.min(radius, ...size.map((dimension) => dimension / 2 - .001)));
+  return <RoundedBox args={size} position={at} radius={safeRadius} smoothness={3} castShadow receiveShadow>
     <meshStandardMaterial color={color} roughness={roughness} metalness={metalness} />
   </RoundedBox>;
 }
@@ -255,7 +258,7 @@ export function GameCase() {
     <Box size={[1.10, .105, 1.48]} color="#17171a" radius={.025} roughness={.36} />
     <Box at={[-.505, .025, 0]} size={[.065, .12, 1.40]} color="#09090b" radius={.008} roughness={.3} />
     <MeleeCover />
-    <RoundedBox args={[[1.025, .014, 1.39], .012, 3]} position={[0, .076, 0]} castShadow>
+    <RoundedBox args={[1.025, .014, 1.39]} radius={.005} smoothness={3} position={[0, .076, 0]} castShadow>
       <meshPhysicalMaterial color="#ffffff" transparent opacity={.13} roughness={.12} metalness={.02} clearcoat={.55} />
     </RoundedBox>
   </group>;
