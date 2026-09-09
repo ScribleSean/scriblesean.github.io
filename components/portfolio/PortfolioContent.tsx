@@ -14,20 +14,6 @@ const capabilities = [
   { title: "Systems & delivery", items: "Native desktop tools · Docker · AWS · Accessible interfaces" },
 ];
 
-function ObservatoryGraphic() {
-  return <div className={styles.observatoryGraphic} aria-label="System overview: activity, AI usage and dictation feed one local workspace view" role="img">
-    <div className={styles.graphicHeader}><span>OBSERVATORY</span><span>LOCAL FIRST</span></div>
-    <svg viewBox="0 0 500 190" aria-hidden="true">
-      <defs><pattern id="observatory-grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="currentColor" opacity=".13" /></pattern></defs>
-      <rect width="500" height="190" fill="url(#observatory-grid)" />
-      <g fill="none" stroke="currentColor" strokeWidth="1" opacity=".45"><path d="M75 42H170Q195 42 195 70V95H250M75 95H250M75 148H170Q195 148 195 120V95M250 95H420"/><circle cx="282" cy="95" r="49"/><circle cx="282" cy="95" r="65" strokeDasharray="2 7"/></g>
-      <g fill="currentColor"><circle cx="75" cy="42" r="4"/><circle cx="75" cy="95" r="4"/><circle cx="75" cy="148" r="4"/><circle cx="420" cy="95" r="4"/></g>
-      <g transform="translate(250 66)" fill="none" stroke="currentColor" strokeWidth="2"><path d="m4 15 41-13 9 24-41 13zM17 35 10 15M45 2l5-2 10 25-6 1M30 35v16m0-9-16 17m16-17 17 17"/></g>
-    </svg>
-    <div className={styles.signalLabels}><span>Activity</span><span>AI usage</span><span>Dictation</span><span>One clear view ↗</span></div>
-  </div>;
-}
-
 export default function PortfolioContent({ onContact, embedded = false }: PortfolioContentProps) {
   function navigateSection(event: MouseEvent<HTMLElement>) {
     if (!embedded || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -67,7 +53,7 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div><p>Projects I’m still building<br />and improving.</p></div>
       <div className={styles.currentTimeline}><p className={styles.timelineDate}>September 2026 · Ongoing</p><div className={styles.buildGrid}>
         <article className={styles.buildCard}>
-          <a className={styles.visualLink} href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory synthetic demo"><ObservatoryGraphic /></a>
+          <a className={`${styles.visualLink} ${styles.sceneVisual}`} href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory synthetic demo"><Image src="/scene/observatory-demo.png" alt="Workspace Observatory activity dashboard with fictional sample records" width="1280" height="720" loading="lazy" /><span>SYNTHETIC DEMO PREVIEW</span></a>
           <div className={styles.buildBody}>
             <div className={styles.buildMeta}><span>LOCAL DESKTOP APP</span><span className={styles.status}>Early preview</span></div>
             <h3>Workspace Observatory</h3><p>I made a tool that runs locally and shows my screen time, AI usage, and dictation stats in one place. I’m still adding features and improving how it works across my computers.</p>
