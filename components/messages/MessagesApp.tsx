@@ -175,7 +175,7 @@ export default function MessagesApp({
       setComposerText("");
       setEditingMessageId(null);
       setSubmissionState("sent");
-      setStatusMessage("Sent to Sean. He’ll reply using any contact details you included.");
+      setStatusMessage("Sent to Sean.");
     } catch (error) {
       setSubmissionState("error");
       setShowEmailFallback(true);
@@ -223,6 +223,19 @@ export default function MessagesApp({
             )}
           </div>
         ))}
+        {statusMessage && (
+          <p
+            className={submissionState === "error" ? styles.error : styles.status}
+            role={submissionState === "error" ? "alert" : "status"}
+          >
+            {statusMessage}
+          </p>
+        )}
+        {submissionState === "error" && showEmailFallback && (
+          <a className={styles.emailFallback} href={fallbackHref}>
+            Send this conversation by email instead
+          </a>
+        )}
       </div>
 
       <form className={styles.composer} onSubmit={submitConversation}>
@@ -244,7 +257,7 @@ export default function MessagesApp({
           aria-describedby={showLimitHint ? "message-limits" : undefined}
           disabled={submissionState === "sending"}
         />
-          <button
+          {!isComposerEmpty && <button
             type="button"
             className={styles.secondaryButton}
             onClick={addOrUpdateMessage}
@@ -253,9 +266,9 @@ export default function MessagesApp({
             title={editingMessageId ? "Save message" : "Add message"}
           >
             ↑
-          </button>
+          </button>}
         </div>
-          {messages.length > 0 && (
+          {!isComposerEmpty && (
           <div className={styles.composerActions}>
             <button
               type="submit"
@@ -279,19 +292,7 @@ export default function MessagesApp({
               `${messagesWithComposer.length}/${MAX_MESSAGE_COUNT} messages · ${conversationLength.toLocaleString()}/${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`}
           </p>
         )}
-        {statusMessage && (
-          <p
-            className={submissionState === "error" ? styles.error : styles.status}
-            role={submissionState === "error" ? "alert" : "status"}
-          >
-            {statusMessage}
-          </p>
-        )}
-        {submissionState === "error" && showEmailFallback && (
-          <a className={styles.emailFallback} href={fallbackHref}>
-            Send this conversation by email instead
-          </a>
-        )}
+
       </form>
     </section>
   );
