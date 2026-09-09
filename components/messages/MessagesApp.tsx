@@ -237,7 +237,7 @@ export default function MessagesApp({
             resetStatus();
           }}
           onKeyDown={handleComposerKeyDown}
-          placeholder="Type anything. Include an email or handle if you want a reply."
+          placeholder="Message Sean…"
           rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
           aria-describedby={showLimitHint ? "message-limits" : undefined}
