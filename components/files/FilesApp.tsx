@@ -39,7 +39,7 @@ export default function FilesApp({ resumeUrl }: FilesAppProps) {
         {resumeUrl ? (
           <a className={styles.resumeAction} href={resumeUrl} download>Download resume</a>
         ) : (
-          <button className={styles.resumeAction} type="button" onClick={() => openFolder("resume")}>Print resume</button>
+          <a className={styles.resumeAction} href="/resume" target="_blank" rel="noreferrer">Print resume</a>
         )}
       </header>
 
@@ -47,7 +47,7 @@ export default function FilesApp({ resumeUrl }: FilesAppProps) {
         {folder === "home" && <HomeView onOpenFolder={openFolder} />}
         {folder === "projects" && !selectedProject && <ProjectsView onOpenProject={openProject} />}
         {selectedProject && <ProjectView project={selectedProject} onBack={() => setProjectName(null)} />}
-        {folder === "resume" && <ResumeView resumeUrl={resumeUrl} />}
+        {folder === "resume" && <ResumeContent resumeUrl={resumeUrl} />}
       </div>
     </section>
   );
@@ -106,7 +106,7 @@ function ProjectView({
   );
 }
 
-function ResumeView({ resumeUrl }: { resumeUrl?: string }) {
+export function ResumeContent({ resumeUrl }: { resumeUrl?: string }) {
   return (
     <article className={styles.resume}>
       <div className={styles.resumeHeader}>
@@ -114,7 +114,7 @@ function ResumeView({ resumeUrl }: { resumeUrl?: string }) {
         {resumeUrl ? (
           <a className={styles.resumeAction} href={resumeUrl} download>Download resume</a>
         ) : (
-          <button className={styles.resumeAction} type="button" onClick={() => window.print()}>Print resume</button>
+          <a className={styles.resumeAction} href="/resume" target="_blank" rel="noreferrer">Print resume</a>
         )}
       </div>
       <p className={styles.contactLine}>{contact.email} · {contact.phone} · {contact.location}</p>

@@ -1,7 +1,8 @@
 .shell {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  min-height: 100dvh;
+  height: 100dvh;
+  min-height: 0;
   overflow: hidden;
   background: #f4f3ef;
   color: #111;
@@ -14,7 +15,7 @@
 .topBar { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; align-items: center; gap: 8px; min-height: 56px; padding: 8px 12px; border-bottom: 1px solid #d7d6d0; background: rgba(248, 248, 246, .94); }
 .backButton, .bottomBar button { border: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; }
 .backButton { width: 40px; height: 40px; font-size: 34px; line-height: 1; }
-.address { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 6px; border-radius: 9px; background: #e8e7e3; padding: 8px 12px; color: #50504d; font-size: 12px; }
+.address { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 6px; border-radius: 9px; background: #e8e7e3; padding: 8px 12px; color: #50504d; font-size: 14px; font-weight: 400; }
 .address span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lock { color: #70706b; font-size: 9px; }
 .more { text-align: center; letter-spacing: 2px; color: #555; font-size: 13px; }
