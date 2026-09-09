@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createWindowState, windowReducer } from "../lib/window-manager";
+import { createWindowState, getViewportScale, windowReducer } from "../lib/window-manager";
 
 const viewport = { width: 1000, height: 720 };
 
@@ -37,4 +37,23 @@ test("moves and resizes clamp to the visible desktop", () => {
   assert.equal(moved.messages.y, viewport.height - moved.messages.height - 12);
   assert.equal(resized.messages.width, viewport.width - 24);
   assert.equal(resized.messages.height, viewport.height - 24);
+});
+
+test("a closed app keeps its mounted instance when the dock restores it", () => {
+  const open = windowReducer(createWindowState(), { type: "open", app: "messages", viewport });
+  const closed = windowReducer(open, { type: "close", app: "messages" });
+  const restored = windowReducer(closed, { type: "open", app: "messages", viewport });
+
+  assert.equal(closed.messages.mounted, true);
+  assert.equal(restored.messages.status, "open");
+  assert.equal(restored.messages.x, open.messages.x);
+  assert.equal(restored.messages.y, open.messages.y);
+});
+
+test("pointer deltas use the logical desktop coordinate system after CRT scaling", () => {
+  const scale = getViewportScale({ clientWidth: 1000, clientHeight: 720, renderedWidth: 500, renderedHeight: 360 });
+  const fallback = getViewportScale({ clientWidth: 1000, clientHeight: 720, renderedWidth: 0, renderedHeight: 0 });
+
+  assert.deepEqual(scale, { x: 2, y: 2 });
+  assert.deepEqual(fallback, { x: 1, y: 1 });
 });
