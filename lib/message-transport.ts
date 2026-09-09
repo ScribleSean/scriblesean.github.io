@@ -116,6 +116,19 @@ export function formatConversation(submission: MessageSubmission): string {
   return lines.join("\n");
 }
 
+function hasSuccessfulProviderResponse(data: unknown): boolean {
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !Object.prototype.hasOwnProperty.call(data, "success")
+  ) {
+    return false;
+  }
+
+  const success = (data as { success?: unknown }).success;
+  return success === true || success === "true";
+}
+
 export function createMessageTransport(
   endpoint: string | undefined,
   fetchImplementation: FetchImplementation = fetch,
@@ -175,12 +188,7 @@ export function createMessageTransport(
       );
     }
 
-    if (
-      typeof data !== "object" ||
-      data === null ||
-      !Object.prototype.hasOwnProperty.call(data, "success") ||
-      (data as { success?: unknown }).success !== true
-    ) {
+    if (!hasSuccessfulProviderResponse(data)) {
       throw new MessageDeliveryError(
         "The delivery service could not accept your conversation. Please try again.",
       );
