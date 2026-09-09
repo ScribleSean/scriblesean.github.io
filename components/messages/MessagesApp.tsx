@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import {
   defaultMessageTransport,
@@ -54,6 +54,12 @@ export default function MessagesApp({
   const [statusMessage, setStatusMessage] = useState("");
   const [showEmailFallback, setShowEmailFallback] = useState(false);
   const isSubmittingRef = useRef(false);
+  const threadRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const thread = threadRef.current;
+    if (thread) thread.scrollTop = thread.scrollHeight;
+  }, [messages, submissionState]);
 
   const isComposerEmpty = !composerText.trim();
   const messagesWithComposer = useMemo(() => {
@@ -85,7 +91,7 @@ export default function MessagesApp({
   );
 
   function resetStatus() {
-    if (!isSubmittingRef.current && submissionState !== "sent") {
+    if (!isSubmittingRef.current) {
       setSubmissionState("draft");
       setStatusMessage("");
       setShowEmailFallback(false);
@@ -95,8 +101,7 @@ export default function MessagesApp({
   function addOrUpdateMessage() {
     if (
       !canAddOrUpdateMessage ||
-      isSubmittingRef.current ||
-      submissionState === "sent"
+      isSubmittingRef.current
     ) {
       return;
     }
@@ -117,10 +122,7 @@ export default function MessagesApp({
   }
 
   function editMessage(message: Message) {
-    if (
-      isSubmittingRef.current ||
-      (submissionState !== "draft" && submissionState !== "error")
-    ) {
+    if (isSubmittingRef.current) {
       return;
     }
 
@@ -130,10 +132,7 @@ export default function MessagesApp({
   }
 
   function deleteMessage(id: string) {
-    if (
-      isSubmittingRef.current ||
-      (submissionState !== "draft" && submissionState !== "error")
-    ) {
+    if (isSubmittingRef.current) {
       return;
     }
 
@@ -147,7 +146,7 @@ export default function MessagesApp({
 
   async function submitConversation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isSubmittingRef.current || submissionState === "sent") {
+    if (isSubmittingRef.current) {
       return;
     }
 
@@ -207,12 +206,12 @@ export default function MessagesApp({
         <span className={styles.availability}>Available by email</span>
       </header>
 
-      <div className={styles.thread} aria-live="polite">
+      <div ref={threadRef} className={styles.thread} aria-live="polite">
         <div className={`${styles.bubble} ${styles.incoming}`}>{welcomeMessage}</div>
         {messages.map((message) => (
           <div className={styles.outgoingGroup} key={message.id}>
             <div className={`${styles.bubble} ${styles.outgoing}`}>{message.text}</div>
-            {(submissionState === "draft" || submissionState === "error") && (
+            {submissionState !== "sending" && (
               <div className={styles.messageActions}>
                 <button type="button" onClick={() => editMessage(message)}>
                   Edit
@@ -242,14 +241,14 @@ export default function MessagesApp({
           rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
           aria-describedby={showLimitHint ? "message-limits" : undefined}
-          disabled={submissionState === "sending" || submissionState === "sent"}
+          disabled={submissionState === "sending"}
         />
         <div className={styles.composerActions}>
           <button
             type="button"
             className={styles.secondaryButton}
             onClick={addOrUpdateMessage}
-            disabled={!canAddOrUpdateMessage || submissionState === "sending" || submissionState === "sent"}
+            disabled={!canAddOrUpdateMessage || submissionState === "sending"}
             aria-label={editingMessageId ? "Save message" : "Add message"}
             title={editingMessageId ? "Save message" : "Add message"}
           >
@@ -261,8 +260,7 @@ export default function MessagesApp({
               className={styles.sendButton}
               disabled={
                 Boolean(composerLimitError) ||
-                submissionState === "sending" ||
-                submissionState === "sent"
+                submissionState === "sending"
               }
             >
               {submissionState === "sending" ? "Sending…" : "Send conversation to Sean"}
