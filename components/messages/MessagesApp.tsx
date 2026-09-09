@@ -70,6 +70,11 @@ export default function MessagesApp({
     return [...messages, { id: "composer", text: composerText, createdAt: new Date().toISOString() }];
   }, [composerText, editingMessageId, isComposerEmpty, messages]);
   const composerLimitError = getMessageLimitError(messagesWithComposer);
+  const conversationLength = getMessageTextLength(messagesWithComposer);
+  const showLimitHint =
+    Boolean(composerLimitError) ||
+    messagesWithComposer.length >= MAX_MESSAGE_COUNT - 1 ||
+    conversationLength >= MAX_CONVERSATION_LENGTH * 0.8;
   const canAddOrUpdateMessage = !isComposerEmpty && !composerLimitError;
   const fallbackHref = useMemo(
     () =>
@@ -234,9 +239,9 @@ export default function MessagesApp({
           }}
           onKeyDown={handleComposerKeyDown}
           placeholder="Type anything. Include an email or handle if you want a reply."
-          rows={3}
+          rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
-          aria-describedby="message-limits"
+          aria-describedby={showLimitHint ? "message-limits" : undefined}
           disabled={submissionState === "sending" || submissionState === "sent"}
         />
         <div className={styles.composerActions}>
@@ -245,42 +250,49 @@ export default function MessagesApp({
             className={styles.secondaryButton}
             onClick={addOrUpdateMessage}
             disabled={!canAddOrUpdateMessage || submissionState === "sending" || submissionState === "sent"}
+            aria-label={editingMessageId ? "Save message" : "Add message"}
+            title={editingMessageId ? "Save message" : "Add message"}
           >
-            {editingMessageId ? "Save message" : "Add message"}
+            ↑
           </button>
-          <button
-            type="submit"
-            className={styles.sendButton}
-            disabled={
-              messagesWithComposer.length === 0 ||
-              Boolean(composerLimitError) ||
-              submissionState === "sending" ||
-              submissionState === "sent"
-            }
-          >
-            {submissionState === "sending" ? "Sending…" : "Send conversation to Sean"}
-          </button>
+          {messages.length > 0 && (
+            <button
+              type="submit"
+              className={styles.sendButton}
+              disabled={
+                Boolean(composerLimitError) ||
+                submissionState === "sending" ||
+                submissionState === "sent"
+              }
+            >
+              {submissionState === "sending" ? "Sending…" : "Send conversation to Sean"}
+            </button>
+          )}
         </div>
-        <p
-          className={composerLimitError ? styles.limitError : styles.limitHint}
-          id="message-limits"
-          role={composerLimitError ? "alert" : undefined}
-        >
-          {composerLimitError ??
-            `${messagesWithComposer.length}/${MAX_MESSAGE_COUNT} messages · ${getMessageTextLength(messagesWithComposer).toLocaleString()}/${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`}
-        </p>
+        {showLimitHint && (
+          <p
+            className={composerLimitError ? styles.limitError : styles.limitHint}
+            id="message-limits"
+            role={composerLimitError ? "alert" : undefined}
+          >
+            {composerLimitError ??
+              `${messagesWithComposer.length}/${MAX_MESSAGE_COUNT} messages · ${conversationLength.toLocaleString()}/${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`}
+          </p>
+        )}
+        {statusMessage && (
+          <p
+            className={submissionState === "error" ? styles.error : styles.status}
+            role={submissionState === "error" ? "alert" : "status"}
+          >
+            {statusMessage}
+          </p>
+        )}
+        {submissionState === "error" && showEmailFallback && (
+          <a className={styles.emailFallback} href={fallbackHref}>
+            Send this conversation by email instead
+          </a>
+        )}
       </form>
-
-      {statusMessage && (
-        <p className={submissionState === "error" ? styles.error : styles.status} role="status">
-          {statusMessage}
-        </p>
-      )}
-      {submissionState === "error" && showEmailFallback && (
-        <a className={styles.emailFallback} href={fallbackHref}>
-          Send this conversation by email instead
-        </a>
-      )}
     </section>
   );
 }
