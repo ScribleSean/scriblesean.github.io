@@ -4,6 +4,8 @@
   --muted: #64645f;
   --line: #c9c8c1;
   min-height: 100%;
+  container-type: inline-size;
+  container-name: portfolio;
   background: var(--paper);
   color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
@@ -17,11 +19,11 @@
 .navigation { display: flex; gap: 28px; align-items: center; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
 .navigation a:hover, .navigation button:hover, .contactMeta a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .navigation button, .email { border: 0; padding: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; }
-.hero { min-height: calc(100vh - 84px); display: flex; flex-direction: column; justify-content: space-between; padding: 68px 0 52px; }
+.hero { min-height: 650px; display: flex; flex-direction: column; justify-content: space-between; padding: 68px 0 52px; }
 .eyebrow, .meta, .projectIndex, .sectionHeading span, .jobPeriod { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
-.hero h1 { margin: 0; font-size: clamp(5rem, 15vw, 12rem); font-weight: 800; line-height: .78; letter-spacing: -.075em; text-transform: uppercase; }
+.hero h1 { margin: 0; font-size: clamp(5rem, 15cqw, 12rem); font-weight: 800; line-height: .78; letter-spacing: -.075em; text-transform: uppercase; }
 .heroBottom { display: flex; align-items: end; justify-content: space-between; gap: 32px; border-top: 1px solid var(--ink); padding-top: 22px; }
-.lede { max-width: 650px; margin: 0; font-size: clamp(1.2rem, 2.4vw, 2rem); line-height: 1.2; letter-spacing: -.03em; }
+.lede { max-width: 650px; margin: 0; font-size: clamp(1.2rem, 2.4cqw, 2rem); line-height: 1.2; letter-spacing: -.03em; }
 .arrowLink { white-space: nowrap; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
 .arrowLink span { margin-left: 14px; }
 .section { padding: 110px 0; border-top: 1px solid var(--ink); }
@@ -30,7 +32,7 @@
 .project { display: grid; grid-template-columns: 80px 1fr; padding: 38px 0; border-top: 1px solid var(--line); }
 .project:last-child { border-bottom: 1px solid var(--line); }
 .projectTitle { display: flex; justify-content: space-between; gap: 24px; }
-.projectTitle h3 { margin: 0; font-size: clamp(2rem, 4vw, 4rem); line-height: 1; letter-spacing: -.05em; }
+.projectTitle h3 { margin: 0; font-size: clamp(2rem, 4cqw, 4rem); line-height: 1; letter-spacing: -.05em; }
 .projectTitle a { font-size: 24px; }
 .meta { margin: 12px 0 28px; }
 .summary { max-width: 780px; font-size: 18px; line-height: 1.45; }
@@ -50,16 +52,16 @@
 .languages { margin-top: 34px; }
 .languages strong { margin-right: 16px; text-transform: uppercase; font-size: 11px; letter-spacing: .1em; }
 .contact { padding-bottom: 52px; }
-.contactLine { margin: 0 0 22px; font-size: clamp(2.4rem, 6vw, 6rem); font-weight: 700; line-height: .95; letter-spacing: -.055em; }
+.contactLine { margin: 0 0 22px; font-size: clamp(2.4rem, 6cqw, 6rem); font-weight: 700; line-height: .95; letter-spacing: -.055em; }
 .email { font-size: clamp(1rem, 2.8vw, 2rem); text-decoration: underline; text-underline-offset: 6px; }
 .contactMeta { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 90px; padding-top: 20px; border-top: 1px solid var(--ink); font-size: 12px; }
 .contactMeta span { margin-left: auto; }
 
-@media (max-width: 760px) {
+@container portfolio (max-width: 760px) {
   .wrap { width: min(100% - 28px, 1180px); }
   .navigation { gap: 13px; }
   .navigation a:nth-child(2), .navigation a:nth-child(3), .navigation a:nth-child(4) { display: none; }
-  .hero { padding-top: 42px; }
+  .hero { min-height: 560px; padding-top: 42px; }
   .heroBottom { align-items: start; flex-direction: column; }
   .section { padding: 72px 0; }
   .sectionHeading, .project { grid-template-columns: 42px 1fr; }
