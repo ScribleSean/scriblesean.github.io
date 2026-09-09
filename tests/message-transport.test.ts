@@ -52,17 +52,19 @@ test("requires a configured endpoint and does not claim delivery", async () => {
   await assert.rejects(() => transport(submission), MessageDeliveryUnavailableError);
 });
 
-test("posts URL-encoded plain text and resolves only on a successful response", async () => {
+test("posts URL-encoded plain text and accepts explicit boolean or string success", async () => {
   let postedBody = "";
-  const transport = createMessageTransport(
-    "https://example.test/form",
-    async (_url, request) => {
-      postedBody = request.body;
-      return { ok: true, status: 200, json: async () => ({ success: true }) };
-    },
-  );
+  for (const success of [true, "true"]) {
+    const transport = createMessageTransport(
+      "https://example.test/form",
+      async (_url, request) => {
+        postedBody = request.body;
+        return { ok: true, status: 200, json: async () => ({ success }) };
+      },
+    );
 
-  await transport(submission);
+    await transport(submission);
+  }
 
   const parsed = new URLSearchParams(postedBody);
   assert.equal(parsed.get("_subject"), "New portfolio conversation");
@@ -94,6 +96,17 @@ test("does not treat a 200 FormSubmit error response as a sent conversation", as
   );
 
   await assert.rejects(() => transport(submission), /could not accept/);
+});
+
+test("rejects false, string false, and missing provider success values", async () => {
+  for (const response of [{ success: false }, { success: "false" }, {}]) {
+    const transport = createMessageTransport(
+      "https://example.test/form",
+      async () => ({ ok: true, status: 200, json: async () => response }),
+    );
+
+    await assert.rejects(() => transport(submission), /could not accept/);
+  }
 });
 
 test("times out a stalled request instead of leaving the UI in a sending state", async () => {
