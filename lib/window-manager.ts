@@ -2,12 +2,30 @@ export type DesktopAppId = "chrome" | "files" | "messages" | "settings";
 
 export type Viewport = { width: number; height: number };
 
+export function getViewportScale({
+  clientWidth,
+  clientHeight,
+  renderedWidth,
+  renderedHeight,
+}: {
+  clientWidth: number;
+  clientHeight: number;
+  renderedWidth: number;
+  renderedHeight: number;
+}) {
+  return {
+    x: renderedWidth > 0 ? clientWidth / renderedWidth : 1,
+    y: renderedHeight > 0 ? clientHeight / renderedHeight : 1,
+  };
+}
+
 export type WindowFrame = {
   x: number;
   y: number;
   width: number;
   height: number;
   z: number;
+  mounted: boolean;
   status: "closed" | "open" | "minimized" | "maximized";
   restoreFrame?: Pick<WindowFrame, "x" | "y" | "width" | "height">;
 };
@@ -19,10 +37,10 @@ const MIN_HEIGHT = 240;
 const EDGE_GAP = 12;
 
 const defaults: Record<DesktopAppId, Omit<WindowFrame, "z">> = {
-  chrome: { x: 86, y: 72, width: 760, height: 510, status: "closed" },
-  files: { x: 142, y: 112, width: 570, height: 410, status: "closed" },
-  messages: { x: 226, y: 92, width: 430, height: 500, status: "closed" },
-  settings: { x: 280, y: 130, width: 390, height: 330, status: "closed" },
+  chrome: { x: 86, y: 72, width: 760, height: 510, status: "closed", mounted: false },
+  files: { x: 142, y: 112, width: 570, height: 410, status: "closed", mounted: false },
+  messages: { x: 226, y: 92, width: 430, height: 500, status: "closed", mounted: false },
+  settings: { x: 280, y: 130, width: 390, height: 330, status: "closed", mounted: false },
 };
 
 export function createWindowState(): WindowState {
@@ -64,9 +82,9 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
   switch (action.type) {
     case "open": {
       const active = state[action.app];
-      const base = active.status === "closed" ? { ...defaults[action.app], z: nextZ(state) } : active;
+      const base = !active.mounted ? { ...defaults[action.app], z: nextZ(state) } : active;
       const frame = clampFrame(base, action.viewport);
-      return update(action.app, { ...base, ...frame, status: "open", z: nextZ(state) });
+      return update(action.app, { ...base, ...frame, mounted: true, status: "open", z: nextZ(state) });
     }
     case "focus": {
       const active = state[action.app];
