@@ -1,0 +1,26 @@
+.shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #f4f3ef;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.shell *, .shell *::before, .shell *::after { box-sizing: border-box; }
+.topBar { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; align-items: center; gap: 8px; min-height: 56px; padding: 8px 12px; border-bottom: 1px solid #d7d6d0; background: rgba(248, 248, 246, .94); }
+.backButton, .bottomBar button { border: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; }
+.backButton { width: 40px; height: 40px; font-size: 34px; line-height: 1; }
+.address { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 6px; border-radius: 9px; background: #e8e7e3; padding: 8px 12px; color: #50504d; font-size: 12px; }
+.address span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lock { color: #70706b; font-size: 9px; }
+.more { text-align: center; letter-spacing: 2px; color: #555; font-size: 13px; }
+.page { min-height: 0; overflow: auto; -webkit-overflow-scrolling: touch; }
+.bottomBar { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; min-height: 58px; border-top: 1px solid #d7d6d0; background: rgba(248, 248, 246, .96); }
+.bottomBar button { display: grid; justify-items: center; gap: 2px; padding: 8px; color: #333; }
+.bottomBar button span { font-size: 21px; line-height: 18px; }
+.bottomBar small { font-size: 10px; letter-spacing: .02em; }
+.bottomBar button:focus-visible, .backButton:focus-visible { outline: 2px solid #51489a; outline-offset: -2px; }
