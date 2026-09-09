@@ -25,7 +25,9 @@ publishing the destination address in the deployed client.
 The endpoint is intentionally a public environment value because browser form
 submission requires it. No provider secret is stored in the client or this repo.
 FormSubmit documents AJAX submission as cross-origin, matching the browser-side
-transport used by this component.
+transport used by this component. The transport parses the JSON response and
+only reports Sent when its `success` value is `true`; an HTTP 200 response with
+`success: false` remains an error in the UI.
 
 ## Current blocker
 
@@ -39,5 +41,6 @@ email fallback that opens a pre-filled message to `sean.arackal@gmail.com`.
 
 - [FormSubmit setup and activation](https://formsubmit.co/)
 - [FormSubmit AJAX endpoint and random endpoint documentation](https://formsubmit.co/documentation)
+- [FormSubmit AJAX response handling](https://formsubmit.co/ajax-documentation)
 - [FormSubmit activation FAQ](https://formsubmit.co/help)
 - [Formspree free-tier comparison](https://help.formspree.io/articles/account-management/account-limits/)
