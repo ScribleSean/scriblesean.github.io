@@ -91,11 +91,12 @@ export function Television() {
   return <group position={[-.58, 0, .02]}>
     {/* Layered warm-ivory housing gives the CRT a glossy, molded-plastic presence. */}
     <Box at={[0, 2.23, -.42]} size={[2.45, 2.33, 1.98]} color="#b7ab96" radius={.2} roughness={.5} />
-    <Box at={[0, 2.23, .49]} size={[3.08, 2.7, .72]} color="#e1d6c2" radius={.2} roughness={.43} />
-    <Box at={[0, 3.43, .34]} size={[2.75, .11, .46]} color="#eee5d4" radius={.055} roughness={.38} />
+    <Box at={[0, 2.23, .49]} size={[3.24, 2.98, .76]} color="#e1d6c2" radius={.2} roughness={.43} />
+    <Box at={[0, 3.57, .34]} size={[2.92, .11, .46]} color="#eee5d4" radius={.055} roughness={.38} />
     <Box at={[0, 1.01, .12]} size={[2.73, .18, 1.5]} color="#c3b7a2" radius={.065} roughness={.52} />
-    {/* The deeply recessed black inner bezel makes the projected screen feel inset. */}
-    <Box at={[0, 2.49, .876]} size={[2.72, 2.08, .1]} color="#27242a" radius={.14} roughness={.33} />
+    {/* The wide ivory inner surround deepens the screen without changing its projection opening. */}
+    <Box at={[0, 2.49, .86]} size={[2.94, 2.31, .13]} color="#c5b8a4" radius={.16} roughness={.38} />
+    <Box at={[0, 2.49, .884]} size={[2.72, 2.08, .1]} color="#27242a" radius={.14} roughness={.33} />
     <Box at={[0, 2.49, .928]} size={[2.56, 1.92, .028]} color="#0a0a11" radius={.095} roughness={.24} />
     <Label text="Panasonic" at={[0, 1.36, .86]} width={.56} height={.095} />
     <Speaker at={[-1.05, 1.14, .855]} />
@@ -210,42 +211,50 @@ export function FoxCollectible() {
   return <group position={[-2.55, 1.12, .82]} rotation={[0, .18, 0]} scale={.85}>
     <Disc top at={[0, .04, 0]} radius={.32} color="#272829" depth={.09} />
     <Disc top at={[0, .095, 0]} radius={.28} color="#b2a173" depth={.02} />
-    {/* A compact sculpted Fox, with pointed ears, white muzzle and a bushy tail. */}
-    <Limb from={[-.115, .2, .04]} to={[-.14, .53, 0]} radius={.088} color="#607150" />
-    <Limb from={[.115, .2, .04]} to={[.14, .53, 0]} radius={.088} color="#607150" />
-    <Box at={[-.12, .18, .08]} size={[.18, .17, .28]} color="#737677" radius={.045} />
-    <Box at={[.12, .18, .08]} size={[.18, .17, .28]} color="#737677" radius={.045} />
-    <Box at={[0, .66, 0]} size={[.35, .39, .24]} color="#e0d9c6" radius={.075} />
-    <Box at={[0, .56, .145]} size={[.30, .055, .03]} color="#494b3f" radius={.015} />
-    <Box at={[0, .7, .135]} size={[.11, .26, .02]} color="#698064" radius={.01} />
-    <Limb from={[-.19, .77, 0]} to={[-.28, .57, .02]} radius={.075} color="#e0d9c6" />
-    <Limb from={[-.28, .57, .02]} to={[-.16, .55, .16]} radius={.065} color="#e0d9c6" />
-    <Limb from={[.19, .77, 0]} to={[.28, .57, .02]} radius={.075} color="#e0d9c6" />
-    <Limb from={[.28, .57, .02]} to={[.16, .55, .16]} radius={.065} color="#e0d9c6" />
-    {[-.16, .16].map((x) => <mesh key={x} position={[x, .55, .17]} castShadow><sphereGeometry args={[.07, 12, 8]} /><meshStandardMaterial color="#42443a" /></mesh>)}
-    <mesh position={[0, .98, 0]} scale={[1, 1.04, .86]} castShadow><sphereGeometry args={[.22, 18, 12]} /><meshStandardMaterial color="#bd8544" roughness={.8} /></mesh>
-    <mesh position={[0, .92, .18]} scale={[1, .62, 1]} castShadow><sphereGeometry args={[.14, 16, 10]} /><meshStandardMaterial color="#ede3c8" /></mesh>
-    <mesh position={[0, .944, .298]} scale={[1, .7, .6]}><sphereGeometry args={[.042, 12, 8]} /><meshStandardMaterial color="#302c28" /></mesh>
+    {/* Fox is crouched with one boot forward and both hands raised in his fighting guard. */}
+    <Limb from={[-.10, .54, .01]} to={[-.27, .32, .13]} radius={.095} color="#607150" />
+    <Limb from={[-.27, .32, .13]} to={[-.38, .15, .22]} radius={.08} color="#607150" />
+    <Limb from={[.11, .54, -.02]} to={[.27, .34, -.11]} radius={.095} color="#607150" />
+    <Limb from={[.27, .34, -.11]} to={[.18, .15, .10]} radius={.08} color="#607150" />
+    <Box at={[-.42, .14, .24]} size={[.24, .13, .36]} color="#3f4347" radius={.055} roughness={.5} />
+    <Box at={[.17, .14, .13]} size={[.23, .13, .34]} color="#3f4347" radius={.055} roughness={.5} />
+    <group position={[0, .72, .02]} rotation={[0, 0, .13]}>
+      <Box size={[.39, .40, .28]} color="#e0d9c6" radius={.08} roughness={.58} />
+      <Box at={[0, .03, .156]} size={[.20, .25, .025]} color="#4c6f4f" radius={.009} />
+      <Box at={[0, -.15, .16]} size={[.34, .055, .035]} color="#4b4b43" radius={.012} />
+      <Box at={[.04, -.15, .185]} size={[.06, .09, .018]} color="#c6ac6e" radius={.009} metalness={.45} />
+    </group>
+    <Limb from={[-.18, .83, .02]} to={[-.36, .78, .18]} radius={.075} color="#e0d9c6" />
+    <Limb from={[-.36, .78, .18]} to={[-.31, 1.03, .25]} radius={.064} color="#e0d9c6" />
+    <Limb from={[.18, .84, -.01]} to={[.34, .75, .16]} radius={.075} color="#e0d9c6" />
+    <Limb from={[.34, .75, .16]} to={[.20, .99, .27]} radius={.064} color="#e0d9c6" />
+    {[["left", -.31, 1.04], ["right", .20, 1.00]].map(([key, x, y]) => <mesh key={key as string} position={[x as number, y as number, .25]} castShadow><sphereGeometry args={[.078, 12, 8]} /><meshStandardMaterial color="#41433c" roughness={.58} /></mesh>)}
+    <mesh position={[.02, 1.17, .05]} scale={[1, 1.03, .86]} castShadow><sphereGeometry args={[.22, 18, 12]} /><meshStandardMaterial color="#bd8544" roughness={.78} /></mesh>
+    <mesh position={[.02, 1.11, .235]} scale={[1, .62, 1]} castShadow><sphereGeometry args={[.14, 16, 10]} /><meshStandardMaterial color="#ede3c8" /></mesh>
+    <mesh position={[.02, 1.133, .35]} scale={[1, .7, .6]}><sphereGeometry args={[.042, 12, 8]} /><meshStandardMaterial color="#302c28" /></mesh>
     {[-1, 1].map((side) => <group key={side}>
-      <mesh position={[side * .155, 1.19, -.025]} rotation={[0, 0, -side * .24]} castShadow><coneGeometry args={[.1, .26, 4]} /><meshStandardMaterial color="#bd8544" /></mesh>
-      <mesh position={[side * .155, 1.21, .02]} rotation={[0, 0, -side * .24]}><coneGeometry args={[.055, .17, 3]} /><meshStandardMaterial color="#e6d7b7" /></mesh>
-      <mesh position={[side * .106, 1.015, .18]} scale={[1, .45, .35]}><sphereGeometry args={[.066, 12, 8]} /><meshStandardMaterial color="#efe5cf" /></mesh>
-      <mesh position={[side * .103, 1.015, .2]} scale={[1, .65, .45]}><sphereGeometry args={[.024, 10, 8]} /><meshStandardMaterial color="#3d6755" /></mesh>
+      <mesh position={[.02 + side * .155, 1.38, .025]} rotation={[0, 0, -side * .24]} castShadow><coneGeometry args={[.1, .26, 4]} /><meshStandardMaterial color="#bd8544" /></mesh>
+      <mesh position={[.02 + side * .155, 1.40, .07]} rotation={[0, 0, -side * .24]}><coneGeometry args={[.055, .17, 3]} /><meshStandardMaterial color="#e6d7b7" /></mesh>
+      <mesh position={[.02 + side * .106, 1.205, .23]} scale={[1, .45, .35]}><sphereGeometry args={[.066, 12, 8]} /><meshStandardMaterial color="#efe5cf" /></mesh>
+      <mesh position={[.02 + side * .103, 1.205, .25]} scale={[1, .65, .45]}><sphereGeometry args={[.024, 10, 8]} /><meshStandardMaterial color="#3d6755" /></mesh>
     </group>)}
-    <Box at={[0, .835, .12]} size={[.23, .055, .085]} color="#a94536" radius={.015} />
-    <mesh position={[.06, .775, .151]} rotation={[0, 0, -.1]}><coneGeometry args={[.064, .18, 3]} /><meshStandardMaterial color="#a94536" /></mesh>
-    <Limb from={[0, .5, -.14]} to={[-.28, .53, -.44]} radius={.13} color="#bd8544" />
-    <Limb from={[-.28, .53, -.44]} to={[-.41, .72, -.43]} radius={.09} color="#e5d9b9" />
+    <Box at={[.02, 1.025, .12]} size={[.23, .055, .085]} color="#a94536" radius={.015} />
+    <mesh position={[.08, .97, .151]} rotation={[0, 0, -.1]}><coneGeometry args={[.064, .18, 3]} /><meshStandardMaterial color="#a94536" /></mesh>
+    <Limb from={[-.08, .57, -.13]} to={[-.37, .48, -.42]} radius={.13} color="#bd8544" />
+    <Limb from={[-.37, .48, -.42]} to={[-.49, .66, -.43]} radius={.09} color="#e5d9b9" />
   </group>;
 }
 
 function MeleeCover() {
-  const texture = useTexture("/scene/melee-case-cover.jpg");
-  useLayoutEffect(() => {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
-    texture.needsUpdate = true;
-  }, [texture]);
+  const source = useTexture("/scene/melee-case-cover.jpg");
+  const texture = useMemo(() => {
+    const cover = source.clone();
+    cover.colorSpace = THREE.SRGBColorSpace;
+    cover.anisotropy = 8;
+    cover.needsUpdate = true;
+    return cover;
+  }, [source]);
+  useLayoutEffect(() => () => texture.dispose(), [texture]);
   return <mesh position={[0, .066, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
     <planeGeometry args={[1.01, 1.37]} />
     <meshStandardMaterial map={texture} roughness={.42} metalness={.02} />
