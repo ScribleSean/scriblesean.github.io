@@ -67,16 +67,16 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div><p>Projects I’m still building<br />and improving.</p></div>
       <div className={styles.currentTimeline}><p className={styles.timelineDate}>September 2026 · Ongoing</p><div className={styles.buildGrid}>
         <article className={styles.buildCard}>
-          <a className={styles.visualLink} href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory demo"><ObservatoryGraphic /></a>
+          <a className={styles.visualLink} href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory synthetic demo"><ObservatoryGraphic /></a>
           <div className={styles.buildBody}>
             <div className={styles.buildMeta}><span>LOCAL DESKTOP APP</span><span className={styles.status}>Early preview</span></div>
             <h3>Workspace Observatory</h3><p>I made a tool that runs locally and shows my screen time, AI usage, and dictation stats in one place. I’m still adding features and improving how it works across my computers.</p>
             <div className={styles.buildDetail}><span>Native Mac app</span><span>Private by default</span><span>Open source</span></div>
-            <div className={styles.buildLinks}><a href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer">Try the demo ↗</a><a href="https://github.com/ScribleSean/workspace-observatory" target="_blank" rel="noreferrer">Source code ↗</a></div>
+            <div className={styles.buildLinks}><a href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer">Explore the synthetic demo ↗</a><a href="https://github.com/ScribleSean/workspace-observatory" target="_blank" rel="noreferrer">Source code ↗</a></div>
           </div>
         </article>
         <article className={styles.buildCard}>
-          <Link className={`${styles.visualLink} ${styles.sceneVisual}`} href="/" aria-label="Explore the interactive GameCube portfolio"><Image src="/scene/mobile-setup.webp" alt="GameCube, controller and CRT arranged on a minimal desk" width="960" height="640" loading="lazy" /><span>ORIGINAL SCENE CONCEPT</span></Link>
+          <Link className={`${styles.visualLink} ${styles.sceneVisual}`} href="/" aria-label="Explore the interactive GameCube portfolio"><Image src="/scene/interactive-scene.png" alt="The live 3D portfolio with a green GameCube, purple controller, CRT and Fox figurine" width="1280" height="720" loading="lazy" /><span>LIVE SITE PREVIEW</span></Link>
           <div className={styles.buildBody}>
             <div className={styles.buildMeta}><span>PERSONAL WEBSITE</span><span className={styles.status}>Live</span></div>
             <h3>Interactive portfolio</h3><p>I built this site around a 3D GameCube setup. Clicking the CRT opens a desktop where you can browse my projects and send me a message. I’m still working on the models and the interface.</p>
