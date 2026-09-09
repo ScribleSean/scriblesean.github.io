@@ -42,18 +42,16 @@ export const skills: Skill[] = [
     projects: [
       "Exercise Form Classification System",
       "ReVISit",
-      "Sri Sangwan assistive gaze interface",
     ],
   },
   {
     name: "AI / ML",
     description:
-      "LLM APIs (Gemini, GPT-4o), offline LLaVA/Ollama, sentence-transformers, YOLO + LSTM video models, OpenCV, and MediaPipe.",
+      "LLM APIs (Gemini, GPT-4o), offline LLaVA/Ollama, sentence-transformers, YOLO pose extraction, Skeleton CNN, and ST-GCN experiments.",
     proficiency: "proficient",
     projects: [
       "Exercise Form Classification System",
       "ReVISit",
-      "Sri Sangwan assistive gaze interface",
     ],
   },
 ];

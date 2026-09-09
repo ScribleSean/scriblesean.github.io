@@ -1,6 +1,6 @@
 "use client";
 
-import { contact, experience, projects, skills } from "@/data/resume";
+import { contact, education, projects, resumeExperience, skills } from "@/data/resume";
 import { useState } from "react";
 import styles from "./FilesApp.module.css";
 
@@ -10,7 +10,7 @@ type FilesAppProps = {
 
 type Location = "home" | "projects" | "resume";
 
-export default function FilesApp({ resumeUrl }: FilesAppProps) {
+export default function FilesApp({ resumeUrl = "/resume/sean-arackal-resume.pdf" }: FilesAppProps) {
   const [location, setLocation] = useState<Location>("projects");
   const [selectedProjectName, setSelectedProjectName] = useState(projects[0]?.name ?? "");
   const selectedProject = projects.find((project) => project.name === selectedProjectName) ?? projects[0];
@@ -136,23 +136,21 @@ export function ResumeContent() {
   return (
     <article className={styles.resume}>
       <div className={styles.resumeHeading}>
-        <p className={styles.kicker}>Printable resume</p>
+        <p className={styles.kicker}>Resume</p>
         <h1>Sean Arackal</h1>
       </div>
       <p className={styles.contactLine}>{contact.email} · {contact.phone} · {contact.location}</p>
       <p className={styles.contactLine}><a href={contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> · <a href={contact.github} target="_blank" rel="noreferrer">GitHub</a></p>
 
-      <ResumeSection title="Experience">
-        {experience.map((job) => <div className={styles.resumeEntry} key={`${job.company}-${job.period}`}><p><strong>{job.role}</strong> · {job.company} · {job.location}</p><p>{job.period}</p><p>{job.details}</p></div>)}
-      </ResumeSection>
-      <ResumeSection title="Projects">
-        {projects.map((project) => <div className={styles.resumeEntry} key={project.name}><p><strong>{project.name}</strong> · {project.role} · {project.period} · {project.location}</p><p>{project.summary}</p><ul>{project.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></div>)}
-      </ResumeSection>
       <ResumeSection title="Education">
-        <div className={styles.resumeEntry}><p><strong>Worcester Polytechnic Institute</strong> · Bachelor&apos;s, Computer Science</p><p>Aug 2022 - May 2026 · GPA: 3.53</p></div>
+        <div className={styles.resumeEntry}><p><strong>{education.institution}</strong></p><p>{education.degree} · {education.honors}</p><p>{education.period} · GPA: {education.gpa}</p></div>
       </ResumeSection>
-      <ResumeSection title="Skills">
-        <p>{skills.join(" · ")}</p><p>Languages: Bengali, Hindi</p>
+      <ResumeSection title="Technical skills"><p>{skills.join(" · ")}</p></ResumeSection>
+      <ResumeSection title="Selected projects">
+        {projects.map(project => <div className={styles.resumeEntry} key={project.name}><p><strong>{project.name}</strong></p><p>{project.role} · {project.period}</p><ul>{project.outcomes.map(outcome => <li key={outcome}>{outcome}</li>)}</ul></div>)}
+      </ResumeSection>
+      <ResumeSection title="Professional experience">
+        {resumeExperience.map(job => <div className={styles.resumeEntry} key={job.company}><p><strong>{job.role}</strong> · {job.company}</p><p>{job.period} · {job.location}</p><p>{job.details}</p>{"progression" in job && <p>{job.progression}</p>}</div>)}
       </ResumeSection>
     </article>
   );

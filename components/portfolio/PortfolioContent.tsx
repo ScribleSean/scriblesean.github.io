@@ -46,69 +46,69 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
   return <main className={styles.portfolio} onClick={navigateSection}>
     <div className={styles.intro} id="top">
       <header className={`${styles.siteHeader} ${styles.wrap}`}>
-        <a className={styles.wordmark} href="#top" aria-label="Sean Arackal, home"><span className={styles.monogram}>sa.</span><span>Sean Arackal</span></a>
+        <a className={styles.wordmark} href="#top" aria-label="Sean Arackal, home"><span>Sean Arackal</span></a>
         <nav className={styles.navigation} aria-label="Portfolio navigation">
-          <a href="#work">Builds</a><a href="#research">Research</a><a href="#about">About</a>
+          <a href="#work">Currently working on</a><a href="#research">Past projects</a><a href="#experience">Professional experience</a>
           {onContact ? <button onClick={onContact} type="button">Contact ↗</button> : <a href="#contact">Contact ↗</a>}
         </nav>
       </header>
       <section className={`${styles.hero} ${styles.wrap}`}>
-        <p className={styles.eyebrow}><span className={styles.indicator} /> AI ENGINEERING / SOFTWARE / HUMAN INTERFACES</p>
-        <h1>Making complex<br />systems <em>useful.</em></h1>
+        <p className={styles.eyebrow}><span className={styles.indicator} /> SOFTWARE ENGINEER · WORCESTER, MA</p>
+        <h1>Hi, I’m <em>Sean.</em></h1>
         <div className={styles.heroBottom}>
-          <p>I’m Sean, a software engineer building AI systems and thoughtful tools. My work spans multimodal research, accessible interfaces, and the software I want to use every day.</p>
-          <div className={styles.heroActions}><a className={styles.primaryLink} href="#work">Explore my builds <span>↓</span></a><a className={styles.quietLink} href="/resume/" target="_blank" rel="noreferrer">View résumé ↗</a></div>
+          <p>I build software, work with AI, and teach programming. Here’s what I’m working on now, projects I’ve built, and the places I’ve worked.</p>
+          <div className={styles.heroActions}><a className={styles.primaryLink} href="#work">See what I’m working on <span>↓</span></a><a className={styles.quietLink} href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">View résumé ↗</a></div>
         </div>
-        <div className={styles.heroFoot}><span>BASED IN WORCESTER, MA</span><span>RESEARCH → PROTOTYPE → PRODUCT</span></div>
+        <div className={styles.heroFoot}><span>BASED IN WORCESTER, MA</span><span>PROJECTS & EXPERIENCE</span></div>
       </section>
     </div>
 
     <section className={`${styles.section} ${styles.wrap}`} id="work">
-      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / IN THE WORKSHOP</p><h2>Current builds.</h2></div><p>Tools I’m building, using,<br />and continuing to refine.</p></div>
-      <div className={styles.buildGrid}>
-        <article className={`${styles.buildCard} ${styles.featuredBuild}`}>
+      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div><p>Projects I’m still building<br />and improving.</p></div>
+      <div className={styles.currentTimeline}><p className={styles.timelineDate}>September 2026 · Ongoing</p><div className={styles.buildGrid}>
+        <article className={styles.buildCard}>
           <a className={styles.visualLink} href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory demo"><ObservatoryGraphic /></a>
           <div className={styles.buildBody}>
-            <div className={styles.buildMeta}><span>01 / DEVELOPER TOOLS</span><span className={styles.status}>Early preview</span></div>
-            <h3>Workspace Observatory</h3><p>A clearer picture of the tools behind the work. A local workspace monitor bringing screen time, AI usage, and dictation into one view.</p>
+            <div className={styles.buildMeta}><span>LOCAL DESKTOP APP</span><span className={styles.status}>Early preview</span></div>
+            <h3>Workspace Observatory</h3><p>I made a tool that runs locally and shows my screen time, AI usage, and dictation stats in one place. I’m still adding features and improving how it works across my computers.</p>
             <div className={styles.buildDetail}><span>Native Mac app</span><span>Private by default</span><span>Open source</span></div>
-            <div className={styles.buildLinks}><a href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer">Explore demo ↗</a><a href="https://github.com/ScribleSean/workspace-observatory" target="_blank" rel="noreferrer">Source code ↗</a></div>
+            <div className={styles.buildLinks}><a href="https://scriblesean.github.io/workspace-observatory/" target="_blank" rel="noreferrer">Try the demo ↗</a><a href="https://github.com/ScribleSean/workspace-observatory" target="_blank" rel="noreferrer">Source code ↗</a></div>
           </div>
         </article>
         <article className={styles.buildCard}>
           <Link className={`${styles.visualLink} ${styles.sceneVisual}`} href="/" aria-label="Explore the interactive GameCube portfolio"><Image src="/scene/mobile-setup.webp" alt="GameCube, controller and CRT arranged on a minimal desk" width="960" height="640" loading="lazy" /><span>ORIGINAL SCENE CONCEPT</span></Link>
           <div className={styles.buildBody}>
-            <div className={styles.buildMeta}><span>02 / CREATIVE DEVELOPMENT</span><span className={styles.status}>Live</span></div>
-            <h3>A portfolio you can step into.</h3><p>An interactive corner of the web. Explore a 3D desk, enter the CRT, and find a working desktop with apps, projects, and a way to say hello.</p>
+            <div className={styles.buildMeta}><span>PERSONAL WEBSITE</span><span className={styles.status}>Live</span></div>
+            <h3>Interactive portfolio</h3><p>I built this site around a 3D GameCube setup. Clicking the CRT opens a desktop where you can browse my projects and send me a message. I’m still working on the models and the interface.</p>
             <div className={styles.buildDetail}><span>Three.js</span><span>React</span><span>Next.js</span></div>
-            <div className={styles.buildLinks}><Link href="/">Enter the experience ↗</Link><a href="https://github.com/ScribleSean/scriblesean.github.io" target="_blank" rel="noreferrer">Source code ↗</a></div>
+            <div className={styles.buildLinks}><Link href="/">Open the 3D site ↗</Link><a href="https://github.com/ScribleSean/scriblesean.github.io" target="_blank" rel="noreferrer">Source code ↗</a></div>
           </div>
         </article>
       </div>
       <article className={styles.serviceCard}>
-        <div className={styles.serviceIdentity}><span className={styles.serviceMark} aria-hidden="true">s.</span><p className={styles.eyebrow}>03 / WEBSITE REPAIRS</p><span className={styles.status}>Service</span></div>
-        <div className={styles.serviceCopy}><h3>Small fixes.<br />A working website.</h3><p>A focused frontend repair service for broken buttons, stuck forms, and layouts that don’t work on mobile. One agreed issue, a tested patch, and a clear handoff.</p><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">Explore website repairs ↗</a></div>
+        <div className={styles.serviceIdentity}><span className={styles.serviceMark} aria-hidden="true">s.</span><p className={styles.eyebrow}>WEBSITE REPAIRS</p><span className={styles.status}>Service</span></div>
+        <div className={styles.serviceCopy}><h3>Website repair service</h3><p>I’m setting up a service to fix small website problems, like broken buttons, stuck forms, and mobile layouts. I agree on one issue, fix it, test it, and explain what changed.</p><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">See the repair service ↗</a></div>
         <div className={styles.serviceProcess}><span>01 <strong>Reproduce the issue</strong></span><span>02 <strong>Repair & verify</strong></span><span>03 <strong>Hand over the fix</strong></span></div>
-      </article>
+      </article></div>
     </section>
 
     <section className={`${styles.section} ${styles.wrap}`} id="research">
-      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>02 / SELECTED WORK</p><h2>Applied to real problems.</h2></div><p>Research, accessibility,<br />and full-stack engineering.</p></div>
-      <div className={styles.researchList}>{projects.map((project, index) => <article className={styles.researchProject} key={project.name}>
-        <span className={styles.projectIndex}>0{index + 1}</span>
-        <div className={styles.researchMain}><p className={styles.meta}>{project.role} / {project.period}</p><h3>{project.name}</h3><p className={styles.projectSummary}>{project.summary}</p>
-          <details className={styles.projectDetails}><summary>Details & outcomes <span>+</span></summary><ul>{project.outcomes.map(outcome => <li key={outcome}>{outcome}</li>)}</ul><div className={styles.buildDetail}>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></details>
+      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>02 / PREVIOUS PROJECTS</p><h2>Past projects</h2></div><p>Projects I’ve worked on,<br />with dates and my contribution.</p></div>
+      <div className={styles.researchList}>{projects.map((project) => <article className={styles.researchProject} key={project.name}>
+        <span className={styles.projectIndex}>{project.period}</span>
+        <div className={styles.researchMain}><p className={styles.meta}>{project.role}</p><h3>{project.name}</h3><p className={styles.projectSummary}>{project.portfolioSummary}</p>
+          <details className={styles.projectDetails}><summary>What I worked on <span>+</span></summary><ul>{project.outcomes.map(outcome => <li key={outcome}>{outcome}</li>)}</ul><div className={styles.buildDetail}>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></details>
         </div><a className={styles.projectArrow} href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.name}`}>↗</a>
       </article>)}</div>
     </section>
 
-    <section className={styles.aboutBand} id="about"><div className={`${styles.aboutGrid} ${styles.wrap}`}>
-      <div className={styles.aboutIntro}><p className={styles.eyebrow}>03 / BACKGROUND</p><h2>Curiosity,<br />with follow-through.</h2><p>I’m interested in what happens between a promising idea and a tool people can actually use. That has taken me from video analysis to assistive technology, teaching, and building for my own workflow.</p><div className={styles.education} id="education"><strong>Worcester Polytechnic Institute</strong><span>Bachelor’s, Computer Science · 2026</span><a href="/resume/" target="_blank" rel="noreferrer">Full résumé ↗</a></div></div>
-      <div className={styles.background}><div id="experience"><p className={styles.smallHeading}>EXPERIENCE</p>{experience.slice(0, 2).map(job => <div className={styles.job} key={job.company}><span>{job.period}</span><h3>{job.company}</h3><p>{job.role}</p></div>)}<p className={styles.earlierExperience}>Previously: online and on-site instructor at iD Tech, 2023–2024.</p></div>
-        <div id="skills" className={styles.capabilities}><p className={styles.smallHeading}>TOOLS & PRACTICE</p>{capabilities.map(group => <div key={group.title}><h3>{group.title}</h3><p>{group.items}</p></div>)}</div>
+    <section className={styles.aboutBand} id="experience"><div className={`${styles.aboutGrid} ${styles.wrap}`}>
+      <div className={styles.aboutIntro}><p className={styles.eyebrow}>03 / WORK HISTORY</p><h2>Professional experience</h2><p>I’ve taught programming online and in person, led summer camp teams, and helped students with computer science courses at WPI.</p><div className={styles.education} id="education"><strong>Worcester Polytechnic Institute</strong><span>Bachelor’s, Computer Science · 2026</span><a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Full résumé ↗</a></div></div>
+      <div className={styles.background}><div className={styles.experienceTimeline}>{experience.map(job => <article className={styles.job} key={`${job.company}-${job.period}`}><span>{job.period}</span><h3>{job.role}</h3><p className={styles.jobCompany}>{job.company} · {job.location}</p><p>{job.details.replace(/^Supported/, "I supported").replace(/^Managed/, "I managed").replace(/^Led/, "I led").replace(/^Delivered/, "I delivered").replace(/^Taught/, "I taught")}</p></article>)}</div>
+        <div id="skills" className={styles.capabilities}><p className={styles.smallHeading}>TOOLS I USE</p>{capabilities.map(group => <div key={group.title}><h3>{group.title}</h3><p>{group.items}</p></div>)}</div>
       </div>
     </div></section>
 
-    <footer className={`${styles.contact} ${styles.wrap}`} id="contact"><p className={styles.eyebrow}>04 / LET’S CONNECT</p><div className={styles.contactTop}><h2>Have something<br /><em>worth building?</em></h2>{onContact ? <button type="button" className={styles.contactButton} onClick={onContact}>Start a conversation ↗</button> : <a className={styles.contactButton} href={`mailto:${contact.email}`}>Start a conversation ↗</a>}</div><div className={styles.contactMeta}><span>Sean Arackal</span><div><a href={contact.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={contact.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href={`mailto:${contact.email}`}>Email ↗</a></div><a href="#top">Back to top ↑</a></div></footer>
+    <footer className={`${styles.contact} ${styles.wrap}`} id="contact"><p className={styles.eyebrow}>04 / CONTACT</p><div className={styles.contactTop}><h2>Want to <em>get in touch?</em></h2>{onContact ? <button type="button" className={styles.contactButton} onClick={onContact}>Send me a message ↗</button> : <a className={styles.contactButton} href={`mailto:${contact.email}`}>Send me a message ↗</a>}</div><div className={styles.contactMeta}><span>Sean Arackal</span><div><a href={contact.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={contact.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href={`mailto:${contact.email}`}>Email ↗</a></div><a href="#top">Back to top ↑</a></div></footer>
   </main>;
 }

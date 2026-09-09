@@ -19,7 +19,7 @@ Until activation, the UI preserves drafts and offers the visitor's email app; it
 
 ## Resume
 
-`/resume/` is a printable rendition of the repository's existing resume content. No PDF download is advertised because the original iCloud-backed PDF could not be copied successfully during this build.
+`/resume/` displays the corrected resume. `/resume/sean-arackal-resume.pdf` is the downloadable one-page version. Both use `data/resume.json`; regenerate the PDF with `python3 scripts/build_resume.py` in a Python environment with ReportLab. Verify the rendered PDF after changing its content.
 
 ## Assets
 

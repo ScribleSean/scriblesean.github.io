@@ -1,0 +1,167 @@
+{
+  "contact": {
+    "name": "Sean Arackal",
+    "email": "sean.arackal@gmail.com",
+    "phone": "+1 (774) 232-5365",
+    "location": "Worcester, MA",
+    "linkedin": "https://www.linkedin.com/in/seanarackal/",
+    "github": "https://github.com/ScribleSean",
+    "portfolio": "https://scriblesean.github.io/portfolio/"
+  },
+  "education": {
+    "institution": "Worcester Polytechnic Institute",
+    "degree": "Bachelor of Science in Computer Science",
+    "period": "Aug 2022 - May 2026",
+    "honors": "With Distinction",
+    "gpa": "3.53"
+  },
+  "projects": [
+    {
+      "name": "ReVIEW",
+      "role": "Individual academic capstone",
+      "period": "Oct 2025 - May 2026",
+      "location": "Worcester, MA",
+      "summary": "Built AI-assisted video analysis in a reVISit fork to help researchers review study recordings.",
+      "portfolioSummary": "I built tools for reviewing research recordings in a reVISit fork, including video analysis, searchable clips, and timelines.",
+      "outcomes": [
+        "Implemented multimodal analysis pipelines combining video, audio, OCR, and language-model outputs.",
+        "Added event timelines, clip tagging, semantic search, and cross-recording summaries."
+      ],
+      "href": "https://revisit.dev",
+      "tags": [
+        "TypeScript",
+        "React",
+        "Python",
+        "Multimodal AI",
+        "Semantic search"
+      ]
+    },
+    {
+      "name": "Exercise Form Classification System",
+      "role": "Team deep-learning project",
+      "period": "Jan 2026 - May 2026",
+      "location": "Worcester, MA",
+      "summary": "Collaborated on exercise-video classification and form assessment using pose estimation and neural networks.",
+      "portfolioSummary": "I worked with a team on models that identify exercises and assess form from video. My code contributions included pose extraction, training, and model experiments.",
+      "outcomes": [
+        "Contributed labeling, YOLO pose extraction, training pipelines, and exploratory data analysis.",
+        "Worked on Skeleton CNN and ST-GCN experiments using the Qualcomm exercise-video dataset."
+      ],
+      "href": "https://github.com/ScribleSean/Exercise-Form-Classification-System",
+      "tags": [
+        "Python",
+        "PyTorch",
+        "YOLO",
+        "Skeleton CNN",
+        "ST-GCN"
+      ]
+    },
+    {
+      "name": "Hospital Kiosk",
+      "role": "Back-end developer, course project",
+      "period": "Mar 2024 - Jun 2024",
+      "location": "Worcester, MA",
+      "summary": "Worked on an agile team building a hospital kiosk application for a software engineering course.",
+      "portfolioSummary": "I was a back-end developer on a team building a hospital kiosk for a software engineering course. The app included indoor navigation, service requests, and tools for managing hospital data.",
+      "outcomes": [
+        "Contributed back-end development as part of an agile/Scrum team.",
+        "Collaborated on an application covering indoor navigation, service requests, and map and employee data."
+      ],
+      "href": "https://github.com/ScribleSean/Brigham-and-Womens-Hospital-Web-Application",
+      "tags": [
+        "Team development",
+        "Back-end development",
+        "Agile/Scrum"
+      ]
+    },
+    {
+      "name": "Reimagining Digital Education at Sri Sangwan School",
+      "role": "Student researcher, WPI / Chulalongkorn IQP",
+      "period": "Oct 2024 - Mar 2025",
+      "location": "Thailand",
+      "summary": "Researched barriers to computer-based learning with a team at Sri Sangwan School.",
+      "portfolioSummary": "I worked with a WPI and Chulalongkorn team to understand how students at Sri Sangwan School use computers for learning. I helped write the research methods and findings, and edited and revised the full report.",
+      "outcomes": [
+        "Co-authored methodology for understanding students' challenges and authored the corresponding findings section.",
+        "Edited and revised the full project report across all sections, alongside contributions to inclusive-education research and analysis of assistive-device costs."
+      ],
+      "href": "https://bsac.chemcu.org/wp-content/uploads/2025/06/IQP-ISSP-1-Final-Report.pdf",
+      "tags": [
+        "Qualitative research",
+        "Inclusive education",
+        "Research writing"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "company": "Worcester Polytechnic Institute",
+      "role": "Peer Learning Assistant",
+      "period": "Aug 2024 - May 2026",
+      "location": "Worcester, MA",
+      "details": "Supported students through office hours, lab assistance, and grading feedback in computer science courses."
+    },
+    {
+      "company": "iD Tech Camps",
+      "role": "Lead Instructor",
+      "period": "Jun 2025 - Aug 2025",
+      "location": "Waltham, MA",
+      "details": "Supported instructors, coordinated daily camp operations, and helped deliver programming courses."
+    },
+    {
+      "company": "iD Tech Camps",
+      "role": "Lead Instructor",
+      "period": "Jun 2024 - Aug 2024",
+      "location": "Amherst, MA",
+      "details": "Led instructional staff, taught programming, and helped manage curriculum and daily camp logistics."
+    },
+    {
+      "company": "iD Tech Camps",
+      "role": "Online Instructor",
+      "period": "Aug 2023 - Dec 2023",
+      "location": "Remote",
+      "details": "Delivered individual programming lessons and adapted instruction to each student's goals."
+    },
+    {
+      "company": "iD Tech Camps",
+      "role": "On-Site Instructor",
+      "period": "Jun 2023 - Aug 2023",
+      "location": "Amherst, MA",
+      "details": "Taught programming courses and supported classroom setup and camp activities."
+    }
+  ],
+  "skills": [
+    "Python",
+    "TypeScript",
+    "JavaScript",
+    "Java",
+    "C/C++",
+    "React",
+    "Next.js",
+    "SQL",
+    "PostgreSQL",
+    "PyTorch",
+    "YOLO",
+    "Semantic search",
+    "Git",
+    "Docker",
+    "Qualitative research"
+  ],
+  "resumeExperience": [
+    {
+      "company": "Worcester Polytechnic Institute",
+      "role": "Peer Learning Assistant",
+      "period": "Aug 2024 - May 2026",
+      "location": "Worcester, MA",
+      "details": "Supported students through office hours, lab assistance, and grading feedback in computer science courses."
+    },
+    {
+      "company": "iD Tech Camps",
+      "role": "Programming Instructor / Lead Instructor",
+      "period": "Seasonal and online roles, 2023 - 2025",
+      "location": "Massachusetts / Remote",
+      "details": "Taught programming in on-site and individual online courses; later supported instructors and coordinated camp operations.",
+      "progression": "On-Site Instructor (summer 2023); Online Instructor (fall 2023); Lead Instructor (summers 2024 and 2025)."
+    }
+  ]
+}

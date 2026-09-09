@@ -89,3 +89,28 @@
 .serviceProcess { align-self: center; display: grid; gap: 20px; }.serviceProcess > span { display: flex; gap: 12px; font: 9px Consolas, monospace; color: #819172; }.serviceProcess strong { font: 11px Arial, sans-serif; color: #59664c; }
 @container portfolio (max-width: 800px) { .serviceCard { grid-template-columns: 100px 1fr; gap: 24px; padding: 24px; }.serviceProcess { grid-column: 2; gap: 12px; } }
 @container portfolio (max-width: 580px) { .serviceCard { grid-template-columns: 1fr; gap: 22px; }.serviceIdentity { display: flex; align-items: center; gap: 15px; }.serviceMark { margin: 0; font-size: 38px; }.serviceIdentity .eyebrow { margin: 0; }.serviceProcess { grid-column: auto; }.serviceCopy h3 br { display: none; } }
+
+/* Dated entries make current work, previous projects, and employment explicit. */
+.navigation { flex-wrap: wrap; justify-content: flex-end; gap: 18px; }
+.wordmark { flex: none; font-size: 14px; }
+.currentTimeline { position: relative; border-left: 1px solid var(--line); padding-left: 28px; }
+.timelineDate { position: relative; margin: 0 0 25px; color: var(--muted); font: 11px/1.5 Consolas, monospace; }
+.timelineDate::before, .job::before { content: ""; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #84966e; }
+.timelineDate::before { left: -32px; top: 4px; }
+.buildGrid { grid-template-columns: 1fr; gap: 24px; }
+.buildCard { display: grid; grid-template-columns: .85fr 1fr; }
+.visualLink { border-bottom: 0; border-right: 1px solid var(--line); height: 100%; }
+.observatoryGraphic, .sceneVisual { aspect-ratio: auto; min-height: 250px; }
+.observatoryGraphic { height: 100%; }
+.observatoryGraphic svg { flex: 1; }
+.sceneVisual img { object-fit: cover; }
+.serviceCard { grid-template-columns: 105px 1fr; gap: 25px; }
+.serviceProcess { grid-column: 2; display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.researchProject { grid-template-columns: 155px 1fr 30px; gap: 20px; }
+.projectIndex { font-size: 10px; line-height: 1.6; position: relative; }
+.researchMain { border-left: 1px solid var(--line); padding-left: 25px; position: relative; }
+.researchMain::before { content: ""; position: absolute; width: 7px; height: 7px; background: #84966e; border-radius: 50%; top: 3px; left: -4px; }
+.experienceTimeline { border-left: 1px solid #c7d0bb; padding-left: 24px; }
+.job { position: relative; padding-bottom: 30px; }.job::before { top: 4px; left: -28px; }.job h3 { margin-top: 9px; }.job p { line-height: 1.7; }.job .jobCompany { margin: 6px 0 10px; color: #42503b; }
+@container portfolio (max-width: 800px) { .siteHeader { align-items: flex-start; flex-direction: column; padding-block: 20px; gap: 15px; }.navigation { justify-content: flex-start; gap: 12px 22px; }.navigation a:nth-child(2), .navigation a:nth-child(3) { display: inline; }.currentTimeline { padding-left: 20px; }.timelineDate::before { left: -24px; }.buildCard { grid-template-columns: 1fr; }.visualLink { border-right: 0; border-bottom: 1px solid var(--line); }.observatoryGraphic { min-height: 220px; }.observatoryGraphic, .sceneVisual { aspect-ratio: 1.65; }.sceneVisual { max-height: 320px; }.researchProject { grid-template-columns: 115px 1fr 20px; gap: 12px; }.researchMain { padding-left: 18px; } }
+@container portfolio (max-width: 580px) { .navigation { font-size: 10px; gap: 12px 16px; }.heroActions { align-items: flex-start; flex-direction: column; gap: 16px; }.serviceCard { grid-template-columns: 1fr; }.serviceProcess { grid-column: auto; }.researchProject { grid-template-columns: 1fr 20px; gap: 12px; }.projectIndex { grid-column: 1; padding-left: 18px; }.researchMain { grid-column: 1; }.projectArrow { grid-column: 2; grid-row: 2; }.aboutGrid { gap: 35px; } }
