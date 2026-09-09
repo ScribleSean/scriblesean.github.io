@@ -113,7 +113,7 @@ export default function ExperienceRoot() {
   const screen = <div onClick={(event) => event.stopPropagation()} className={`${styles.screen} ${reducedMotion ? styles.reduceMotion : ""}`}>
     <div className={styles.desktopLayer} inert={state.screen === "game"}>
       {desktopOpened && <DesktopShell
-        portfolio={<PortfolioContent onContact={() => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("messages")); }} />}
+        portfolio={<PortfolioContent embedded onContact={() => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("messages")); }} />}
         files={<FilesApp />}
         messages={<MessagesApp />}
         wallpaperUrl="/scene/sassy-sunset.png"
@@ -161,7 +161,7 @@ export default function ExperienceRoot() {
     {state.mobileOpen && <div className={styles.mobilePanel}>
       <SafariShell onBack={backToDesk} onContact={() => openMobileApp("messages")} onFiles={() => openMobileApp("files")} title="scriblesean.github.io">
         {mobileApp !== "portfolio" && <div className={styles.mobileAppHeader}><span>{mobileApp === "messages" ? "Message Sean" : "Files"}</span><button type="button" onClick={() => openMobileApp("portfolio")}>Back to portfolio</button></div>}
-        <div className={styles.mobileApp} hidden={mobileApp !== "portfolio"}><PortfolioContent onContact={() => openMobileApp("messages")} /></div>
+        <div className={styles.mobileApp} hidden={mobileApp !== "portfolio"}><PortfolioContent embedded onContact={() => openMobileApp("messages")} /></div>
         {mobileVisited.files && <div hidden={mobileApp !== "files"}><FilesApp /></div>}
         {mobileVisited.messages && <div hidden={mobileApp !== "messages"}><MessagesApp /></div>}
       </SafariShell>

@@ -1,17 +1,36 @@
 "use client";
 
+import type { MouseEvent } from "react";
+
 import { contact, experience, projects, skills } from "@/data/resume";
 import styles from "./PortfolioContent.module.css";
 
 type PortfolioContentProps = {
   onContact?: () => void;
+  embedded?: boolean;
 };
 
 const nav = ["work", "experience", "education", "skills"];
 
-export default function PortfolioContent({ onContact }: PortfolioContentProps) {
+export default function PortfolioContent({ onContact, embedded = false }: PortfolioContentProps) {
+  function navigateSection(event: MouseEvent<HTMLElement>) {
+    if (!embedded || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+    if (!link) return;
+    const id = link.hash.slice(1);
+    const section = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("[id]")).find((element) => element.id === id);
+    if (!section) return;
+    event.preventDefault();
+    // Scroll only the app viewport, never the outer 3D page or its history.
+    let viewport = event.currentTarget.parentElement;
+    while (viewport && !/(auto|scroll)/.test(getComputedStyle(viewport).overflowY)) viewport = viewport.parentElement;
+    if (!viewport) return;
+    const bounds = viewport.getBoundingClientRect();
+    const scale = bounds.height / viewport.offsetHeight || 1;
+    viewport.scrollTop += (section.getBoundingClientRect().top - bounds.top) / scale;
+  }
   return (
-    <main className={styles.portfolio}>
+    <main className={styles.portfolio} onClick={navigateSection}>
       <header className={`${styles.siteHeader} ${styles.wrap}`}>
         <a className={styles.wordmark} href="#top" aria-label="Sean Arackal, home">SA</a>
         <nav className={styles.navigation} aria-label="Portfolio navigation">
