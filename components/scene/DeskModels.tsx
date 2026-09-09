@@ -116,6 +116,22 @@ export function Television() {
   </group>;
 }
 
+function SlippiEmblem() {
+  const source = useTexture("/scene/slippi-logo.svg");
+  const texture = useMemo(() => {
+    const map = source.clone();
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.anisotropy = 8;
+    map.needsUpdate = true;
+    return map;
+  }, [source]);
+  useLayoutEffect(() => () => texture.dispose(), [texture]);
+  return <mesh position={[0, .71, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+    <planeGeometry args={[.60, .60 * 158 / 218]} />
+    <meshStandardMaterial map={texture} transparent roughness={.5} depthWrite={false} />
+  </mesh>;
+}
+
 export function GameCube() {
   return <group position={[2.02, 1.61, -.02]}>
     {/* A cream-and-green Slippi console, intentionally distinct from its classic controller. */}
@@ -130,8 +146,7 @@ export function GameCube() {
     {[-.3, .3].map((x) => <Box key={x} at={[x, -.24, .763]} size={[.46, .065, .028]} color="#c7bead" radius={.008} />)}
     <Disc top at={[0, .684, 0]} radius={.52} color="#699374" depth={.016} />
     <Disc top at={[0, .698, 0]} radius={.398} color="#222328" depth={.015} />
-    <Label text="NINTENDO" at={[0, .71, -.07]} width={.36} height={.06} color="#dad6e2" rotation={[-Math.PI / 2, 0, 0]} />
-    <Label text="GAMECUBE" at={[0, .71, .02]} width={.43} height={.08} color="#dad6e2" rotation={[-Math.PI / 2, 0, 0]} />
+    <SlippiEmblem />
     <Disc top at={[-.55, .694, -.48]} radius={.095} color="#b5b0bd" depth={.024} />
     <Disc top at={[.55, .692, .48]} radius={.11} color="#315f49" depth={.02} />
     {Array.from({ length: 10 }, (_, i) => <Box key={i} at={[-.72, .02, -.51 + i * .11]} size={[.016, .63, .038]} color="#234733" radius={.005} />)}

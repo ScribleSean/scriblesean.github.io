@@ -23,6 +23,8 @@ Until activation, the UI preserves drafts and offers the visitor's email app; it
 
 ## Assets
 
+- Slippi lid emblem: official vector from https://github.com/project-slippi/slippi-launcher/blob/main/src/renderer/styles/images/slippi_logo.svg.
+
 - Approved silent Melee video: https://www.youtube.com/watch?v=TFmpEWb0Nqk&t=17s. READY was visually verified at 0:17. The segment ends at 1:08 and loops back to READY. YouTube restrictions may require the visible fallback link.
 - Approved wallpaper reference: https://www.bubbleblabber.com/2024/03/the-big-lez-show-teases-six-part-mini-series/.
 - The phone loading still comes from the approved concept image. The interactive desktop scene is actual Three.js geometry.
