@@ -11,6 +11,8 @@ import styles from "./Scene.module.css";
 const SceneCanvas = dynamic(() => import("./SceneCanvas"), { ssr: false });
 const DesktopShell = dynamic(() => import("@/components/desktop/DesktopShell"), { ssr: false });
 const PortfolioContent = dynamic(() => import("@/components/portfolio/PortfolioContent"), { loading: () => <AppLoading /> });
+const PrototypePortfolio = dynamic(() => import("@/components/prototype/PrototypePortfolio"), { loading: () => <AppLoading /> });
+const PhotosApp = dynamic(() => import("@/components/photos/PhotosApp"), { loading: () => <AppLoading /> });
 const SafariShell = dynamic(() => import("@/components/portfolio/SafariShell"));
 const FilesApp = dynamic(() => import("@/components/files/FilesApp"), { loading: () => <AppLoading /> });
 const MessagesApp = dynamic(() => import("@/components/messages/MessagesApp"), { loading: () => <AppLoading /> });
@@ -41,7 +43,8 @@ class SceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode
   render() { return this.state.failed ? this.props.fallback : this.props.children; }
 }
 
-export default function ExperienceRoot() {
+export default function ExperienceRoot({ prototype = false }: { prototype?: boolean }) {
+  const Portfolio = prototype ? PrototypePortfolio : PortfolioContent;
   const [state, dispatch] = useReducer(sceneReducer, initialSceneState);
   const mobile = useSyncExternalStore(subscribeMedia, getMobileSnapshot, getServerSnapshot);
   const scenePointer = useRef({ x: 0, y: 0, hit: false });
@@ -51,9 +54,9 @@ export default function ExperienceRoot() {
   const reducedMotion = useSyncExternalStore(subscribeMotion, getMotionPreference, () => true);
   const documentVisible = useSyncExternalStore(subscribeVisibility, getVisibility, () => true);
   const [desktopOpened, setDesktopOpened] = useState(false);
-  const [initialApp, setInitialApp] = useState<"messages" | null>(null);
-  const [mobileApp, setMobileApp] = useState<"portfolio" | "files" | "messages">("portfolio");
-  const [mobileVisited, setMobileVisited] = useState({ files: false, messages: false });
+  const [initialApp, setInitialApp] = useState<"messages" | "photos" | null>(null);
+  const [mobileApp, setMobileApp] = useState<"portfolio" | "files" | "messages" | "photos">("portfolio");
+  const [mobileVisited, setMobileVisited] = useState({ files: false, messages: false, photos: false });
 
   useEffect(() => {
     const section = window.location.hash.slice(1);
@@ -74,7 +77,7 @@ export default function ExperienceRoot() {
     else dispatch({ type: "back" });
   }, []);
 
-  function openMobileApp(app: "portfolio" | "files" | "messages") {
+  function openMobileApp(app: "portfolio" | "files" | "messages" | "photos") {
     setMobileApp(app);
     if (app !== "portfolio") setMobileVisited((current) => ({ ...current, [app]: true }));
   }
@@ -113,8 +116,9 @@ export default function ExperienceRoot() {
   const screen = <div onClick={(event) => event.stopPropagation()} className={`${styles.screen} ${reducedMotion ? styles.reduceMotion : ""}`}>
     <div className={styles.desktopLayer} inert={state.screen === "game"}>
       {desktopOpened && <DesktopShell
-        portfolio={<PortfolioContent embedded onContact={() => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("messages")); }} />}
+        portfolio={<Portfolio embedded {...(prototype ? { onPhotos: () => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("photos")); } } : {})} onContact={() => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("messages")); }} />}
         files={<FilesApp />}
+        photos={prototype ? <PhotosApp /> : undefined}
         messages={<MessagesApp />}
         wallpaperUrl="/scene/sassy-sunset.png"
         initialApp={initialApp}
@@ -154,14 +158,15 @@ export default function ExperienceRoot() {
     {!state.mobileOpen && <footer className={styles.footer}>
       <Link href="/" prefetch={false} aria-label="Sean Arackal, home">sean arackal</Link><span aria-hidden="true">·</span>
       <button type="button" onClick={() => enter(true)}>contact</button><span aria-hidden="true">·</span>
-      <a href="/portfolio/">skip to portfolio</a>
+      <a href={prototype ? "/prototype/" : "/portfolio/"}>skip to portfolio</a>
     </footer>}
     {mobile === false && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>click to approach · drag to rotate · scroll to zoom</button>}
     {mobile === false && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
     {state.mobileOpen && <div className={styles.mobilePanel}>
       <SafariShell onBack={backToDesk} onContact={() => openMobileApp("messages")} onFiles={() => openMobileApp("files")} title="scriblesean.github.io">
-        {mobileApp !== "portfolio" && <div className={styles.mobileAppHeader}><span>{mobileApp === "messages" ? "Message Sean" : "Files"}</span><button type="button" onClick={() => openMobileApp("portfolio")}>Back to portfolio</button></div>}
-        <div className={styles.mobileApp} hidden={mobileApp !== "portfolio"}><PortfolioContent embedded onContact={() => openMobileApp("messages")} /></div>
+        {mobileApp !== "portfolio" && <div className={styles.mobileAppHeader}><span>{mobileApp === "messages" ? "Message Sean" : mobileApp === "photos" ? "Photos" : "Files"}</span><button type="button" onClick={() => openMobileApp("portfolio")}>Back to portfolio</button></div>}
+        <div className={styles.mobileApp} hidden={mobileApp !== "portfolio"}><Portfolio embedded {...(prototype ? { onPhotos: () => openMobileApp("photos") } : {})} onContact={() => openMobileApp("messages")} /></div>
+        {mobileVisited.photos && <div hidden={mobileApp !== "photos"}><PhotosApp /></div>}
         {mobileVisited.files && <div hidden={mobileApp !== "files"}><FilesApp /></div>}
         {mobileVisited.messages && <div hidden={mobileApp !== "messages"}><MessagesApp /></div>}
       </SafariShell>

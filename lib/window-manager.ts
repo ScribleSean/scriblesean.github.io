@@ -1,4 +1,4 @@
-export type DesktopAppId = "chrome" | "files" | "messages" | "settings";
+export type DesktopAppId = "chrome" | "files" | "messages" | "settings" | "photos";
 
 export type Viewport = { width: number; height: number };
 
@@ -40,6 +40,7 @@ const defaults: Record<DesktopAppId, Omit<WindowFrame, "z">> = {
   chrome: { x: 86, y: 72, width: 760, height: 510, status: "closed", mounted: false },
   files: { x: 142, y: 112, width: 570, height: 410, status: "closed", mounted: false },
   messages: { x: 226, y: 92, width: 430, height: 500, status: "closed", mounted: false },
+  photos: { x: 120, y: 65, width: 710, height: 550, status: "closed", mounted: false },
   settings: { x: 280, y: 130, width: 390, height: 330, status: "closed", mounted: false },
 };
 

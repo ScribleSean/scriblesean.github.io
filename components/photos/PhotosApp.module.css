@@ -1,0 +1,221 @@
+.photos {
+  min-height:100%;
+  padding:38px 30px 20px;
+  background:#22241f;
+  color:#f6f0e3;
+  font-family:Arial,sans-serif;
+  overflow:hidden
+}
+.photos header {
+  text-align:center
+}
+.photos header>span {
+  font-size:10px;
+  letter-spacing:.2em;
+  color:#c1c6b8
+}
+.photos header p {
+  font:clamp(38px,6vw,60px)/.98 Georgia,serif;
+  margin:24px 0 14px
+}
+.photos header em {
+  color:#d7e99b
+}
+.photos header small {
+  font-size:12px;
+  color:#c1c6b8
+}
+.collage {
+  max-width:900px;
+  min-height:480px;
+  margin:45px auto 20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  position:relative;
+  padding:20px 30px 0
+}
+.polaroid {
+  background:#f2ecdf;
+  border:0;
+  color:#24251e;
+  padding:10px 10px 15px;
+  box-shadow:0 10px 24px #0006;
+  transform:rotate(-8deg);
+  transition:transform .18s;
+  z-index:1;
+  text-align:left;
+  position:relative;
+  cursor:zoom-in
+}
+.polaroid:nth-of-type(2) {
+  transform:rotate(7deg);
+  margin:55px 0 0 -20px;
+  z-index:2
+}
+.polaroid:nth-of-type(3) {
+  transform:rotate(-3deg);
+  margin:-15px -20px 0 40px
+}
+.polaroid:hover,.polaroid:focus-visible {
+  transform:rotate(0) translateY(-8px);
+  z-index:4
+}
+.polaroid img {
+  width:100%;
+  height:auto;
+  aspect-ratio:1.5;
+  object-fit:cover;
+  display:block
+}
+.polaroid>span {
+  display:block;
+  font:italic 20px Georgia,serif;
+  margin-top:13px
+}
+.polaroid small {
+  display:block;
+  font-size:9px;
+  line-height:1.4;
+  margin-top:6px
+}
+.sticker {
+  position:absolute;
+  right:16px;
+  top:-26px;
+  background:#c9e895;
+  color:#202718;
+  padding:19px 22px;
+  border-radius:50%;
+  transform:rotate(13deg);
+  font:bold 14px/1.05 Arial;
+  z-index:3
+}
+.note {
+  background:#e9d4a8;
+  padding:22px;
+  color:#3a362b;
+  transform:rotate(8deg);
+  width:80%;
+  margin:20px;
+  box-shadow:2px 7px 12px #0002
+}
+.note>span {
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.1em
+}
+.note p {
+  font:italic 27px/1.1 Georgia,serif;
+  margin:15px 0
+}
+.note small {
+  font-size:11px;
+  line-height:1.5
+}
+.photos footer {
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  color:#bfc3b6;
+  border-top:1px solid #ffffff25;
+  padding-top:20px;
+  font-size:10px
+}
+.viewer {
+  padding:20px;
+  border:0;
+  border-radius:12px;
+  background:#f3efe6;
+  color:#24251e;
+  width:min(900px,92vw);
+  max-height:90vh;
+  margin:auto
+}
+.viewer::backdrop {
+  background:#111d;
+  backdrop-filter:blur(8px)
+}
+.viewer>img {
+  width:100%;
+  height:auto;
+  max-height:65vh;
+  object-fit:contain
+}
+.close {
+  position:absolute;
+  right:12px;
+  top:12px;
+  background:#f8f5ed;
+  border:1px solid #3335;
+  border-radius:50%;
+  width:36px;
+  height:36px;
+  font-size:25px;
+  cursor:pointer
+}
+.viewerControls {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px
+}
+.viewerControls p {
+  font:20px Georgia,serif;
+  text-align:center
+}
+.viewerControls small {
+  display:block;
+  font:11px Arial;
+  margin-top:8px
+}
+.viewerControls button {
+  border:1px solid #7776;
+  background:none;
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  cursor:pointer
+}
+@media(max-width:500px) {
+  .photos {
+  padding:30px 15px 20px
+}
+.collage {
+  padding:10px 5px;
+  min-height:360px;
+  gap:10px
+}
+.polaroid>span {
+  font-size:15px
+}
+.polaroid:nth-of-type(3) {
+  margin:0 -15px 0 0
+}
+.note {
+  padding:12px;
+  margin:10px;
+  width:90%
+}
+.note p {
+  font-size:22px
+}
+.sticker {
+  font-size:11px;
+  padding:12px
+}
+.photos footer {
+  font-size:9px
+}
+.polaroid small {
+  font-size:8px
+}
+
+}
+@media(prefers-reduced-motion:reduce) {
+  .polaroid {
+  transition:none
+}
+
+}
+

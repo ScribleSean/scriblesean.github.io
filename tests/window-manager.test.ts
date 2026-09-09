@@ -60,7 +60,7 @@ test("pointer deltas use the logical desktop coordinate system after CRT scaling
 
 
 test("maximized apps stay below the top bar and beside the dock after reflow", () => {
-  for (const app of ["chrome", "files", "messages", "settings"] as const) {
+  for (const app of ["chrome", "files", "messages", "settings", "photos"] as const) {
     const open = windowReducer(createWindowState(), { type: "open", app, viewport });
     const max = windowReducer(open, { type: "toggle-maximize", app, viewport });
     assert.ok(max[app].x >= 86);
