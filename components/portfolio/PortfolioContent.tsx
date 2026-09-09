@@ -89,6 +89,10 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
         <div className={styles.serviceIdentity}><span className={styles.serviceMark} aria-hidden="true">s.</span><p className={styles.eyebrow}>WEBSITE REPAIRS</p><span className={styles.status}>Service</span></div>
         <div className={styles.serviceCopy}><h3>Website repair service</h3><p>I’m setting up a service to fix small website problems, like broken buttons, stuck forms, and mobile layouts. I agree on one issue, fix it, test it, and explain what changed.</p><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">See the repair service ↗</a></div>
         <div className={styles.serviceProcess}><span>01 <strong>Reproduce the issue</strong></span><span>02 <strong>Repair & verify</strong></span><span>03 <strong>Hand over the fix</strong></span></div>
+      </article>
+      <article className={styles.longTermBuild}>
+        <div><p className={styles.eyebrow}>LONG-TERM PROJECT</p><h3>Orbit</h3></div>
+        <div><span className={styles.status}>Work in progress</span><p>I’m building a personal assistant for my Mac. It’s a longer-term project that I’m developing alongside my main builds.</p></div>
       </article></div>
     </section>
 
