@@ -77,6 +77,10 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
         <div className={styles.serviceProcess}><span>01 <strong>Reproduce the issue</strong></span><span>02 <strong>Repair & verify</strong></span><span>03 <strong>Hand over the fix</strong></span></div>
       </article>
       <article className={styles.longTermBuild}>
+        <div><p className={styles.eyebrow}>EARLY EXPLORATION</p><h3>Repurposing an iPad</h3></div>
+        <div><span className={styles.status}>In progress</span><p>I’m turning an old iPad into a dedicated computing device, exploring what I can build with its own hardware and a custom interface.</p></div>
+      </article>
+      <article className={styles.longTermBuild}>
         <div><p className={styles.eyebrow}>LONG-TERM PROJECT</p><h3>Orbit</h3></div>
         <div><span className={styles.status}>Work in progress</span><p>I’m building a personal assistant for my Mac. It’s a longer-term project that I’m developing alongside my main builds.</p></div>
       </article></div>
