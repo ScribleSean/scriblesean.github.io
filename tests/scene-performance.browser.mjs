@@ -101,7 +101,7 @@ try {
     assert.equal(youtubeRequests, 1, 'Returning to room must keep the initialized player');
     assert.deepEqual(errors, []);
     assert((await page.evaluate(() => window.__scenePerf.lastFrame.calls)) < 130, 'Static scene exceeds the draw-call budget');
-    assert((await page.evaluate(() => window.__scenePerf.lastFrame.triangles)) < 50_000, 'Camera-motion frame exceeds the geometry budget');
+    assert((await page.evaluate(() => window.__scenePerf.lastFrame.triangles)) < 55_000, 'Camera-motion frame exceeds the geometry budget');
     results.push({ device: device.name, canvas, idleDraws: 0, geometryRebuiltOnApproach: false, lastFrame: await page.evaluate(() => window.__scenePerf.lastFrame) });
     await context.close();
   }

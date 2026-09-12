@@ -44,7 +44,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const reducedMotion = useSyncExternalStore(subscribeMotion, getMotionPreference, () => true);
   const documentVisible = useSyncExternalStore(subscribeVisibility, getVisibility, () => true);
   const [videoActivated, setVideoActivated] = useState(false);
-  const [cameraMoving, setCameraMoving] = useState(false);
   const [desktopOpened, setDesktopOpened] = useState(false);
   const [initialApp, setInitialApp] = useState<"messages" | "photos" | null>(null);
 
@@ -65,21 +64,15 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     dispatch({ type: "enter", mobile: true });
   }, []);
   const backToDesk = useCallback(() => {
-    setCameraMoving(true);
     setCameraResetKey((key) => key + 1);
     setInitialApp(null);
     if (window.history.state?.seanMobile) window.history.back();
     else dispatch({ type: "back" });
   }, []);
 
-  const onCameraSettled = useCallback(() => {
-    setCameraMoving(false);
-    if (state.camera === "desk") setVideoActivated(true);
-  }, [state.camera]);
-
   function approach() {
     if (state.camera !== "room") return;
-    setCameraMoving(true);
+    setVideoActivated(true);
     warmDesktop();
     dispatch({ type: "approach" });
   }
@@ -87,7 +80,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   function enter(contact = false) {
     warmDesktop();
     const useFallback = degraded || !sceneReady;
-    if (!useFallback && state.camera !== "entered") setCameraMoving(true);
+    if (!useFallback) setVideoActivated(true);
     setInitialApp(contact ? "messages" : null);
     setDesktopOpened(true);
     if (useFallback && !state.mobileOpen) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
@@ -124,10 +117,14 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       />}
     </div>
     <div className={`${styles.gameLayer} ${state.screen === "desktop" ? styles.minimized : ""}`} inert={state.screen === "desktop"}>
-      <MeleePlayer active={videoActivated} playing={!cameraMoving && shouldPlayGame(state, documentVisible)} />
+      <MeleePlayer active={videoActivated} playing={shouldPlayGame(state, documentVisible)} />
     </div>
     {state.screen === "game" && <button type="button" className={styles.screenHit}
       aria-label={state.camera === "entered" ? "Minimize Melee to desktop" : "Enter the CRT"}
+      onPointerEnter={() => dispatch({ type: "hover", over: true })}
+      onPointerLeave={() => dispatch({ type: "hover", over: false })}
+      onFocus={() => dispatch({ type: "hover", over: true })}
+      onBlur={() => dispatch({ type: "hover", over: false })}
       onClick={(event) => { event.stopPropagation(); activateScreen(); }}
     ><span className={styles.screenHint}>{state.camera === "entered" ? "minimize to desktop" : "click to enter"}</span></button>}
     <div className={styles.glass} />
@@ -143,7 +140,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
           const pointer = scenePointer.current;
           if (!pointer.hit && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 5) backToDesk();
         }}>
-        <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screen} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onBack={backToDesk} onFailure={recoverDesktop} onSettled={onCameraSettled} />
+        <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screen} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onBack={backToDesk} onFailure={recoverDesktop} />
       </div>
     </SceneBoundary>}
     {!state.mobileOpen && <footer className={styles.footer}>

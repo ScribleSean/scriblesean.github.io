@@ -32,15 +32,17 @@ const studioBackdrop = (() => {
 const cameraPositions: Record<CameraView, [number, number, number]> = {
   room: [8.5, 6.4, 12.5],
   desk: [3.5, 4.1, 8.3],
+  focus: [.0, 2.9, 6.9],
   entered: [-.58, 2.49, 4.2],
 };
 const lookTargets: Record<CameraView, [number, number, number]> = {
   room: [0, 1.55, .15],
   desk: [-.2, 1.98, .25],
+  focus: [-.58, 2.36, .89],
   entered: [-.58, 2.49, .92],
 };
 
-function CameraRig({ view, reducedMotion, resetKey, onSettled }: { view: CameraView; reducedMotion: boolean; resetKey: number; onSettled: () => void }) {
+function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reducedMotion: boolean; resetKey: number }) {
   const { camera, scene, invalidate, size } = useThree();
   const controls = useRef<OrbitControlsImpl>(null);
   const transitioning = useRef(true);
@@ -84,10 +86,9 @@ function CameraRig({ view, reducedMotion, resetKey, onSettled }: { view: CameraV
       controls.current.target.copy(targetLook.current);
       controls.current.update();
       transitioning.current = false;
-      onSettled();
     }
     invalidate();
-  }, [view, resetKey, camera, scene, invalidate, reducedMotion, size.width, size.height, onSettled]);
+  }, [view, resetKey, camera, scene, invalidate, reducedMotion, size.width, size.height]);
 
   useFrame(() => {
     if (!transitioning.current || !controls.current) return;
@@ -98,14 +99,13 @@ function CameraRig({ view, reducedMotion, resetKey, onSettled }: { view: CameraV
     controls.current.update();
     if (progress === 1) {
       transitioning.current = false;
-      onSettled();
     } else invalidate();
   });
   return <OrbitControls ref={controls} makeDefault enabled={view !== "entered"}
     enableDamping={false} minDistance={3}
     minPolarAngle={.15} maxPolarAngle={view === "entered" ? Math.PI / 2 : Math.PI / 2 - .04}
     rotateSpeed={.65} panSpeed={.7} zoomSpeed={.8}
-    onStart={() => { transitioning.current = false; }} onEnd={onSettled} />;
+    onStart={() => { transitioning.current = false; }} />;
 }
 
 function ScreenSurface({ children }: { children: ReactNode }) {
@@ -154,7 +154,7 @@ function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   return null;
 }
 
-export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, onSettled, resetKey }: {
+export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, resetKey }: {
   view: CameraView;
   resetKey: number;
   reducedMotion: boolean;
@@ -163,7 +163,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   onApproach: () => void;
   onBack: () => void;
   onFailure: () => void;
-  onSettled: () => void;
 }) {
   const [pixelRatio, setPixelRatio] = useState(1);
   useEffect(() => {
@@ -209,6 +208,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       <SceneReady onReady={onReady} />
       <ContextRecovery onFailure={onFailure} />
     </Suspense>
-    <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} onSettled={onSettled} />
+    <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
   </Canvas>;
 }

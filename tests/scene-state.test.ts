@@ -2,12 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { initialSceneState, sceneReducer, shouldPlayGame } from "../lib/scene-state";
 
-test("approach and enter are explicit camera steps", () => {
+test("hover cannot skip the approach or unlock an entered desktop", () => {
+  assert.equal(sceneReducer(initialSceneState, { type: "hover", over: true }).camera, "room");
   const desk = sceneReducer(initialSceneState, { type: "approach" });
-  assert.equal(desk.camera, "desk");
-  assert.equal(sceneReducer(desk, { type: "approach" }), desk);
-  const entered = sceneReducer(desk, { type: "enter", mobile: false });
-  assert.equal(entered.camera, "entered");
+  const focus = sceneReducer(desk, { type: "hover", over: true });
+  assert.equal(focus.camera, "focus");
+  assert.equal(sceneReducer(focus, { type: "hover", over: false }).camera, "desk");
+  const entered = sceneReducer(focus, { type: "enter", mobile: false });
+  assert.equal(sceneReducer(entered, { type: "hover", over: false }).camera, "entered");
   assert.equal(entered.screen, "desktop");
 });
 

@@ -41,14 +41,15 @@ try {
     assert(result.durationMs < 900, `${name}: transition must finish without a long easing tail`);
     if (name.startsWith('click to approach')) {
       const playDelay = await page.evaluate(() => window.__playTimes[0] - window.__motionStarted);
-      assert(playDelay >= 500, 'Video must wait for the camera to settle, including repeat visits');
+      assert(playDelay < 500, 'Playback must start without waiting for camera movement');
       await page.evaluate(() => { window.__drawTimes = []; });
       await page.getByRole('button', { name: 'Enter the CRT', exact: true }).hover();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(700);
+      assert.equal(await page.locator('main[data-camera]').getAttribute('data-camera'), 'focus');
       await page.mouse.move(10, 10);
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(700);
       assert.equal(await page.locator('main[data-camera]').getAttribute('data-camera'), 'desk');
-      assert.equal(await page.evaluate(() => window.__drawTimes.length), 0, 'Hovering must not restart the camera');
+      assert((await page.evaluate(() => window.__drawTimes.length)) > 0, 'Hovering must move the camera');
       // Visible GameCube body at this fixed desktop camera/viewport.
       await page.mouse.click(1060, 450);
       assert.equal(await page.locator('main[data-camera]').getAttribute('data-camera'), 'desk', 'Batched models must still receive clicks');

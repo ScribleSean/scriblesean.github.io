@@ -1,8 +1,9 @@
-export type CameraView = "room" | "desk" | "entered";
+export type CameraView = "room" | "desk" | "focus" | "entered";
 export type ScreenView = "game" | "desktop";
 export type SceneState = { camera: CameraView; screen: ScreenView; mobileOpen: boolean };
 export type SceneAction =
   | { type: "approach" }
+  | { type: "hover"; over: boolean }
   | { type: "enter"; mobile: boolean }
   | { type: "restore-game" }
   | { type: "minimize-game" }
@@ -14,6 +15,9 @@ export const initialSceneState: SceneState = { camera: "room", screen: "game", m
 export function sceneReducer(state: SceneState, action: SceneAction): SceneState {
   switch (action.type) {
     case "approach": return state.camera === "room" ? { ...state, camera: "desk" } : state;
+    case "hover":
+      if (state.camera !== "desk" && state.camera !== "focus") return state;
+      return { ...state, camera: action.over ? "focus" : "desk" };
     case "enter": return { camera: "entered", screen: "desktop", mobileOpen: action.mobile };
     case "contact": return { camera: "entered", screen: "desktop", mobileOpen: action.mobile };
     case "restore-game": return { ...state, screen: "game" };
