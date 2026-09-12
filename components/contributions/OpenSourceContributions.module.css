@@ -1,6 +1,5 @@
 .contributions { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line, #ccc5b8); color: inherit; }
 .contributions h3 { margin: 0 0 8px; font-size: 18px; font-weight: 400; }
-.contributions .intro { margin: 0 0 16px; font-size: 12px; opacity: .65; }
 .contributions ul { list-style: none; padding: 0; margin: 0; }
 .contributions li + li { margin-top: 16px; }
 .title { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; }
