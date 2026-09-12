@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { getMotionPreference, subscribeMotion } from "@/lib/browser-preferences";
 import { contact, education, projects } from "@/data/resume";
+import OpenSourceContributions from "@/components/contributions/OpenSourceContributions";
 import styles from "./PrototypePortfolio.module.css";
 
 const words = ["Software engineering.", "Computer vision.", "Creative projects."];
@@ -79,6 +80,7 @@ export default function PrototypePortfolio({ embedded = false, onContact, onPhot
       <article className={styles.freelanceNote}>
         <span>Freelance</span><h3><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">Website repairs ↗</a></h3><p>Small fixes for existing websites.</p>
       </article>
+      <OpenSourceContributions />
     </section>
     <section className={styles.section} id="research"><div className={styles.sectionTitle}><div><span className={styles.eyebrow}>02 / SELECTED PROJECTS</span><h2>Some earlier work.</h2></div><p>Research, experiments,<br />and team projects.</p></div><div className={styles.projectGrid}>{projects.map((project, index) => <article className={styles.project} key={project.name}><div className={styles.projectTop}><span>0{index + 1}</span><span>{project.period}</span></div><p className={styles.eyebrow}>{project.role}</p><h3>{project.name}</h3><p>{project.portfolioSummary}</p><details><summary>My contribution <span>+</span></summary><ul>{project.outcomes.map(item => <li key={item}>{item}</li>)}</ul><div className={styles.tags}>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></details>{project.href && <a href={project.href} target="_blank" rel="noreferrer">{project.linkLabel} ↗</a>}</article>)}</div></section>
     <section id="path" className={`${styles.section} ${styles.path}`}><div className={styles.sectionTitle}><div><span className={styles.eyebrow}>03 / EDUCATION & WORK</span><h2>A path, still unfolding.</h2></div><p>The main milestones.<br />A little of what happened alongside.</p></div><div className={styles.timeline}><div className={styles.years} aria-label="Choose a timeline year">{milestones.map(item => <button type="button" key={item.year} onClick={() => setYear(item.year)} aria-pressed={year === item.year} aria-controls="milestone">{item.year}<span /></button>)}</div><div id="milestone" className={styles.milestone} aria-live="polite"><AnimatePresence mode="wait" initial={false}><motion.div key={year} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: reduced ? 0 : .15 }}><div className={styles.milestoneMeta}><span>{active.kind}</span><strong>{active.year}</strong></div><h3>{active.title}</h3><p>{active.detail}</p><aside><span>{year === "2026" ? "PERSONAL / INDEPENDENT BUILDS" : "ALONG THE WAY"}</span><p>{active.side}</p>{year === "2026" && <a href="#work">See what I’m building ↑</a>}</aside></motion.div></AnimatePresence></div></div></section>

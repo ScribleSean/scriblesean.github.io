@@ -4,6 +4,7 @@ import type { MouseEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { contact, experience, projects } from "@/data/resume";
+import OpenSourceContributions from "@/components/contributions/OpenSourceContributions";
 import styles from "./PortfolioContent.module.css";
 
 type PortfolioContentProps = { onContact?: () => void; embedded?: boolean };
@@ -82,6 +83,7 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
       <article className={styles.freelanceNote}>
         <span>Freelance</span><h3><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">Website repairs ↗</a></h3><p>Small fixes for existing websites.</p>
       </article>
+      <OpenSourceContributions />
       </div>
     </section>
 
