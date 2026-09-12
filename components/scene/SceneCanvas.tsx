@@ -6,6 +6,7 @@ import { Html, OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import DeskModels from "./DeskModels";
+import StaticBatch from "./StaticBatch";
 import type { CameraView } from "@/lib/scene-state";
 
 // A small studio sweep replaces the clipped ground-plane horizon.
@@ -31,22 +32,23 @@ const studioBackdrop = (() => {
 const cameraPositions: Record<CameraView, [number, number, number]> = {
   room: [8.5, 6.4, 12.5],
   desk: [3.5, 4.1, 8.3],
-  focus: [.0, 2.9, 6.9],
   entered: [-.58, 2.49, 4.2],
 };
 const lookTargets: Record<CameraView, [number, number, number]> = {
   room: [0, 1.55, .15],
   desk: [-.2, 1.98, .25],
-  focus: [-.58, 2.36, .89],
   entered: [-.58, 2.49, .92],
 };
 
-function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reducedMotion: boolean; resetKey: number }) {
+function CameraRig({ view, reducedMotion, resetKey, onSettled }: { view: CameraView; reducedMotion: boolean; resetKey: number; onSettled: () => void }) {
   const { camera, scene, invalidate, size } = useThree();
   const controls = useRef<OrbitControlsImpl>(null);
   const transitioning = useRef(true);
   const targetPosition = useRef(new THREE.Vector3());
   const targetLook = useRef(new THREE.Vector3());
+  const startPosition = useRef(new THREE.Vector3());
+  const startLook = useRef(new THREE.Vector3());
+  const startedAt = useRef(0);
 
   useEffect(() => {
     targetPosition.current.set(...cameraPositions[view]);
@@ -73,31 +75,37 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
     }
     /* eslint-enable react-hooks/immutability */
     camera.updateProjectionMatrix();
+    startPosition.current.copy(camera.position);
+    startLook.current.copy(controls.current?.target ?? targetLook.current);
+    startedAt.current = performance.now();
     transitioning.current = true;
     if (reducedMotion && controls.current) {
       camera.position.copy(targetPosition.current);
       controls.current.target.copy(targetLook.current);
       controls.current.update();
       transitioning.current = false;
+      onSettled();
     }
     invalidate();
-  }, [view, resetKey, camera, scene, invalidate, reducedMotion, size.width, size.height]);
+  }, [view, resetKey, camera, scene, invalidate, reducedMotion, size.width, size.height, onSettled]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (!transitioning.current || !controls.current) return;
-    const factor = 1 - Math.exp(-Math.min(delta, .05) * (view === "room" ? 5 : 13));
-    camera.position.lerp(targetPosition.current, factor);
-    controls.current.target.lerp(targetLook.current, factor);
+    const progress = Math.min(1, (performance.now() - startedAt.current) / 600);
+    const eased = progress * progress * (3 - 2 * progress);
+    camera.position.lerpVectors(startPosition.current, targetPosition.current, eased);
+    controls.current.target.lerpVectors(startLook.current, targetLook.current, eased);
     controls.current.update();
-    if (camera.position.distanceToSquared(targetPosition.current) < .000002 && controls.current.target.distanceToSquared(targetLook.current) < .000002) {
+    if (progress === 1) {
       transitioning.current = false;
+      onSettled();
     } else invalidate();
   });
   return <OrbitControls ref={controls} makeDefault enabled={view !== "entered"}
-    enableDamping={!reducedMotion} dampingFactor={.12} minDistance={3}
+    enableDamping={false} minDistance={3}
     minPolarAngle={.15} maxPolarAngle={view === "entered" ? Math.PI / 2 : Math.PI / 2 - .04}
     rotateSpeed={.65} panSpeed={.7} zoomSpeed={.8}
-    onStart={() => { transitioning.current = false; }} />;
+    onStart={() => { transitioning.current = false; }} onEnd={onSettled} />;
 }
 
 function ScreenSurface({ children }: { children: ReactNode }) {
@@ -146,7 +154,7 @@ function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   return null;
 }
 
-export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, resetKey }: {
+export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, onSettled, resetKey }: {
   view: CameraView;
   resetKey: number;
   reducedMotion: boolean;
@@ -155,10 +163,11 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   onApproach: () => void;
   onBack: () => void;
   onFailure: () => void;
+  onSettled: () => void;
 }) {
   const [pixelRatio, setPixelRatio] = useState(1);
   useEffect(() => {
-    const update = () => setPixelRatio(Math.min(1.25, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
+    const update = () => setPixelRatio(Math.min(1, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
     update();
     window.addEventListener("resize", update);
     window.visualViewport?.addEventListener("resize", update);
@@ -187,7 +196,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
     <directionalLight position={[-3, 8, 6]} intensity={3.1} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-normalBias={.035} shadow-bias={-.0001} shadow-radius={5} />
     <directionalLight position={[5, 4, -5]} intensity={1.2} color="#e8e5ff" />
     <Suspense fallback={null}>
-      <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><DeskModels /></group>
+      <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><StaticBatch><DeskModels /></StaticBatch></group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.72, 0]} receiveShadow
         onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
         <planeGeometry args={[200, 200]} />
@@ -200,6 +209,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       <SceneReady onReady={onReady} />
       <ContextRecovery onFailure={onFailure} />
     </Suspense>
-    <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
+    <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} onSettled={onSettled} />
   </Canvas>;
 }
