@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import { RoundedBox, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import FoxFigurine from "./FoxFigurine";
@@ -240,7 +240,7 @@ export function GameCase() {
   </group>;
 }
 
-export default function DeskModels() {
+const DeskModels = memo(function DeskModels() {
   return <group>
     <Box at={[0, .78, 0]} size={[7.2, .26, 3.65]} color="#c6bba8" radius={.14} />
     {[-3.05, 3.05].flatMap((x) => [-1.3, 1.3].map((z) => <mesh key={`${x}-${z}`} position={[x, .02, z]} castShadow receiveShadow><cylinderGeometry args={[.12, .14, 1.45, 20]} /><meshStandardMaterial color="#beb3a0" roughness={.7} /></mesh>))}
@@ -255,4 +255,6 @@ export default function DeskModels() {
     {[0, 1, 2].map((i) => <Cable key={i} radius={.014} points={[[-.29 + i * .16, 1.115, 1.0], [-.25 + i * .16, 1.00, 1.15], [.28, .955, 1.06], [.99, .95, .95]]} />)}
     <Cable radius={.026} points={[[.99, .95, .95], [1.05, .95, .15], [1.14, .95, -.93], [1.90, 1.12, -.97], [2.02, 1.3, -.78]]} />
   </group>;
-}
+});
+
+export default DeskModels;

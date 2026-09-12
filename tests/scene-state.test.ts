@@ -14,7 +14,8 @@ test("hover cannot skip the approach or unlock an entered desktop", () => {
 });
 
 test("video pauses on desktop, hidden document and mobile; restore preserves entered view", () => {
-  assert.equal(shouldPlayGame(initialSceneState, true), true);
+  assert.equal(shouldPlayGame(initialSceneState, true), false);
+  assert.equal(shouldPlayGame(sceneReducer(initialSceneState, { type: "approach" }), true), true);
   const desktop = sceneReducer(initialSceneState, { type: "enter", mobile: false });
   assert.equal(shouldPlayGame(desktop, true), false);
   const restored = sceneReducer(desktop, { type: "restore-game" });

@@ -48,7 +48,7 @@ export default function FilesApp({ resumeUrl = "/resume/sean-arackal-resume.pdf"
           </button>
         </aside>
 
-        <main className={styles.mainPanel}>
+        <main data-desktop-scroll className={styles.mainPanel}>
           {location === "home" && <HomeView onOpen={selectLocation} />}
           {location === "projects" && selectedProject && <ProjectsView project={selectedProject} onSelect={setSelectedProjectName} />}
           {location === "resume" && <ResumeContent />}

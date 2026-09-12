@@ -206,7 +206,7 @@ export default function MessagesApp({
         <span className={styles.availability}>Available by email</span>
       </header>
 
-      <div ref={threadRef} className={styles.thread} aria-live="polite">
+      <div ref={threadRef} data-desktop-scroll className={styles.thread} aria-live="polite">
         <div className={`${styles.bubble} ${styles.incoming}`}>{welcomeMessage}</div>
         {messages.map((message) => (
           <div className={styles.outgoingGroup} key={message.id}>

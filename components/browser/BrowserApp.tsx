@@ -39,7 +39,7 @@ export default function BrowserApp({ portfolio }: { portfolio: ReactNode }) {
     </form>
     {error && <p className={styles.error} role="alert">{error}</p>}
     {url !== PORTFOLIO_HOME && <div className={styles.notice}>Some sites only open in a separate tab.<a href={url} target="_blank" rel="noopener noreferrer">Open in new tab ↗</a></div>}
-    <div className={styles.content} key={`${url}-${reload}`}>
+    <div data-desktop-scroll className={styles.content} key={`${url}-${reload}`}>
       {url === PORTFOLIO_HOME ? portfolio : <iframe title="Browser webpage" src={url} referrerPolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads" />}
     </div>
   </section>;

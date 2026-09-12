@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -10,19 +11,30 @@ const JACKET = "#e0e3cc";
 const GREEN = "#516333";
 const METAL = "#b1b7b8";
 
+// Reuse unit spheres; small highlights need fewer segments than the silhouette.
+const bodySphere = new THREE.SphereGeometry(1, 24, 16);
+const detailSphere = new THREE.SphereGeometry(1, 12, 8);
+const sculptMaterials = new Map<string, THREE.MeshStandardMaterial>();
+function sculptMaterial(color: string, metal: boolean) {
+  const key = `${color}:${metal}`;
+  let material = sculptMaterials.get(key);
+  if (!material) {
+    material = new THREE.MeshStandardMaterial({ color, roughness: metal ? .43 : .69, metalness: metal ? .32 : 0 });
+    sculptMaterials.set(key, material);
+  }
+  return material;
+}
+
 function Sculpt({ at, size, color, rotation, metal = false }: {
   at: Vec3; size: Vec3; color: string; rotation?: Vec3; metal?: boolean;
 }) {
-  return <mesh position={at} scale={size} rotation={rotation} castShadow receiveShadow>
-    <sphereGeometry args={[1, 40, 28]} />
-    <meshStandardMaterial color={color} roughness={metal ? .43 : .69} metalness={metal ? .32 : 0} />
-  </mesh>;
+  return <mesh position={at} scale={size} rotation={rotation} geometry={Math.max(...size) < .06 ? detailSphere : bodySphere} dispose={null} material={sculptMaterial(color, metal)} castShadow receiveShadow />;
 }
 
 function Plate({ at, size, color, rotation, radius = .025 }: {
   at: Vec3; size: Vec3; color: string; rotation?: Vec3; radius?: number;
 }) {
-  return <RoundedBox position={at} args={size} rotation={rotation} radius={Math.min(radius, ...size.map(n => n * .45))} smoothness={6} castShadow receiveShadow>
+  return <RoundedBox position={at} args={size} rotation={rotation} radius={Math.min(radius, ...size.map(n => n * .45))} smoothness={3} bevelSegments={2} castShadow receiveShadow>
     <meshStandardMaterial color={color} roughness={.51} />
   </RoundedBox>;
 }
@@ -31,15 +43,15 @@ function Limb({ from, to, radius, color, width = 1 }: { from: Vec3; to: Vec3; ra
   const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to);
   const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
   return <mesh position={a.clone().add(b).multiplyScalar(.5)} quaternion={quaternion} scale={[width, 1, 1]} castShadow receiveShadow>
-    <capsuleGeometry args={[radius, Math.max(.001, a.distanceTo(b) - radius * 2), 12, 32]} />
+    <capsuleGeometry args={[radius, Math.max(.001, a.distanceTo(b) - radius * 2), 8, 20]} />
     <meshStandardMaterial color={color} roughness={.62} />
   </mesh>;
 }
 
 function Line({ points, radius, color }: { points: Vec3[]; radius: number; color: string }) {
-  const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
+  const curve = useMemo(() => new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p))), [points]);
   return <mesh castShadow>
-    <tubeGeometry args={[curve, 24, radius, 10, false]} />
+    <tubeGeometry args={[curve, 16, radius, 8, false]} />
     <meshStandardMaterial color={color} roughness={.54} />
   </mesh>;
 }
@@ -47,14 +59,18 @@ function Line({ points, radius, color }: { points: Vec3[]; radius: number; color
 // Curved outlines and beveled depth keep ears and lapels pointed without
 // the faceted, five-sided cones used by the previous miniature.
 function Ear({ inner = false }: { inner?: boolean }) {
-  const shape = new THREE.Shape();
-  shape.moveTo(-.095, 0);
-  shape.quadraticCurveTo(-.105, .13, -.035, .30);
-  shape.quadraticCurveTo(-.025, .322, -.012, .298);
-  shape.quadraticCurveTo(.066, .17, .09, .015);
-  shape.quadraticCurveTo(0, -.025, -.095, 0);
+  const shape = useMemo(() => {
+    const shape = new THREE.Shape();
+    shape.moveTo(-.095, 0);
+    shape.quadraticCurveTo(-.105, .13, -.035, .30);
+    shape.quadraticCurveTo(-.025, .322, -.012, .298);
+    shape.quadraticCurveTo(.066, .17, .09, .015);
+    shape.quadraticCurveTo(0, -.025, -.095, 0);
+    return shape;
+  }, []);
+  const options = useMemo(() => ({ depth: .035, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: .012, bevelThickness: .014, curveSegments: 10 }), []);
   return <mesh scale={inner ? [.62, .73, .45] : [1, 1, 1]} position={inner ? [0, .035, .049] : [0, 0, 0]} castShadow>
-    <extrudeGeometry args={[shape, { depth: .035, bevelEnabled: true, bevelSegments: 5, steps: 1, bevelSize: .012, bevelThickness: .014, curveSegments: 18 }]} />
+    <extrudeGeometry args={[shape, options]} />
     <meshStandardMaterial color={inner ? CREAM : FUR} roughness={.72} />
   </mesh>;
 }

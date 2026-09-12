@@ -79,8 +79,8 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
   const openApp = (app: DesktopAppId) => dispatch({ type: "open", app, viewport });
   const windowContent = useMemo(() => ({
     chrome: <BrowserApp portfolio={portfolio} />,
-    files: <div className={styles.appContent}>{files}</div>,
-    photos: <div className={styles.appContent}>{photos}</div>,
+    files: <div data-desktop-scroll className={styles.appContent}>{files}</div>,
+    photos: <div data-desktop-scroll className={styles.appContent}>{photos}</div>,
     messages: <div className={styles.messageContent}>{messages}</div>,
     settings: <div className={styles.settingsContent}><h2>Settings</h2><p>Accessibility</p><label className={styles.motionControl}><span><strong>Reduce motion</strong><small>Keep desktop movement minimal</small></span><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} aria-label="Reduce motion"/><span className={styles.switch} aria-hidden="true"/></label></div>,
   }), [files, messages, photos, onReducedMotionChange, portfolio, reducedMotion]);
@@ -106,24 +106,32 @@ function DesktopWindow({ app, title, frame, viewport, onAction, children }: { ap
   useEffect(() => {
     const body = bodyRef.current;
     if (!body) return;
-    const scrollable = (element: HTMLElement) => element.clientHeight > 0 && element.scrollHeight > element.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(element).overflowY);
-    const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || event.metaKey) return;
-      let target = event.target instanceof HTMLElement ? event.target : null;
-      while (target && body.contains(target) && !scrollable(target)) target = target.parentElement;
-      if (!target || !body.contains(target)) target = Array.from(body.querySelectorAll<HTMLElement>("*")).find(scrollable) ?? (scrollable(body) ? body : null);
-      if (!target) return;
+    let raf = 0;
+    const pending = new Map<HTMLElement, { x: number; y: number }>();
+    // Chromium does not reliably wheel-scroll the projected 3D HTML surface.
+    // Only handle declared scroll regions; avoid style reads and DOM scans.
+    const wheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey || !(event.target instanceof Element) || event.target.closest("textarea")) return;
+      const target = event.target.closest<HTMLElement>("[data-desktop-scroll]");
+      if (!target || !body.contains(target)) return;
       event.preventDefault();
       event.stopPropagation();
       const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? target.clientHeight : 1;
-      target.scrollTop += event.deltaY * unit;
-      target.scrollLeft += event.deltaX * unit;
+      const delta = pending.get(target) ?? { x: 0, y: 0 };
+      delta.x += (event.shiftKey && !event.deltaX ? event.deltaY : event.deltaX) * unit;
+      delta.y += (event.shiftKey && !event.deltaX ? 0 : event.deltaY) * unit;
+      pending.set(target, delta);
+      if (!raf) raf = requestAnimationFrame(() => {
+        pending.forEach((move, element) => element.scrollBy({ left: move.x, top: move.y, behavior: "instant" }));
+        pending.clear();
+        raf = 0;
+      });
     };
-    body.addEventListener("wheel", onWheel, { passive: false });
-    return () => body.removeEventListener("wheel", onWheel);
+    body.addEventListener("wheel", wheel, { passive: false });
+    return () => { body.removeEventListener("wheel", wheel); cancelAnimationFrame(raf); };
   }, []);
-  const dragRef = useRef<{ pointerX: number; pointerY: number; x: number; y: number } | null>(null);
-  const resizeRef = useRef<{ pointerX: number; pointerY: number; width: number; height: number } | null>(null);
+  const dragRef = useRef<{ pointerX: number; pointerY: number; x: number; y: number; scale: { x: number; y: number } } | null>(null);
+  const resizeRef = useRef<{ pointerX: number; pointerY: number; width: number; height: number; scale: { x: number; y: number } } | null>(null);
   const style = { display: frame.status === "open" || frame.status === "maximized" ? undefined : "none", left: frame.x, top: frame.y, width: frame.width, height: frame.height, zIndex: frame.z };
   const pointerScale = (element: Element) => {
     const root = element.closest("[data-desktop-root]") as HTMLDivElement | null;
@@ -134,24 +142,24 @@ function DesktopWindow({ app, title, frame, viewport, onAction, children }: { ap
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     if (frame.status !== "open") return;
     event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = { pointerX: event.clientX, pointerY: event.clientY, x: frame.x, y: frame.y };
+    dragRef.current = { pointerX: event.clientX, pointerY: event.clientY, x: frame.x, y: frame.y, scale: pointerScale(event.currentTarget) };
     onAction({ type: "focus", app });
   };
   const moveDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     const drag = dragRef.current;
     if (!drag) return;
-    const scale = pointerScale(event.currentTarget);
+    const scale = drag.scale;
     onAction({ type: "move", app, x: drag.x + (event.clientX - drag.pointerX) * scale.x, y: drag.y + (event.clientY - drag.pointerY) * scale.y, viewport });
   };
   const startResize = (event: React.PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
-    resizeRef.current = { pointerX: event.clientX, pointerY: event.clientY, width: frame.width, height: frame.height };
+    resizeRef.current = { pointerX: event.clientX, pointerY: event.clientY, width: frame.width, height: frame.height, scale: pointerScale(event.currentTarget) };
     onAction({ type: "focus", app });
   };
   const moveResize = (event: React.PointerEvent<HTMLButtonElement>) => {
     const resize = resizeRef.current;
     if (!resize) return;
-    const scale = pointerScale(event.currentTarget);
+    const scale = resize.scale;
     onAction({ type: "resize", app, width: resize.width + (event.clientX - resize.pointerX) * scale.x, height: resize.height + (event.clientY - resize.pointerY) * scale.y, viewport });
   };
   return <article className={styles.window} style={style} onPointerDown={() => onAction({ type: "focus", app })} aria-label={title}>
@@ -162,7 +170,7 @@ function DesktopWindow({ app, title, frame, viewport, onAction, children }: { ap
         <button type="button" onClick={() => onAction({ type: "close", app })} aria-label={`Close ${title}`}>×</button>
       </div>
     </div>
-    <div ref={bodyRef} className={styles.windowBody}>{children}</div>
+    <div ref={bodyRef} data-desktop-scroll className={styles.windowBody}>{children}</div>
     {frame.status === "open" && <button type="button" className={styles.resizeHandle} aria-label={`Resize ${title}`} onPointerDown={startResize} onPointerMove={moveResize} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onKeyDown={(event) => { const amount = event.shiftKey ? 32 : 12; if (event.key === "ArrowRight" || event.key === "ArrowDown") { event.preventDefault(); onAction({ type: "resize", app, width: frame.width + (event.key === "ArrowRight" ? amount : 0), height: frame.height + (event.key === "ArrowDown" ? amount : 0), viewport }); } if (event.key === "ArrowLeft" || event.key === "ArrowUp") { event.preventDefault(); onAction({ type: "resize", app, width: frame.width - (event.key === "ArrowLeft" ? amount : 0), height: frame.height - (event.key === "ArrowUp" ? amount : 0), viewport }); } }} />}
   </article>;
 }

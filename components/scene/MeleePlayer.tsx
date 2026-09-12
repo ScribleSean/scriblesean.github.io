@@ -57,7 +57,7 @@ function loadYoutube(): Promise<YoutubeApi> {
   return youtubePromise;
 }
 
-export default function MeleePlayer({ playing }: { playing: boolean }) {
+export default function MeleePlayer({ active, playing }: { active: boolean; playing: boolean }) {
   const container = useRef<HTMLDivElement>(null);
   const player = useRef<YoutubePlayer | null>(null);
   const wantsPlayback = useRef(playing);
@@ -87,6 +87,7 @@ export default function MeleePlayer({ playing }: { playing: boolean }) {
   }, [playing]);
 
   useEffect(() => {
+    if (!active) return;
     let disposed = false;
     let instance: YoutubePlayer | undefined;
     const timeout = window.setTimeout(() => {
@@ -138,7 +139,7 @@ export default function MeleePlayer({ playing }: { playing: boolean }) {
       player.current = null;
       instance?.destroy();
     };
-  }, []);
+  }, [active]);
 
   return (
     <div className={styles.melee} aria-label="Silent Falco versus Marth TAS video">

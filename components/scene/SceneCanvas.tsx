@@ -42,7 +42,7 @@ const lookTargets: Record<CameraView, [number, number, number]> = {
 };
 
 function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reducedMotion: boolean; resetKey: number }) {
-  const { camera, invalidate, size } = useThree();
+  const { camera, scene, invalidate, size } = useThree();
   const controls = useRef<OrbitControlsImpl>(null);
   const transitioning = useRef(true);
   const targetPosition = useRef(new THREE.Vector3());
@@ -59,6 +59,20 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
       // Preserve the composition when the preview pane becomes narrow.
       targetPosition.current.sub(targetLook.current).multiplyScalar(Math.max(1, 1.35 / aspect)).add(targetLook.current);
     }
+    // Fitting a portrait viewport may exceed the normal orbit distance.
+    // Keep the target reachable, otherwise the demand loop can never settle.
+    const distance = targetPosition.current.distanceTo(targetLook.current);
+    if (controls.current) controls.current.maxDistance = Math.max(30, distance * 1.1);
+    // Three.js cameras are mutable scene objects, not React state.
+    /* eslint-disable react-hooks/immutability -- Camera and fog are mutable Three.js objects. */
+    camera.far = Math.max(60, distance * 1.1 + 40);
+    // Keep the fitted portrait view in front of the atmospheric fade.
+    if (scene.fog instanceof THREE.Fog) {
+      scene.fog.near = Math.max(23, distance + 7);
+      scene.fog.far = Math.max(45, distance + 29);
+    }
+    /* eslint-enable react-hooks/immutability */
+    camera.updateProjectionMatrix();
     transitioning.current = true;
     if (reducedMotion && controls.current) {
       camera.position.copy(targetPosition.current);
@@ -67,7 +81,7 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
       transitioning.current = false;
     }
     invalidate();
-  }, [view, resetKey, camera, invalidate, reducedMotion, size.width, size.height]);
+  }, [view, resetKey, camera, scene, invalidate, reducedMotion, size.width, size.height]);
 
   useFrame((_, delta) => {
     if (!transitioning.current || !controls.current) return;
@@ -80,8 +94,8 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
     } else invalidate();
   });
   return <OrbitControls ref={controls} makeDefault enabled={view !== "entered"}
-    enableDamping={!reducedMotion} dampingFactor={.12} minDistance={3} maxDistance={30}
-    minPolarAngle={.15} maxPolarAngle={Math.PI / 2 - .04}
+    enableDamping={!reducedMotion} dampingFactor={.12} minDistance={3}
+    minPolarAngle={.15} maxPolarAngle={view === "entered" ? Math.PI / 2 : Math.PI / 2 - .04}
     rotateSpeed={.65} panSpeed={.7} zoomSpeed={.8}
     onStart={() => { transitioning.current = false; }} />;
 }
@@ -108,7 +122,16 @@ function ScreenSurface({ children }: { children: ReactNode }) {
 
 // Signal readiness only after the model textures inside Suspense have loaded.
 function SceneReady({ onReady }: { onReady: () => void }) {
-  useEffect(onReady, [onReady]);
+  const { gl, invalidate } = useThree();
+  useEffect(() => {
+    // All static models and textures have mounted. Camera movement does not
+    // change their shadows, so retain this map until the scene remounts.
+    // Renderer flags are intentionally imperative.
+    // eslint-disable-next-line react-hooks/immutability
+    gl.shadowMap.needsUpdate = true;
+    invalidate();
+    onReady();
+  }, [gl, invalidate, onReady]);
   return null;
 }
 
@@ -121,17 +144,29 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   onApproach: () => void;
   onBack: () => void;
 }) {
+  const [pixelRatio, setPixelRatio] = useState(1);
+  useEffect(() => {
+    const update = () => setPixelRatio(Math.min(1.5, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
+    update();
+    window.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("resize", update);
+    };
+  }, []);
   return <Canvas
     shadows={{ type: THREE.PCFShadowMap }}
     onPointerMissed={(event) => { if (event.type === "click") onBack(); }}
     frameloop="demand"
-    dpr={[1, 1.5]}
+    dpr={pixelRatio}
     camera={{ position: [9, 7.1, 13.3], fov: 37, near: .1, far: 60 }}
     gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
     onCreated={({ gl, events }) => {
       // Keep screen/app clicks out of the scene raycaster and orbit controls.
       events.connect?.(gl.domElement);
       gl.setClearColor("#e7dece");
+      gl.shadowMap.autoUpdate = false;
     }}
   >
     <color attach="background" args={["#e7dece"]} />
