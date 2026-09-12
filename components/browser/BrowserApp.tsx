@@ -15,6 +15,7 @@ export default function BrowserApp({ portfolio }: { portfolio: ReactNode }) {
   function navigate(value: string) {
     try {
       const next = resolveBrowserAddress(value);
+      if (next !== PORTFOLIO_HOME) window.open(next, "_blank", "noopener,noreferrer");
       setHistory((items) => [...items.slice(0, index + 1), next]);
       setIndex(index + 1);
       setAddress(display(next));
@@ -38,9 +39,8 @@ export default function BrowserApp({ portfolio }: { portfolio: ReactNode }) {
       <a className={styles.external} href={url} target="_blank" rel="noopener noreferrer" title="Open current page in a new tab" aria-label="Open current page in a new tab">↗</a>
     </form>
     {error && <p className={styles.error} role="alert">{error}</p>}
-    {url !== PORTFOLIO_HOME && <div className={styles.notice}>Some sites only open in a separate tab.<a href={url} target="_blank" rel="noopener noreferrer">Open in new tab ↗</a></div>}
     <div data-desktop-scroll className={styles.content} key={`${url}-${reload}`}>
-      {url === PORTFOLIO_HOME ? portfolio : <iframe title="Browser webpage" src={url} referrerPolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads" />}
+      {url === PORTFOLIO_HOME ? portfolio : <div className={styles.externalPage}><h2>Continue in a new tab</h2><p>Outside websites and searches open in your browser.</p><a href={url} target="_blank" rel="noopener noreferrer">Open page ↗</a><button type="button" onClick={() => navigate(PORTFOLIO_HOME)}>Back to portfolio</button></div>}
     </div>
   </section>;
 }

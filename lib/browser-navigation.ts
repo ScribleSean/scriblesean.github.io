@@ -10,6 +10,7 @@ export function resolveBrowserAddress(input: string): string {
   const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
   if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error("Use an HTTP or HTTPS website.");
   if (url.username || url.password) throw new Error("Use an address without login credentials.");
+  if (url.hostname === "scriblesean.github.io" && /^\/portfolio\/?$/.test(url.pathname)) return PORTFOLIO_HOME;
   if (url.hostname === "google.com" || url.hostname === "www.google.com") {
     url.protocol = "https:";
     url.hostname = "www.google.com";

@@ -12,8 +12,8 @@ const GREEN = "#516333";
 const METAL = "#b1b7b8";
 
 // Reuse unit spheres; small highlights need fewer segments than the silhouette.
-const bodySphere = new THREE.SphereGeometry(1, 24, 16);
-const detailSphere = new THREE.SphereGeometry(1, 12, 8);
+const bodySphere = new THREE.SphereGeometry(1, 16, 12);
+const detailSphere = new THREE.SphereGeometry(1, 8, 6);
 const sculptMaterials = new Map<string, THREE.MeshStandardMaterial>();
 function sculptMaterial(color: string, metal: boolean) {
   const key = `${color}:${metal}`;
@@ -34,7 +34,7 @@ function Sculpt({ at, size, color, rotation, metal = false }: {
 function Plate({ at, size, color, rotation, radius = .025 }: {
   at: Vec3; size: Vec3; color: string; rotation?: Vec3; radius?: number;
 }) {
-  return <RoundedBox position={at} args={size} rotation={rotation} radius={Math.min(radius, ...size.map(n => n * .45))} smoothness={3} bevelSegments={2} castShadow receiveShadow>
+  return <RoundedBox position={at} args={size} rotation={rotation} radius={Math.min(radius, ...size.map(n => n * .45))} smoothness={2} bevelSegments={1} castShadow receiveShadow>
     <meshStandardMaterial color={color} roughness={.51} />
   </RoundedBox>;
 }
@@ -43,7 +43,7 @@ function Limb({ from, to, radius, color, width = 1 }: { from: Vec3; to: Vec3; ra
   const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to);
   const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
   return <mesh position={a.clone().add(b).multiplyScalar(.5)} quaternion={quaternion} scale={[width, 1, 1]} castShadow receiveShadow>
-    <capsuleGeometry args={[radius, Math.max(.001, a.distanceTo(b) - radius * 2), 8, 20]} />
+    <capsuleGeometry args={[radius, Math.max(.001, a.distanceTo(b) - radius * 2), 4, 12]} />
     <meshStandardMaterial color={color} roughness={.62} />
   </mesh>;
 }
@@ -51,7 +51,7 @@ function Limb({ from, to, radius, color, width = 1 }: { from: Vec3; to: Vec3; ra
 function Line({ points, radius, color }: { points: Vec3[]; radius: number; color: string }) {
   const curve = useMemo(() => new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p))), [points]);
   return <mesh castShadow>
-    <tubeGeometry args={[curve, 16, radius, 8, false]} />
+    <tubeGeometry args={[curve, 12, radius, 6, false]} />
     <meshStandardMaterial color={color} roughness={.54} />
   </mesh>;
 }
@@ -68,7 +68,7 @@ function Ear({ inner = false }: { inner?: boolean }) {
     shape.quadraticCurveTo(0, -.025, -.095, 0);
     return shape;
   }, []);
-  const options = useMemo(() => ({ depth: .035, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: .012, bevelThickness: .014, curveSegments: 10 }), []);
+  const options = useMemo(() => ({ depth: .035, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: .012, bevelThickness: .014, curveSegments: 6 }), []);
   return <mesh scale={inner ? [.62, .73, .45] : [1, 1, 1]} position={inner ? [0, .035, .049] : [0, 0, 0]} castShadow>
     <extrudeGeometry args={[shape, options]} />
     <meshStandardMaterial color={inner ? CREAM : FUR} roughness={.72} />
@@ -81,7 +81,7 @@ const tailGeometry = (() => {
     new THREE.Vector3(-.55, .82, -.24), new THREE.Vector3(-.65, 1.03, -.19),
     new THREE.Vector3(-.67, 1.18, -.13),
   ]);
-  const rings = 48, sides = 28, frames = path.computeFrenetFrames(rings, false);
+  const rings = 24, sides = 12, frames = path.computeFrenetFrames(rings, false);
   const positions: number[] = [], colors: number[] = [], indices: number[] = [];
   const orange = new THREE.Color(FUR), cream = new THREE.Color(CREAM);
   for (let i = 0; i <= rings; i++) {
@@ -166,8 +166,8 @@ function Head() {
 /** Smooth resin-style miniature, posed from Sean's hand-on-hip reference. */
 export default function FoxFigurine() {
   return <group position={[-2.55, 1.12, .82]} rotation={[0, .18, 0]} scale={.78}>
-    <mesh position={[0, .045, .01]} receiveShadow castShadow><cylinderGeometry args={[.44, .46, .09, 64]} /><meshStandardMaterial color="#303436" roughness={.42} /></mesh>
-    <mesh position={[0, .096, .01]} receiveShadow><cylinderGeometry args={[.416, .416, .016, 64]} /><meshStandardMaterial color="#bba57b" roughness={.58} /></mesh>
+    <mesh position={[0, .045, .01]} receiveShadow castShadow><cylinderGeometry args={[.44, .46, .09, 32]} /><meshStandardMaterial color="#303436" roughness={.42} /></mesh>
+    <mesh position={[0, .096, .01]} receiveShadow><cylinderGeometry args={[.416, .416, .016, 32]} /><meshStandardMaterial color="#bba57b" roughness={.58} /></mesh>
     <mesh geometry={tailGeometry} castShadow receiveShadow><meshStandardMaterial vertexColors roughness={.76} /></mesh>
     <Boot x={-.218} z={.04} turn={-.25} /><Boot x={.20} z={-.015} turn={.18} />
     <Limb from={[-.122, .797, -.015]} to={[-.217, .473, .006]} radius={.132} color={GREEN} />
@@ -192,7 +192,7 @@ export default function FoxFigurine() {
     <Sculpt at={[.437, .983, .008]} size={[.094, .053, .085]} rotation={[0, 0, -.48]} color="#c4ccca" />
     <Limb from={[.429, .958, .014]} to={[.324, .822, .102]} radius={.057} color={FUR} />
     <Glove at={[.275, .795, .142]} rotation={[-.08, -.20, -.70]} />
-    <mesh position={[0, 1.233, .017]} rotation={[Math.PI / 2, 0, 0]} castShadow><torusGeometry args={[.106, .038, 16, 48]} /><meshStandardMaterial color="#ac3433" roughness={.76} /></mesh>
+    <mesh position={[0, 1.233, .017]} rotation={[Math.PI / 2, 0, 0]} castShadow><torusGeometry args={[.106, .038, 8, 24]} /><meshStandardMaterial color="#ac3433" roughness={.76} /></mesh>
     <Sculpt at={[.004, 1.174, .151]} size={[.111, .068, .047]} rotation={[0, 0, -.12]} color="#b43c36" />
     <Sculpt at={[.025, 1.126, .16]} size={[.073, .039, .025]} rotation={[0, 0, -.22]} color="#ac3433" />
     <Head />

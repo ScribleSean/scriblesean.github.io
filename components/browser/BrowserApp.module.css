@@ -5,7 +5,9 @@
 .toolbar button:disabled { opacity: .3; cursor: default; }
 .toolbar input { min-width: 0; flex: 1; height: 31px; padding: 5px 12px; border: 1px solid #d4d3da; border-radius: 16px; background: white; color: #383841; font-size: 12px; }
 .content { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; touch-action: pan-y; }
-.content iframe { display: block; border: 0; width: 100%; height: 100%; background: white; }
-.notice { flex: none; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; padding: 6px 12px; background: #f8f8fa; color: #77727f; font-size: 10px; }
-.notice a { color: #5040a0; }
 .error { padding: 8px 12px; margin: 0; color: #a42a36; font-size: 12px; }
+.externalPage { padding: 40px 28px; color: #454550; }
+.externalPage h2 { font-size: 20px; font-weight: 500; }
+.externalPage p { font-size: 14px; line-height: 1.6; }
+.externalPage a { color: #5040a0; text-decoration: underline; }
+.externalPage button { display: block; margin-top: 24px; padding: 8px 12px; border: 1px solid #d4d3da; border-radius: 5px; background: #f8f8fa; cursor: pointer; }

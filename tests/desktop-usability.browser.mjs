@@ -1,0 +1,74 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
+try {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await context.route(/youtube|ytimg|googlevideo/, route => route.abort());
+  // Inspect outside navigation without loading a second live site.
+  await context.route('https://example.com/**', route => route.fulfill({ body: '<p>Outside page</p>', contentType: 'text/html' }));
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
+  await page.locator('[data-ready="true"]').waitFor();
+  await page.screenshot({ path: '/private/tmp/sean-lighter-scene.png' });
+  await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom' }).click();
+  await page.waitForTimeout(3500);
+  await page.screenshot({ path: '/private/tmp/sean-lighter-detail.png' });
+  await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
+  await page.waitForTimeout(3500);
+  const launch = page.getByRole('button', { name: 'Portfolio in Chrome', exact: true });
+  const heading = page.getByRole('heading', { name: 'Hi, I’m Sean.' });
+  const title = 'Sean Arackal • Google Chrome';
+  await launch.click();
+  await heading.waitFor();
+  for (let i = 0; i < 3; i++) {
+    await page.getByRole('button', { name: `Maximize ${title}`, exact: true }).click();
+    await page.getByRole('button', { name: `Restore ${title}`, exact: true }).click();
+    await page.getByRole('button', { name: `Minimize ${title}`, exact: true }).click();
+    assert.equal(await heading.isVisible(), false);
+    await launch.click();
+    await heading.waitFor();
+    await page.getByRole('button', { name: `Close ${title}`, exact: true }).click();
+    assert.equal(await heading.isVisible(), false);
+    await launch.click();
+    await heading.waitFor();
+    await page.getByRole('button', { name: 'Slippi: restore Melee', exact: true }).click();
+    await page.getByRole('button', { name: 'Minimize Melee to desktop', exact: true }).click();
+    await heading.waitFor();
+  }
+  const address = page.getByRole('textbox', { name: 'Search or enter website address' });
+  await address.fill('https://example.com/');
+  const popupEvent = context.waitForEvent('page');
+  await address.press('Enter');
+  const popup = await popupEvent;
+  await popup.waitForURL('https://example.com/');
+  await popup.close();
+  assert.equal(await page.locator('iframe[title="Browser webpage"]').count(), 0);
+  await page.getByRole('heading', { name: 'Continue in a new tab' }).waitFor();
+  await page.getByRole('button', { name: 'Browser back', exact: true }).click();
+  await heading.waitFor();
+  await page.getByRole('button', { name: 'Browser forward', exact: true }).click();
+  await page.getByRole('heading', { name: 'Continue in a new tab' }).waitFor();
+  await page.getByRole('button', { name: 'Back to portfolio', exact: true }).click();
+  await heading.waitFor();
+  await address.fill('https://scriblesean.github.io/portfolio/');
+  await address.press('Enter');
+  await heading.waitFor();
+  await page.getByRole('button', { name: 'Reload page', exact: true }).click();
+  await heading.waitFor();
+  await page.screenshot({ path: '/private/tmp/sean-chrome-verified.png' });
+  await page.evaluate(() => {
+    const gl = document.querySelector('canvas').getContext('webgl2');
+    const extension = gl.getExtension('WEBGL_lose_context');
+    if (!extension) throw Error('Context-loss simulation is unavailable');
+    extension.loseContext();
+  });
+  await page.locator('canvas').waitFor({ state: 'detached' });
+  await launch.click();
+  await heading.waitFor();
+  assert.deepEqual(errors, []);
+  console.log('PASS: repeated window/game transitions, external tabs, history, home/reload, and WebGL-loss desktop recovery.');
+} finally { await browser.close(); }

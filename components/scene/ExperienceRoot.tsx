@@ -58,6 +58,11 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   }, []);
 
   const onReady = useCallback(() => setSceneReady(true), []);
+  const recoverDesktop = useCallback(() => {
+    setDegraded(true);
+    setDesktopOpened(true);
+    dispatch({ type: "enter", mobile: true });
+  }, []);
   const backToDesk = useCallback(() => {
     setCameraResetKey((key) => key + 1);
     setInitialApp(null);
@@ -126,7 +131,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   return <main data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
     <h1 className={styles.srOnly}>Sean Arackal</h1>
-    {degraded || state.mobileOpen ? fallback : <SceneBoundary fallback={fallback} onFailure={() => setDegraded(true)}>
+    {degraded || state.mobileOpen ? fallback : <SceneBoundary fallback={fallback} onFailure={recoverDesktop}>
       {!sceneReady && fallback}
       <div className={styles.canvas} data-ready={sceneReady}
         onPointerDownCapture={(event) => { scenePointer.current = { x: event.clientX, y: event.clientY, hit: false }; }}
@@ -134,7 +139,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
           const pointer = scenePointer.current;
           if (!pointer.hit && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 5) backToDesk();
         }}>
-        <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screen} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onBack={backToDesk} />
+        <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screen} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onBack={backToDesk} onFailure={recoverDesktop} />
       </div>
     </SceneBoundary>}
     {!state.mobileOpen && <footer className={styles.footer}>

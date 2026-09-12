@@ -17,3 +17,10 @@ test('active URLs and embedded credentials are rejected', () => {
     assert.throws(() => resolveBrowserAddress(value));
   }
 });
+
+test('absolute portfolio addresses reuse the built-in page', () => {
+  for (const value of ['https://scriblesean.github.io/portfolio/', 'https://scriblesean.github.io/portfolio', 'scriblesean.github.io/portfolio']) {
+    assert.equal(resolveBrowserAddress(value), '/portfolio/');
+  }
+  assert.equal(resolveBrowserAddress('https://scriblesean.github.io/'), 'https://scriblesean.github.io/');
+});

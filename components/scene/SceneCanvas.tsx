@@ -135,7 +135,18 @@ function SceneReady({ onReady }: { onReady: () => void }) {
   return null;
 }
 
-export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, resetKey }: {
+// A lost WebGL context must not leave a black, unusable computer.
+function ContextRecovery({ onFailure }: { onFailure: () => void }) {
+  const { gl } = useThree();
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener("webglcontextlost", onFailure);
+    return () => canvas.removeEventListener("webglcontextlost", onFailure);
+  }, [gl, onFailure]);
+  return null;
+}
+
+export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, resetKey }: {
   view: CameraView;
   resetKey: number;
   reducedMotion: boolean;
@@ -143,10 +154,11 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   onReady: () => void;
   onApproach: () => void;
   onBack: () => void;
+  onFailure: () => void;
 }) {
   const [pixelRatio, setPixelRatio] = useState(1);
   useEffect(() => {
-    const update = () => setPixelRatio(Math.min(1.5, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
+    const update = () => setPixelRatio(Math.min(1.25, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
     update();
     window.addEventListener("resize", update);
     window.visualViewport?.addEventListener("resize", update);
@@ -186,6 +198,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       </mesh>
       <ScreenSurface>{screen}</ScreenSurface>
       <SceneReady onReady={onReady} />
+      <ContextRecovery onFailure={onFailure} />
     </Suspense>
     <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
   </Canvas>;

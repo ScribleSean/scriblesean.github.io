@@ -16,7 +16,7 @@ function Box({ size, at = [0, 0, 0], color, radius = .06, roughness = .66, metal
   // drei's RoundedBox produces invalid geometry when a corner radius exceeds half
   // of a thin dimension. Several detail strips are intentionally very thin.
   const safeRadius = Math.max(.001, Math.min(radius, ...size.map((dimension) => dimension / 2 - .001)));
-  return <RoundedBox args={size} position={at} radius={safeRadius} smoothness={3} castShadow receiveShadow>
+  return <RoundedBox args={size} position={at} radius={safeRadius} smoothness={2} bevelSegments={1} castShadow receiveShadow>
     <meshStandardMaterial color={color} roughness={roughness} metalness={metalness} />
   </RoundedBox>;
 }
@@ -50,7 +50,7 @@ function Disc({ at, radius, color, top = false, depth = .025 }: {
   at: Vec3; radius: number; color: string; top?: boolean; depth?: number;
 }) {
   return <mesh position={at} rotation={top ? [0, 0, 0] : [Math.PI / 2, 0, 0]} castShadow>
-    <cylinderGeometry args={[radius, radius, depth, 32]} />
+    <cylinderGeometry args={[radius, radius, depth, 20]} />
     <meshStandardMaterial color={color} roughness={.6} />
   </mesh>;
 }
@@ -58,7 +58,7 @@ function Disc({ at, radius, color, top = false, depth = .025 }: {
 function Cable({ points, radius = .024 }: { points: Vec3[]; radius?: number }) {
   const curve = useMemo(() => new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(...point))), [points]);
   return <mesh castShadow>
-    <tubeGeometry args={[curve, 48, radius, 8, false]} />
+    <tubeGeometry args={[curve, 24, radius, 6, false]} />
     <meshStandardMaterial color="#272625" roughness={.86} />
   </mesh>;
 }
@@ -180,7 +180,7 @@ export function Controller() {
   }, []);
   return <group position={[.86, 1.1, 1.08]} rotation={[.02, -.18, 0]}>
     <mesh rotation={[-Math.PI / 2, 0, 0]} castShadow receiveShadow>
-      <extrudeGeometry args={[body, { depth: .13, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: .07, bevelThickness: .07, curveSegments: 16 }]} />
+      <extrudeGeometry args={[body, { depth: .13, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: .07, bevelThickness: .07, curveSegments: 10 }]} />
       <meshStandardMaterial color={INDIGO} roughness={.46} />
     </mesh>
     {/* Center bridge and two shoulder caps give the classic GameCube silhouette its weight. */}
@@ -234,7 +234,7 @@ export function GameCase() {
     <Box size={[1.10, .105, 1.48]} color="#17171a" radius={.025} roughness={.36} />
     <Box at={[-.505, .025, 0]} size={[.065, .12, 1.40]} color="#09090b" radius={.008} roughness={.3} />
     <MeleeCover />
-    <RoundedBox args={[1.025, .014, 1.39]} radius={.005} smoothness={3} position={[0, .076, 0]} castShadow>
+    <RoundedBox args={[1.025, .014, 1.39]} radius={.005} smoothness={2} bevelSegments={1} position={[0, .076, 0]} castShadow>
       <meshPhysicalMaterial color="#ffffff" transparent opacity={.13} roughness={.12} metalness={.02} clearcoat={.55} />
     </RoundedBox>
   </group>;
