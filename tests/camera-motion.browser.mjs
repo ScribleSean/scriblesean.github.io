@@ -26,22 +26,21 @@ try {
   });
   await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
   await page.locator('[data-ready="true"]').waitFor();
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(3000);
+  assert((await page.evaluate(() => window.__playTimes.length)) > 0, 'Video must autoplay on initial load before interaction');
   const results = [];
   for (const name of ['click to approach · drag to rotate · scroll to zoom', 'Enter the CRT', '↖ back to desk', 'click to approach · drag to rotate · scroll to zoom']) {
     await page.evaluate(() => { window.__drawTimes = []; window.__playTimes = []; window.__motionStarted = performance.now(); });
     await page.getByRole('button', { name, exact: true }).click();
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(3000);
     const result = await page.evaluate(() => {
       const times = window.__drawTimes;
       const gaps = times.slice(1).map((time, index) => time - times[index]).filter(time => time > 1).sort((a, b) => a - b);
       return { durationMs: Math.round(times.at(-1) - times[0]), frames: times.length, p95FrameMs: Math.round(gaps[Math.floor(gaps.length * .95)]) };
     });
     assert(result.frames > 1, 'The test must observe animated frames');
-    assert(result.durationMs < 900, `${name}: transition must finish without a long easing tail`);
+    assert(result.durationMs < 3000, `${name}: restored transition must settle`);
     if (name.startsWith('click to approach')) {
-      const playDelay = await page.evaluate(() => window.__playTimes[0] - window.__motionStarted);
-      assert(playDelay < 500, 'Playback must start without waiting for camera movement');
       await page.evaluate(() => { window.__drawTimes = []; });
       await page.getByRole('button', { name: 'Enter the CRT', exact: true }).hover();
       await page.waitForTimeout(700);

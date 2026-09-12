@@ -27,5 +27,5 @@ export function sceneReducer(state: SceneState, action: SceneAction): SceneState
 }
 
 export function shouldPlayGame(state: SceneState, documentVisible: boolean): boolean {
-  return documentVisible && !state.mobileOpen && state.camera !== "room" && state.screen === "game";
+  return documentVisible && !state.mobileOpen && state.screen === "game";
 }

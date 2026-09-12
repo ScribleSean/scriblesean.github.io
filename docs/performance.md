@@ -1,28 +1,16 @@
-# Scene performance checks
+# Scene baseline and verification
 
-Build the static export and serve `out/` locally before running the browser check:
+The current interaction baseline is commit `3639ce6`, deployed September 9 and still live September 11. Sean requested returning to that behavior after the September 12 tuning changed the feel of the site.
 
-```sh
-npm run build
-python3 -m http.server 3124 --directory out
-# In another terminal, using an installed Playwright:
-node tests/scene-performance.browser.mjs
-```
+Restored from that baseline: camera easing, orbit damping, hover focus, desk geometry, original Fox, and muted video autoplay on initial load. The 600 ms fixed transitions, static batching, delayed video initialization and transition-specific playback gate were removed. The newer portfolio content, mobile scaling, loading treatment and browser usability fixes remain.
 
-Optional environment variables: `PLAYWRIGHT_MODULE` selects an existing Playwright installation, `CHROME_PATH` selects a Chrome executable, `TEST_URL` selects the served site, and `TEST_DEVICE` restricts a rerun to one failing scenario.
+The camera's distance/polar limits, clipping and fog still accommodate the scaled mobile viewport, preventing unreachable targets. Canvas resolution respects the physical mobile viewport, with the baseline 1.5 maximum pixel ratio. Graphics-context recovery remains available.
 
-The browser check covers desktop, narrow windows, portrait phones, landscape and reduced motion. It checks that camera states stop drawing once settled, camera changes reuse geometry buffers, initial load does not request YouTube, the framebuffer fits the physical screen, and projected desktop scrolling and dragging work. It uses WebGL counters injected by the test, not production diagnostics. Third-party video requests are blocked to isolate rendering; playback needs a separate smoke check.
+Build the static export with `npm run build -- --webpack`, then serve `out/`. Browser checks accept `PLAYWRIGHT_MODULE`, `CHROME_PATH` and `TEST_URL` for an existing Playwright/Chrome installation and local or deployed URL:
 
-September 12 measurements on M4 Chrome: narrow-screen idle rendering went from 60 frames/second to zero; settled camera-motion frames fell from 417 draw calls / 481,512 triangles to 221 / 109,128. A 390 × 844 phone emulation dropped from 1800 × 3894 framebuffer pixels to 1169 × 2531. Emulation is not a physical-phone performance benchmark.
+- `tests/camera-motion.browser.mjs`: original easing settles, hover approaches/withdraws, initial autoplay is requested, and desk model clicks work. Its player is mocked to isolate camera behavior.
+- `tests/scene-performance.browser.mjs`: viewport fitting, settled idle rendering, video initialization, and desktop interactions. `TEST_DEVICE` selects a scenario. Geometry counts are observations, not acceptance targets for the restored baseline.
+- `tests/desktop-usability.browser.mjs`: window controls, browser navigation and graphics-loss recovery.
+- `tests/video-autoplay.browser.mjs`: actual muted YouTube playback advances before any user interaction; requires network access.
 
-Keep the fitted camera distance, orbit limits, fog and clipping distances consistent. The entered camera must permit a level view. Static shadow maps are refreshed after suspended assets mount; future moving models/lights will need explicit shadow invalidation. Shared Fox resources intentionally survive component remounts.
-
-A second September 12 pass reduced settled camera-motion frames from 109,128 to 40,640 triangles (63% fewer), keeping 221 draw calls. Rounded edges, Fox spheres/limbs/tail, controller curves and cables use fewer segments. The maximum canvas pixel ratio is 1.25 instead of 1.5, reducing framebuffer area by 31% where the cap applies; portrait phone emulation was already below this cap. Desktop blur filters were removed. All six viewport checks passed with zero idle draws and no geometry rebuild on approach.
-
-`tests/desktop-usability.browser.mjs` uses the same Playwright/Chrome/URL environment variables. It verifies repeated Chrome close/reopen, minimize/restore, maximize/restore, game transitions, browser history/home/reload, outside navigation in separate tabs, and recovery to the plain desktop after simulated WebGL context loss. Arbitrary sites are no longer embedded, preventing blocked frames and nested 3D scenes. The intermittent reported black screen was not reproduced during normal interactions; forced graphics-loss recovery was verified. Recovery remounts the desktop, so open windows reset.
-
-The camera animation pass replaces asymptotic interpolation with a 600 ms smoothstep transition, removes hover-driven camera movement and orbit damping, and pauses video during view changes. In the same desktop Chrome test, returning to the room fell from 1,783 ms to roughly 600 ms. `tests/camera-motion.browser.mjs` verifies the bounded duration, stable hover and delayed playback on repeat visits. Frame pacing was about 17–18 ms at the 95th percentile in the local test; this is not a guarantee for other devices.
-
-Static opaque models with matching materials are batched once, lowering full scene draw calls from 221 to 115 while retaining 40,640 triangles. Textured, transparent and instanced parts stay separate; batching must only wrap models that never move independently. The pixel-ratio cap is now 1, reducing framebuffer area another 36% where the old 1.25 cap applied. DOM desktop text keeps its normal resolution. All six viewport checks passed; scene appearance and desktop controls were checked after batching.
-
-Sean subsequently requested restoring hover-driven focus and immediate video playback during camera movement. Those behaviors are restored; the 600 ms transitions, static batching, mobile scaling and browser recovery remain. The original Fox from commit d67c7e2 is restored byte-for-byte, replacing the hand-on-hip redesign. The resulting phone check measured 98 draw calls and 50,588 triangles, with zero idle draws and no geometry rebuild on approach. The geometry regression budget is 55,000 for this selected model. Camera tests now verify hover focus/return and immediate playback rather than their superseded behavior.
+Restoration checks passed on desktop and phone emulation. Real Chrome playback advanced from 17.1 to 18.6 seconds while the camera stayed in the room. The return camera move follows the original approximately 1.8-second easing. These are local observations, not guarantees of frame rate or autoplay policy on every device. Future changes should be small, compared against this baseline and reviewed for interaction feel before accumulating more tuning.

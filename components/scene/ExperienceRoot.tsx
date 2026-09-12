@@ -43,7 +43,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const [degraded, setDegraded] = useState(false);
   const reducedMotion = useSyncExternalStore(subscribeMotion, getMotionPreference, () => true);
   const documentVisible = useSyncExternalStore(subscribeVisibility, getVisibility, () => true);
-  const [videoActivated, setVideoActivated] = useState(false);
   const [desktopOpened, setDesktopOpened] = useState(false);
   const [initialApp, setInitialApp] = useState<"messages" | "photos" | null>(null);
 
@@ -72,7 +71,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   function approach() {
     if (state.camera !== "room") return;
-    setVideoActivated(true);
     warmDesktop();
     dispatch({ type: "approach" });
   }
@@ -80,7 +78,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   function enter(contact = false) {
     warmDesktop();
     const useFallback = degraded || !sceneReady;
-    if (!useFallback) setVideoActivated(true);
     setInitialApp(contact ? "messages" : null);
     setDesktopOpened(true);
     if (useFallback && !state.mobileOpen) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
@@ -110,14 +107,14 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
         messages={<MessagesApp />}
         wallpaperUrl="/scene/sassy-sunset.png"
         initialApp={initialApp}
-        onRestoreGame={() => { setVideoActivated(true); dispatch({ type: "restore-game" }); }}
+        onRestoreGame={() => { dispatch({ type: "restore-game" }); }}
         onBackToDesk={backToDesk}
         reducedMotion={reducedMotion}
         onReducedMotionChange={setMotionPreference}
       />}
     </div>
     <div className={`${styles.gameLayer} ${state.screen === "desktop" ? styles.minimized : ""}`} inert={state.screen === "desktop"}>
-      <MeleePlayer active={videoActivated} playing={shouldPlayGame(state, documentVisible)} />
+      <MeleePlayer playing={shouldPlayGame(state, documentVisible)} />
     </div>
     {state.screen === "game" && <button type="button" className={styles.screenHit}
       aria-label={state.camera === "entered" ? "Minimize Melee to desktop" : "Enter the CRT"}

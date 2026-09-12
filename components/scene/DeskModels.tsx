@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { RoundedBox, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import FoxFigurine from "./FoxFigurine";
@@ -16,7 +16,7 @@ function Box({ size, at = [0, 0, 0], color, radius = .06, roughness = .66, metal
   // drei's RoundedBox produces invalid geometry when a corner radius exceeds half
   // of a thin dimension. Several detail strips are intentionally very thin.
   const safeRadius = Math.max(.001, Math.min(radius, ...size.map((dimension) => dimension / 2 - .001)));
-  return <RoundedBox args={size} position={at} radius={safeRadius} smoothness={2} bevelSegments={1} castShadow receiveShadow>
+  return <RoundedBox args={size} position={at} radius={safeRadius} smoothness={3} castShadow receiveShadow>
     <meshStandardMaterial color={color} roughness={roughness} metalness={metalness} />
   </RoundedBox>;
 }
@@ -50,7 +50,7 @@ function Disc({ at, radius, color, top = false, depth = .025 }: {
   at: Vec3; radius: number; color: string; top?: boolean; depth?: number;
 }) {
   return <mesh position={at} rotation={top ? [0, 0, 0] : [Math.PI / 2, 0, 0]} castShadow>
-    <cylinderGeometry args={[radius, radius, depth, 20]} />
+    <cylinderGeometry args={[radius, radius, depth, 32]} />
     <meshStandardMaterial color={color} roughness={.6} />
   </mesh>;
 }
@@ -58,7 +58,7 @@ function Disc({ at, radius, color, top = false, depth = .025 }: {
 function Cable({ points, radius = .024 }: { points: Vec3[]; radius?: number }) {
   const curve = useMemo(() => new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(...point))), [points]);
   return <mesh castShadow>
-    <tubeGeometry args={[curve, 24, radius, 6, false]} />
+    <tubeGeometry args={[curve, 48, radius, 8, false]} />
     <meshStandardMaterial color="#272625" roughness={.86} />
   </mesh>;
 }
@@ -180,7 +180,7 @@ export function Controller() {
   }, []);
   return <group position={[.86, 1.1, 1.08]} rotation={[.02, -.18, 0]}>
     <mesh rotation={[-Math.PI / 2, 0, 0]} castShadow receiveShadow>
-      <extrudeGeometry args={[body, { depth: .13, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: .07, bevelThickness: .07, curveSegments: 10 }]} />
+      <extrudeGeometry args={[body, { depth: .13, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: .07, bevelThickness: .07, curveSegments: 16 }]} />
       <meshStandardMaterial color={INDIGO} roughness={.46} />
     </mesh>
     {/* Center bridge and two shoulder caps give the classic GameCube silhouette its weight. */}
@@ -234,13 +234,13 @@ export function GameCase() {
     <Box size={[1.10, .105, 1.48]} color="#17171a" radius={.025} roughness={.36} />
     <Box at={[-.505, .025, 0]} size={[.065, .12, 1.40]} color="#09090b" radius={.008} roughness={.3} />
     <MeleeCover />
-    <RoundedBox args={[1.025, .014, 1.39]} radius={.005} smoothness={2} bevelSegments={1} position={[0, .076, 0]} castShadow>
+    <RoundedBox args={[1.025, .014, 1.39]} radius={.005} smoothness={3} position={[0, .076, 0]} castShadow>
       <meshPhysicalMaterial color="#ffffff" transparent opacity={.13} roughness={.12} metalness={.02} clearcoat={.55} />
     </RoundedBox>
   </group>;
 }
 
-const DeskModels = memo(function DeskModels() {
+export default function DeskModels() {
   return <group>
     <Box at={[0, .78, 0]} size={[7.2, .26, 3.65]} color="#c6bba8" radius={.14} />
     {[-3.05, 3.05].flatMap((x) => [-1.3, 1.3].map((z) => <mesh key={`${x}-${z}`} position={[x, .02, z]} castShadow receiveShadow><cylinderGeometry args={[.12, .14, 1.45, 20]} /><meshStandardMaterial color="#beb3a0" roughness={.7} /></mesh>))}
@@ -255,6 +255,4 @@ const DeskModels = memo(function DeskModels() {
     {[0, 1, 2].map((i) => <Cable key={i} radius={.014} points={[[-.29 + i * .16, 1.115, 1.0], [-.25 + i * .16, 1.00, 1.15], [.28, .955, 1.06], [.99, .95, .95]]} />)}
     <Cable radius={.026} points={[[.99, .95, .95], [1.05, .95, .15], [1.14, .95, -.93], [1.90, 1.12, -.97], [2.02, 1.3, -.78]]} />
   </group>;
-});
-
-export default DeskModels;
+}

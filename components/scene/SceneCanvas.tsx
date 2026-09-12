@@ -6,7 +6,6 @@ import { Html, OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import DeskModels from "./DeskModels";
-import StaticBatch from "./StaticBatch";
 import type { CameraView } from "@/lib/scene-state";
 
 // A small studio sweep replaces the clipped ground-plane horizon.
@@ -48,9 +47,6 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
   const transitioning = useRef(true);
   const targetPosition = useRef(new THREE.Vector3());
   const targetLook = useRef(new THREE.Vector3());
-  const startPosition = useRef(new THREE.Vector3());
-  const startLook = useRef(new THREE.Vector3());
-  const startedAt = useRef(0);
 
   useEffect(() => {
     targetPosition.current.set(...cameraPositions[view]);
@@ -63,23 +59,17 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
       // Preserve the composition when the preview pane becomes narrow.
       targetPosition.current.sub(targetLook.current).multiplyScalar(Math.max(1, 1.35 / aspect)).add(targetLook.current);
     }
-    // Fitting a portrait viewport may exceed the normal orbit distance.
-    // Keep the target reachable, otherwise the demand loop can never settle.
+    // Keep the original camera motion reachable in the scaled mobile viewport.
     const distance = targetPosition.current.distanceTo(targetLook.current);
     if (controls.current) controls.current.maxDistance = Math.max(30, distance * 1.1);
-    // Three.js cameras are mutable scene objects, not React state.
-    /* eslint-disable react-hooks/immutability -- Camera and fog are mutable Three.js objects. */
+    /* eslint-disable react-hooks/immutability -- Three.js camera and fog are mutable. */
     camera.far = Math.max(60, distance * 1.1 + 40);
-    // Keep the fitted portrait view in front of the atmospheric fade.
     if (scene.fog instanceof THREE.Fog) {
       scene.fog.near = Math.max(23, distance + 7);
       scene.fog.far = Math.max(45, distance + 29);
     }
     /* eslint-enable react-hooks/immutability */
     camera.updateProjectionMatrix();
-    startPosition.current.copy(camera.position);
-    startLook.current.copy(controls.current?.target ?? targetLook.current);
-    startedAt.current = performance.now();
     transitioning.current = true;
     if (reducedMotion && controls.current) {
       camera.position.copy(targetPosition.current);
@@ -90,19 +80,18 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
     invalidate();
   }, [view, resetKey, camera, scene, invalidate, reducedMotion, size.width, size.height]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!transitioning.current || !controls.current) return;
-    const progress = Math.min(1, (performance.now() - startedAt.current) / 600);
-    const eased = progress * progress * (3 - 2 * progress);
-    camera.position.lerpVectors(startPosition.current, targetPosition.current, eased);
-    controls.current.target.lerpVectors(startLook.current, targetLook.current, eased);
+    const factor = 1 - Math.exp(-Math.min(delta, .05) * (view === "room" ? 5 : 13));
+    camera.position.lerp(targetPosition.current, factor);
+    controls.current.target.lerp(targetLook.current, factor);
     controls.current.update();
-    if (progress === 1) {
+    if (camera.position.distanceToSquared(targetPosition.current) < .000002 && controls.current.target.distanceToSquared(targetLook.current) < .000002) {
       transitioning.current = false;
     } else invalidate();
   });
   return <OrbitControls ref={controls} makeDefault enabled={view !== "entered"}
-    enableDamping={false} minDistance={3}
+    enableDamping={!reducedMotion} dampingFactor={.12} minDistance={3}
     minPolarAngle={.15} maxPolarAngle={view === "entered" ? Math.PI / 2 : Math.PI / 2 - .04}
     rotateSpeed={.65} panSpeed={.7} zoomSpeed={.8}
     onStart={() => { transitioning.current = false; }} />;
@@ -128,21 +117,6 @@ function ScreenSurface({ children }: { children: ReactNode }) {
   </Html>;
 }
 
-// Signal readiness only after the model textures inside Suspense have loaded.
-function SceneReady({ onReady }: { onReady: () => void }) {
-  const { gl, invalidate } = useThree();
-  useEffect(() => {
-    // All static models and textures have mounted. Camera movement does not
-    // change their shadows, so retain this map until the scene remounts.
-    // Renderer flags are intentionally imperative.
-    // eslint-disable-next-line react-hooks/immutability
-    gl.shadowMap.needsUpdate = true;
-    invalidate();
-    onReady();
-  }, [gl, invalidate, onReady]);
-  return null;
-}
-
 // A lost WebGL context must not leave a black, unusable computer.
 function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   const { gl } = useThree();
@@ -166,7 +140,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
 }) {
   const [pixelRatio, setPixelRatio] = useState(1);
   useEffect(() => {
-    const update = () => setPixelRatio(Math.min(1, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
+    const update = () => setPixelRatio(Math.min(1.5, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
     update();
     window.addEventListener("resize", update);
     window.visualViewport?.addEventListener("resize", update);
@@ -186,7 +160,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       // Keep screen/app clicks out of the scene raycaster and orbit controls.
       events.connect?.(gl.domElement);
       gl.setClearColor("#e7dece");
-      gl.shadowMap.autoUpdate = false;
+      onReady();
     }}
   >
     <color attach="background" args={["#e7dece"]} />
@@ -195,7 +169,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
     <directionalLight position={[-3, 8, 6]} intensity={3.1} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-normalBias={.035} shadow-bias={-.0001} shadow-radius={5} />
     <directionalLight position={[5, 4, -5]} intensity={1.2} color="#e8e5ff" />
     <Suspense fallback={null}>
-      <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><StaticBatch><DeskModels /></StaticBatch></group>
+      <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><DeskModels /></group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.72, 0]} receiveShadow
         onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
         <planeGeometry args={[200, 200]} />
@@ -205,7 +179,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
         <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
       </mesh>
       <ScreenSurface>{screen}</ScreenSurface>
-      <SceneReady onReady={onReady} />
       <ContextRecovery onFailure={onFailure} />
     </Suspense>
     <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
