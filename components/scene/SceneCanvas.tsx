@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Html, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import DeskModels from "./DeskModels";
@@ -87,9 +87,13 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
     controls.current.target.lerp(targetLook.current, factor);
     controls.current.update();
     if (camera.position.distanceToSquared(targetPosition.current) < .000002 && controls.current.target.distanceToSquared(targetLook.current) < .000002) {
+      // Finish at the exact projection, rather than retaining a fractional tilt.
+      camera.position.copy(targetPosition.current);
+      controls.current.target.copy(targetLook.current);
+      controls.current.update();
       transitioning.current = false;
     } else invalidate();
-  });
+  }, -.5);
   return <OrbitControls ref={controls} makeDefault enabled={view !== "entered"}
     enableDamping={!reducedMotion} dampingFactor={.12} minDistance={3}
     minPolarAngle={.15} maxPolarAngle={view === "entered" ? Math.PI / 2 : Math.PI / 2 - .04}
@@ -97,24 +101,37 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
     onStart={() => { transitioning.current = false; }} />;
 }
 
-function ScreenSurface({ children }: { children: ReactNode }) {
-  const { gl } = useThree();
-  const portal = useMemo(() => ({ current: gl.domElement.parentElement! }), [gl]);
-  const [frontFacing, setFrontFacing] = useState(true);
-  const wasFrontFacing = useRef(true);
-  useFrame(({ camera }) => {
-    // The glass faces +Z. Test its facing plane rather than raycasting against
-    // every tiny bezel part, which can flicker at oblique viewing angles.
-    const visible = camera.position.z > .985;
-    if (visible !== wasFrontFacing.current) {
-      wasFrontFacing.current = visible;
-      setFrontFacing(visible);
-    }
+function ScreenSurface({ element }: { element: React.RefObject<HTMLDivElement | null> }) {
+  const projection = useMemo(() => new THREE.Matrix4(), []);
+  const origin = useMemo(() => new THREE.Vector4(), []);
+  const dx = useMemo(() => new THREE.Vector4(), []);
+  const dy = useMemo(() => new THREE.Vector4(), []);
+  useFrame(({ camera, size }) => {
+    const screen = element.current;
+    if (!screen) return;
+    camera.updateMatrixWorld();
+    projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+    // Match the CRT's 2.56 x 1.92 opening, immediately in front of its glass.
+    origin.set(-.58 - 1.28, 2.49 + .96, .965, 1).applyMatrix4(projection);
+    dx.set(2.56 / 960, 0, 0, 0).applyMatrix4(projection);
+    dy.set(0, -1.92 / 720, 0, 0).applyMatrix4(projection);
+    const visible = camera.position.z > .965 && origin.w > 0;
+    /* eslint-disable react-hooks/immutability -- Project a DOM ref each frame without React rerenders. */
+    screen.style.visibility = visible ? "visible" : "hidden";
+    screen.style.pointerEvents = visible ? "auto" : "none";
+    if (!visible) return;
+    const x = size.width / (2 * origin.w), y = size.height / (2 * origin.w);
+    const a = (dx.x + dx.w) * x, b = (-dx.y + dx.w) * y;
+    const c = (dy.x + dy.w) * x, d = (-dy.y + dy.w) * y;
+    const tx = (origin.x + origin.w) * x, ty = (-origin.y + origin.w) * y;
+    const p = dx.w / origin.w, q = dy.w / origin.w;
+    // Use native 2D hit testing once perspective is below a subpixel difference.
+    screen.style.transform = Math.abs(p * 960) + Math.abs(q * 720) < .0001
+      ? `matrix(${a},${b},${c},${d},${tx},${ty})`
+      : `matrix3d(${a},${b},0,${p},${c},${d},0,${q},0,0,1,0,${tx},${ty},0,1)`;
+    /* eslint-enable react-hooks/immutability */
   });
-  return <Html portal={portal} transform position={[-.58, 2.49, .985]} distanceFactor={1.05} zIndexRange={[10, 1]}
-    style={{ width: 960, height: 720, visibility: frontFacing ? "visible" : "hidden", pointerEvents: frontFacing ? "auto" : "none" }}>
-    {children}
-  </Html>;
+  return null;
 }
 
 // A lost WebGL context must not leave a black, unusable computer.
@@ -138,6 +155,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   onBack: () => void;
   onFailure: () => void;
 }) {
+  const screenElement = useRef<HTMLDivElement>(null);
   const [pixelRatio, setPixelRatio] = useState(1);
   useEffect(() => {
     const update = () => setPixelRatio(Math.min(1.5, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
@@ -149,7 +167,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       window.visualViewport?.removeEventListener("resize", update);
     };
   }, []);
-  return <Canvas
+  return <><Canvas
     shadows={{ type: THREE.PCFShadowMap }}
     onPointerMissed={(event) => { if (event.type === "click") onBack(); }}
     frameloop="demand"
@@ -178,9 +196,9 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       <mesh geometry={studioBackdrop} receiveShadow onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
         <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
       </mesh>
-      <ScreenSurface>{screen}</ScreenSurface>
+      <ScreenSurface element={screenElement} />
       <ContextRecovery onFailure={onFailure} />
     </Suspense>
     <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
-  </Canvas>;
+  </Canvas><div ref={screenElement} data-crt-surface style={{ position: "absolute", left: 0, top: 0, width: 960, height: 720, transformOrigin: "0 0", visibility: "hidden", zIndex: 10 }}>{screen}</div></>;
 }

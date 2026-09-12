@@ -34,6 +34,15 @@ class SceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode
   render() { return this.state.failed ? this.props.fallback : this.props.children; }
 }
 
+class DesktopBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (this.state.failed) return <div className={styles.loadingDesk} role="alert" style={{ height: "100%", background: "#e7dece" }}><p>The desktop couldn’t load. Reload to get the latest version.</p><button type="button" onClick={() => window.location.reload()}>Reload website</button></div>;
+    return this.props.children;
+  }
+}
+
 export default function ExperienceRoot({ prototype = false }: { prototype?: boolean }) {
   const Portfolio = prototype ? PrototypePortfolio : PortfolioContent;
   const [state, dispatch] = useReducer(sceneReducer, initialSceneState);
@@ -100,7 +109,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   const screen = <div onClick={(event) => event.stopPropagation()} className={`${styles.screen} ${reducedMotion ? styles.reduceMotion : ""}`}>
     <div className={styles.desktopLayer} inert={state.screen === "game"}>
-      {desktopOpened && <DesktopShell
+      {desktopOpened && <DesktopBoundary><DesktopShell
         portfolio={<Portfolio embedded {...(prototype ? { onPhotos: () => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("photos")); } } : {})} onContact={() => { setInitialApp(null); window.requestAnimationFrame(() => setInitialApp("messages")); }} />}
         files={<FilesApp />}
         photos={prototype ? <PhotosApp /> : undefined}
@@ -111,7 +120,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
         onBackToDesk={backToDesk}
         reducedMotion={reducedMotion}
         onReducedMotionChange={setMotionPreference}
-      />}
+      /></DesktopBoundary>}
     </div>
     <div className={`${styles.gameLayer} ${state.screen === "desktop" ? styles.minimized : ""}`} inert={state.screen === "desktop"}>
       <MeleePlayer playing={shouldPlayGame(state, documentVisible)} />
