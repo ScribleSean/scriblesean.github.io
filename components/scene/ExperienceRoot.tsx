@@ -13,7 +13,6 @@ const DesktopShell = dynamic(() => import("@/components/desktop/DesktopShell"), 
 const PortfolioContent = dynamic(() => import("@/components/portfolio/PortfolioContent"), { loading: () => <AppLoading /> });
 const PrototypePortfolio = dynamic(() => import("@/components/prototype/PrototypePortfolio"), { loading: () => <AppLoading /> });
 const PhotosApp = dynamic(() => import("@/components/photos/PhotosApp"), { loading: () => <AppLoading /> });
-const SafariShell = dynamic(() => import("@/components/portfolio/SafariShell"));
 const FilesApp = dynamic(() => import("@/components/files/FilesApp"), { loading: () => <AppLoading /> });
 const MessagesApp = dynamic(() => import("@/components/messages/MessagesApp"), { loading: () => <AppLoading /> });
 let desktopWarmup: Promise<unknown> | undefined;
@@ -28,14 +27,6 @@ function warmDesktop() {
 
 function AppLoading() { return <div className={styles.loadingApp} role="status">Opening…</div>; }
 
-function subscribeMedia(callback: () => void) {
-  const query = window.matchMedia("(max-width: 760px) and (pointer: coarse)");
-  query.addEventListener("change", callback);
-  return () => query.removeEventListener("change", callback);
-}
-const getMobileSnapshot = () => window.matchMedia("(max-width: 760px) and (pointer: coarse)").matches;
-const getServerSnapshot = () => null;
-
 class SceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode; onFailure: () => void }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
@@ -46,7 +37,6 @@ class SceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode
 export default function ExperienceRoot({ prototype = false }: { prototype?: boolean }) {
   const Portfolio = prototype ? PrototypePortfolio : PortfolioContent;
   const [state, dispatch] = useReducer(sceneReducer, initialSceneState);
-  const mobile = useSyncExternalStore(subscribeMedia, getMobileSnapshot, getServerSnapshot);
   const scenePointer = useRef({ x: 0, y: 0, hit: false });
   const [cameraResetKey, setCameraResetKey] = useState(0);
   const [sceneReady, setSceneReady] = useState(false);
@@ -55,13 +45,11 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const documentVisible = useSyncExternalStore(subscribeVisibility, getVisibility, () => true);
   const [desktopOpened, setDesktopOpened] = useState(false);
   const [initialApp, setInitialApp] = useState<"messages" | "photos" | null>(null);
-  const [mobileApp, setMobileApp] = useState<"portfolio" | "files" | "messages" | "photos">("portfolio");
-  const [mobileVisited, setMobileVisited] = useState({ files: false, messages: false, photos: false });
 
   useEffect(() => {
     const section = window.location.hash.slice(1);
     if (["work", "experience", "education", "skills", "contact", "top"].includes(section)) window.location.replace(`/portfolio/#${section}`);
-    const onPop = () => { dispatch({ type: "back" }); setMobileApp("portfolio"); };
+    const onPop = () => { dispatch({ type: "back" }); };
     window.addEventListener("popstate", onPop);
     return () => {
       window.removeEventListener("popstate", onPop);
@@ -72,15 +60,9 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const backToDesk = useCallback(() => {
     setCameraResetKey((key) => key + 1);
     setInitialApp(null);
-    setMobileApp("portfolio");
     if (window.history.state?.seanMobile) window.history.back();
     else dispatch({ type: "back" });
   }, []);
-
-  function openMobileApp(app: "portfolio" | "files" | "messages" | "photos") {
-    setMobileApp(app);
-    if (app !== "portfolio") setMobileVisited((current) => ({ ...current, [app]: true }));
-  }
 
   function approach() {
     warmDesktop();
@@ -89,27 +71,25 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   function enter(contact = false) {
     warmDesktop();
-    const isMobile = mobile === true || degraded;
+    const useFallback = degraded;
     setInitialApp(contact ? "messages" : null);
     setDesktopOpened(true);
-    openMobileApp(contact ? "messages" : "portfolio");
-    if (isMobile && !state.mobileOpen) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
-    dispatch({ type: contact ? "contact" : "enter", mobile: isMobile });
+    if (useFallback && !state.mobileOpen) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
+    dispatch({ type: contact ? "contact" : "enter", mobile: useFallback });
   }
 
   function activateScreen() {
-    if (mobile) enter();
-    else if (state.camera === "room") approach();
+    if (state.camera === "room") approach();
     else if (state.camera === "entered") dispatch({ type: "minimize-game" });
     else enter();
   }
 
   const fallback = <div className={styles.fallback}>
     <button type="button" onClick={() => enter()} aria-label="Enter Sean's portfolio through the CRT">
-      {/* This 54 KB approved still keeps phones out of the WebGL bundle. */}
+      {/* The still is used during loading or when WebGL is unavailable. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/scene/mobile-setup.webp" alt="A beige CRT, indigo GameCube, green Slippi controller and Fox figurine" width="960" height="640" fetchPriority="high" />
-      <p>{mobile ? "tap the CRT to enter" : "enter the portfolio"}</p>
+      <p>enter the portfolio</p>
     </button>
   </div>;
 
@@ -144,7 +124,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   return <main data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
     <h1 className={styles.srOnly}>Sean Arackal</h1>
-    {mobile !== false || degraded ? fallback : <SceneBoundary fallback={fallback} onFailure={() => setDegraded(true)}>
+    {degraded ? fallback : <SceneBoundary fallback={fallback} onFailure={() => setDegraded(true)}>
       {!sceneReady && fallback}
       <div className={styles.canvas}
         onPointerDownCapture={(event) => { scenePointer.current = { x: event.clientX, y: event.clientY, hit: false }; }}
@@ -160,16 +140,8 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       <button type="button" onClick={() => enter(true)}>contact</button><span aria-hidden="true">·</span>
       <a href={prototype ? "/prototype/" : "/portfolio/"}>skip to portfolio</a>
     </footer>}
-    {mobile === false && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>click to approach · drag to rotate · scroll to zoom</button>}
-    {mobile === false && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
-    {state.mobileOpen && <div className={styles.mobilePanel}>
-      <SafariShell onBack={backToDesk} onContact={() => openMobileApp("messages")} onFiles={() => openMobileApp("files")} title="scriblesean.github.io">
-        {mobileApp !== "portfolio" && <div className={styles.mobileAppHeader}><span>{mobileApp === "messages" ? "Message Sean" : mobileApp === "photos" ? "Photos" : "Files"}</span><button type="button" onClick={() => openMobileApp("portfolio")}>Back to portfolio</button></div>}
-        <div className={styles.mobileApp} hidden={mobileApp !== "portfolio"}><Portfolio embedded {...(prototype ? { onPhotos: () => openMobileApp("photos") } : {})} onContact={() => openMobileApp("messages")} /></div>
-        {mobileVisited.photos && <div hidden={mobileApp !== "photos"}><PhotosApp /></div>}
-        {mobileVisited.files && <div hidden={mobileApp !== "files"}><FilesApp /></div>}
-        {mobileVisited.messages && <div hidden={mobileApp !== "messages"}><MessagesApp /></div>}
-      </SafariShell>
-    </div>}
+    {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>click to approach · drag to rotate · scroll to zoom</button>}
+    {!degraded && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
+    {state.mobileOpen && <div className={styles.fallbackDesktop}>{screen}</div>}
   </main>;
 }

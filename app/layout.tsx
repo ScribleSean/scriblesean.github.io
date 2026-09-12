@@ -1,9 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "@/styles/globals.css";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
+
+// Keep the desktop composition on phones. Omitting initialScale lets the
+// browser fit this layout to the device, while preserving pinch-to-zoom.
+export const viewport: Viewport = { width: 1200, initialScale: undefined };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
