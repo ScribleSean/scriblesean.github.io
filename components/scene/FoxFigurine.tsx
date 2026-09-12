@@ -4,169 +4,181 @@ import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
 type Vec3 = [number, number, number];
+const FUR = "#d89435";
+const CREAM = "#f0e4c1";
+const JACKET = "#e0e3cc";
+const GREEN = "#516333";
+const METAL = "#b1b7b8";
 
-const FUR = "#bd7437";
-const MUZZLE = "#eadfc8";
-const JACKET = "#d8d2c2";
-const PANTS = "#5b6b4a";
-const BOOT = "#303337";
-const GLOVE = "#434741";
-const SCARF = "#a94336";
-
-function Part({
-  size,
-  at = [0, 0, 0],
-  color,
-  radius = .04,
-  roughness = .58,
-  rotation,
-}: {
-  size: Vec3;
-  at?: Vec3;
-  color: string;
-  radius?: number;
-  roughness?: number;
-  rotation?: Vec3;
+function Sculpt({ at, size, color, rotation, metal = false }: {
+  at: Vec3; size: Vec3; color: string; rotation?: Vec3; metal?: boolean;
 }) {
-  const safeRadius = Math.max(.002, Math.min(radius, ...size.map((value) => value / 2 - .002)));
-  return <RoundedBox args={size} position={at} rotation={rotation} radius={safeRadius} smoothness={4} castShadow receiveShadow>
-    <meshStandardMaterial color={color} roughness={roughness} />
-  </RoundedBox>;
-}
-
-function TaperedLimb({ from, to, topRadius, bottomRadius, color }: {
-  from: Vec3;
-  to: Vec3;
-  topRadius: number;
-  bottomRadius: number;
-  color: string;
-}) {
-  const start = new THREE.Vector3(...from);
-  const end = new THREE.Vector3(...to);
-  const center = start.clone().add(end).multiplyScalar(.5);
-  const length = start.distanceTo(end);
-  const orientation = new THREE.Quaternion().setFromUnitVectors(
-    new THREE.Vector3(0, 1, 0),
-    end.clone().sub(start).normalize(),
-  );
-
-  return <mesh position={center} quaternion={orientation} castShadow receiveShadow>
-    <cylinderGeometry args={[topRadius, bottomRadius, length, 24, 3]} />
-    <meshStandardMaterial color={color} roughness={.64} />
+  return <mesh position={at} scale={size} rotation={rotation} castShadow receiveShadow>
+    <sphereGeometry args={[1, 40, 28]} />
+    <meshStandardMaterial color={color} roughness={metal ? .43 : .69} metalness={metal ? .32 : 0} />
   </mesh>;
 }
 
-function Headset() {
-  const curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(.12, 1.41, -.12),
-    new THREE.Vector3(.245, 1.48, -.04),
-    new THREE.Vector3(.27, 1.32, .12),
+function Plate({ at, size, color, rotation, radius = .025 }: {
+  at: Vec3; size: Vec3; color: string; rotation?: Vec3; radius?: number;
+}) {
+  return <RoundedBox position={at} args={size} rotation={rotation} radius={Math.min(radius, ...size.map(n => n * .45))} smoothness={6} castShadow receiveShadow>
+    <meshStandardMaterial color={color} roughness={.51} />
+  </RoundedBox>;
+}
+
+function Limb({ from, to, radius, color, width = 1 }: { from: Vec3; to: Vec3; radius: number; color: string; width?: number }) {
+  const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to);
+  const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+  return <mesh position={a.clone().add(b).multiplyScalar(.5)} quaternion={quaternion} scale={[width, 1, 1]} castShadow receiveShadow>
+    <capsuleGeometry args={[radius, Math.max(.001, a.distanceTo(b) - radius * 2), 12, 32]} />
+    <meshStandardMaterial color={color} roughness={.62} />
+  </mesh>;
+}
+
+function Line({ points, radius, color }: { points: Vec3[]; radius: number; color: string }) {
+  const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
+  return <mesh castShadow>
+    <tubeGeometry args={[curve, 24, radius, 10, false]} />
+    <meshStandardMaterial color={color} roughness={.54} />
+  </mesh>;
+}
+
+// Curved outlines and beveled depth keep ears and lapels pointed without
+// the faceted, five-sided cones used by the previous miniature.
+function Ear({ inner = false }: { inner?: boolean }) {
+  const shape = new THREE.Shape();
+  shape.moveTo(-.095, 0);
+  shape.quadraticCurveTo(-.105, .13, -.035, .30);
+  shape.quadraticCurveTo(-.025, .322, -.012, .298);
+  shape.quadraticCurveTo(.066, .17, .09, .015);
+  shape.quadraticCurveTo(0, -.025, -.095, 0);
+  return <mesh scale={inner ? [.62, .73, .45] : [1, 1, 1]} position={inner ? [0, .035, .049] : [0, 0, 0]} castShadow>
+    <extrudeGeometry args={[shape, { depth: .035, bevelEnabled: true, bevelSegments: 5, steps: 1, bevelSize: .012, bevelThickness: .014, curveSegments: 18 }]} />
+    <meshStandardMaterial color={inner ? CREAM : FUR} roughness={.72} />
+  </mesh>;
+}
+
+const tailGeometry = (() => {
+  const path = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-.08, .79, -.12), new THREE.Vector3(-.32, .72, -.23),
+    new THREE.Vector3(-.55, .82, -.24), new THREE.Vector3(-.65, 1.03, -.19),
+    new THREE.Vector3(-.67, 1.18, -.13),
   ]);
-  return <group>
-    <mesh castShadow>
-      <tubeGeometry args={[curve, 18, .014, 6, false]} />
-      <meshStandardMaterial color="#59606a" roughness={.4} metalness={.26} />
-    </mesh>
-    <mesh position={[.27, 1.28, .13]} rotation={[0, Math.PI / 2, 0]} castShadow>
-      <cylinderGeometry args={[.068, .068, .038, 12]} />
-      <meshStandardMaterial color="#414852" roughness={.42} metalness={.3} />
-    </mesh>
-    <TaperedLimb from={[.30, 1.25, .16]} to={[.38, 1.16, .30]} topRadius={.012} bottomRadius={.012} color="#48505a" />
-    <mesh position={[.39, 1.16, .30]} castShadow>
-      <sphereGeometry args={[.025, 10, 8]} />
-      <meshStandardMaterial color="#1e2229" roughness={.38} metalness={.18} />
-    </mesh>
-  </group>;
-}
+  const rings = 48, sides = 28, frames = path.computeFrenetFrames(rings, false);
+  const positions: number[] = [], colors: number[] = [], indices: number[] = [];
+  const orange = new THREE.Color(FUR), cream = new THREE.Color(CREAM);
+  for (let i = 0; i <= rings; i++) {
+    const t = i / rings, center = path.getPointAt(t);
+    const radius = .003 + .145 * Math.pow(Math.sin(Math.PI * (.13 + t * .87)), .85);
+    const color = orange.clone().lerp(cream, THREE.MathUtils.smoothstep(t, .66, .76));
+    for (let j = 0; j <= sides; j++) {
+      const angle = j / sides * Math.PI * 2;
+      const point = center.clone().addScaledVector(frames.normals[i], Math.cos(angle) * radius).addScaledVector(frames.binormals[i], Math.sin(angle) * radius * .78);
+      positions.push(point.x, point.y, point.z); colors.push(color.r, color.g, color.b);
+      if (i < rings && j < sides) {
+        const a = i * (sides + 1) + j, b = a + sides + 1;
+        indices.push(a, b, a + 1, a + 1, b, b + 1);
+      }
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices); geometry.computeVertexNormals();
+  return geometry;
+})();
 
-function GlovedHand({ at, rotation = [0, 0, 0] }: { at: Vec3; rotation?: Vec3 }) {
+function Glove({ at, rotation }: { at: Vec3; rotation: Vec3 }) {
   return <group position={at} rotation={rotation}>
-    <Part size={[.125, .105, .105]} color={GLOVE} radius={.04} />
-    {[-.037, 0, .037].map((x) => <Part key={x} at={[x, .07, .045]} size={[.022, .065, .038]} color="#373b37" radius={.009} />)}
+    <Sculpt at={[0, .075, 0]} size={[.084, .038, .055]} color={METAL} metal />
+    <Sculpt at={[0, 0, 0]} size={[.075, .087, .046]} color={METAL} metal />
+    {[-.047, -.016, .017, .047].map((x, i) => {
+      const length = [.071, .09, .086, .067][i];
+      return <group key={x}>
+        <Line points={[[x, -.034, .003], [x, -.075, .007], [x, -.034 - length, .03], [x, -.035 - length, .054]]} radius={.016} color={METAL} />
+        <Sculpt at={[x, -.035 - length, .054]} size={[.016, .017, .017]} color={METAL} metal />
+        <Sculpt at={[x, -.01, .043]} size={[.012, .011, .008]} color="#e0e2dc" metal />
+      </group>;
+    })}
+    <Line points={[[-.066, .032, .011], [-.099, -.006, .029], [-.088, -.052, .063], [-.062, -.060, .069]]} radius={.022} color={METAL} />
+    <Sculpt at={[-.062, -.06, .069]} size={[.023, .02, .023]} color={METAL} metal />
   </group>;
 }
 
-/**
- * A compact, high-readability Fox McCloud desk figurine. Its transform matches
- * the former FoxCollectible group in DeskModels, so it can replace that element
- * directly without changing the room composition.
- */
-export default function FoxFigurine() {
-  return <group position={[-2.55, 1.12, .82]} rotation={[0, .18, 0]} scale={.85}>
-    <mesh position={[0, .045, 0]} receiveShadow castShadow>
-      <cylinderGeometry args={[.34, .37, .09, 32]} />
-      <meshStandardMaterial color="#232526" roughness={.42} />
-    </mesh>
-    <mesh position={[0, .098, 0]} receiveShadow castShadow>
-      <cylinderGeometry args={[.29, .29, .02, 32]} />
-      <meshStandardMaterial color="#b99f70" roughness={.56} />
-    </mesh>
+function Boot({ x, z, turn }: { x: number; z: number; turn: number }) {
+  return <group position={[x, 0, z]} rotation={[0, turn, 0]}>
+    <Plate at={[0, .128, .066]} size={[.25, .056, .36]} color="#707778" radius={.025} />
+    <Sculpt at={[0, .181, .089]} size={[.124, .085, .193]} color={METAL} metal />
+    <Limb from={[0, .205, -.034]} to={[0, .48, -.068]} radius={.085} width={1.12} color={METAL} />
+    <Sculpt at={[0, .466, -.063]} size={[.099, .075, .092]} color={METAL} metal />
+    <Plate at={[0, .354, .019]} size={[.115, .205, .029]} rotation={[-.13, 0, 0]} color="#c6cbca" />
+    <Sculpt at={[.087, .217, -.018]} size={[.033, .034, .033]} color="#e0e3de" metal />
+  </group>;
+}
 
-    {/* A braced stance gives the miniature a readable fighting silhouette. */}
-    <TaperedLimb from={[-.12, .60, -.02]} to={[-.28, .34, .14]} topRadius={.105} bottomRadius={.085} color={PANTS} />
-    <TaperedLimb from={[-.28, .34, .14]} to={[-.39, .16, .27]} topRadius={.085} bottomRadius={.07} color={PANTS} />
-    <TaperedLimb from={[.12, .60, -.03]} to={[.25, .37, -.08]} topRadius={.105} bottomRadius={.085} color={PANTS} />
-    <TaperedLimb from={[.25, .37, -.08]} to={[.16, .16, .13]} topRadius={.085} bottomRadius={.07} color={PANTS} />
-    <Part at={[-.43, .145, .30]} size={[.27, .14, .40]} color={BOOT} radius={.055} rotation={[0, -.08, 0]} />
-    <Part at={[.16, .145, .20]} size={[.25, .14, .37]} color={BOOT} radius={.055} rotation={[0, .10, 0]} />
-    <Part at={[-.43, .078, .31]} size={[.28, .035, .41]} color="#181a1d" radius={.012} rotation={[0, -.08, 0]} />
-    <Part at={[.16, .078, .20]} size={[.26, .035, .38]} color="#181a1d" radius={.012} rotation={[0, .10, 0]} />
-
-    <group position={[0, .76, .00]} rotation={[0, -.10, -.06]}>
-      <Part size={[.44, .40, .30]} color={JACKET} radius={.09} />
-      <Part at={[0, .06, .158]} size={[.18, .29, .024]} color="#4a6e4e" radius={.008} />
-      <Part at={[0, -.14, .17]} size={[.37, .048, .032]} color="#474842" radius={.01} />
-      <Part at={[.04, -.14, .19]} size={[.07, .085, .018]} color="#bd9c5a" radius={.008} roughness={.38} />
-      <Part at={[-.25, .07, 0]} size={[.09, .23, .25]} color="#a5a9a2" radius={.028} />
-      <Part at={[.25, .07, 0]} size={[.09, .23, .25]} color="#a5a9a2" radius={.028} />
-    </group>
-
-    <TaperedLimb from={[-.20, .90, .02]} to={[-.38, .82, .19]} topRadius={.08} bottomRadius={.068} color={JACKET} />
-    <TaperedLimb from={[-.38, .82, .19]} to={[-.31, 1.06, .30]} topRadius={.068} bottomRadius={.052} color={JACKET} />
-    <GlovedHand at={[-.31, 1.08, .30]} rotation={[.12, .20, -.20]} />
-    <TaperedLimb from={[.20, .90, -.01]} to={[.37, .79, .17]} topRadius={.08} bottomRadius={.068} color={JACKET} />
-    <TaperedLimb from={[.37, .79, .17]} to={[.18, 1.04, .31]} topRadius={.068} bottomRadius={.052} color={JACKET} />
-    <GlovedHand at={[.18, 1.06, .31]} rotation={[.14, -.20, .28]} />
-
-    {/* The orange tail sits behind the jacket and ends in a cream tip. */}
-    <TaperedLimb from={[-.13, .67, -.12]} to={[-.43, .53, -.40]} topRadius={.13} bottomRadius={.085} color={FUR} />
-    <TaperedLimb from={[-.43, .53, -.40]} to={[-.53, .71, -.42]} topRadius={.085} bottomRadius={.05} color={MUZZLE} />
-
-    <mesh position={[0, 1.19, .03]} scale={[1.0, 1.06, .87]} castShadow receiveShadow>
-      <sphereGeometry args={[.235, 40, 28]} />
-      <meshStandardMaterial color={FUR} roughness={.68} />
-    </mesh>
-    <mesh position={[0, 1.13, .205]} scale={[1.0, .60, .84]} castShadow>
-      <sphereGeometry args={[.152, 32, 20]} />
-      <meshStandardMaterial color={MUZZLE} roughness={.72} />
-    </mesh>
-    <mesh position={[0, 1.135, .335]} scale={[1.12, .72, .62]} castShadow>
-      <sphereGeometry args={[.043, 14, 10]} />
-      <meshStandardMaterial color="#292724" roughness={.45} />
-    </mesh>
-    {[-1, 1].map((side) => <group key={side}>
-      <mesh position={[side * .158, 1.40, .028]} rotation={[0, 0, -side * .20]} castShadow>
-        <coneGeometry args={[.108, .29, 5]} />
-        <meshStandardMaterial color={FUR} roughness={.67} />
-      </mesh>
-      <mesh position={[side * .158, 1.41, .080]} rotation={[0, 0, -side * .20]}>
-        <coneGeometry args={[.055, .18, 4]} />
-        <meshStandardMaterial color="#e2c9ad" roughness={.72} />
-      </mesh>
-      <mesh position={[side * .105, 1.225, .235]} scale={[1, .44, .30]}>
-        <sphereGeometry args={[.070, 16, 10]} />
-        <meshStandardMaterial color="#f3e7cc" roughness={.58} />
-      </mesh>
-      <mesh position={[side * .105, 1.225, .258]} scale={[1, .62, .38]}>
-        <sphereGeometry args={[.026, 12, 8]} />
-        <meshStandardMaterial color="#315f51" roughness={.32} metalness={.08} />
-      </mesh>
+function Head() {
+  return <group position={[0, 1.37, .015]} rotation={[.035, -.30, -.025]}>
+    <Sculpt at={[0, .005, 0]} size={[.22, .221, .184]} color={FUR} />
+    <Sculpt at={[0, -.121, .104]} size={[.161, .080, .142]} color={CREAM} />
+    {[-1, 1].map(side => <group key={side}>
+      <group position={[side * .145, .164, -.027]} rotation={[0, side * -.12, side * -.20]}><Ear /><Ear inner /></group>
+      <Sculpt at={[side * .139, -.079, .092]} size={[.108, .074, .12]} rotation={[0, side * -.25, side * -.20]} color={CREAM} />
+      <Sculpt at={[side * .19, -.018, -.001]} size={[.074, .11, .105]} rotation={[0, 0, side * -.3]} color={FUR} />
+      <Sculpt at={[side * .094, .018, .173]} size={[.078, .042, .025]} rotation={[0, side * .22, side * .22]} color="#f3f0dc" />
+      <Sculpt at={[side * .091 - .01, .016, .198]} size={[.025, .029, .009]} color="#57777c" />
+      <Sculpt at={[side * .091 - .012, .014, .205]} size={[.012, .019, .006]} color="#171e20" />
+      <Sculpt at={[side * .091 - .018, .027, .21]} size={[.006, .007, .003]} color="#f8f7ea" />
+      <Sculpt at={[side * .094, .055, .175]} size={[.093, .027, .045]} rotation={[0, side * .17, side * .23]} color="#c88c35" />
     </group>)}
-    <Part at={[0, 1.025, .112]} size={[.25, .055, .096]} color={SCARF} radius={.015} />
-    <mesh position={[.08, .97, .16]} rotation={[0, 0, -.12]} castShadow>
-      <coneGeometry args={[.068, .19, 4]} />
-      <meshStandardMaterial color={SCARF} roughness={.68} />
-    </mesh>
-    <Headset />
+    <Sculpt at={[0, -.046, .185]} size={[.084, .087, .132]} color={FUR} />
+    <Sculpt at={[0, -.101, .229]} size={[.115, .069, .166]} color={CREAM} />
+    <Sculpt at={[0, -.083, .375]} size={[.057, .039, .037]} color="#252826" />
+    <Sculpt at={[-.016, -.066, .402]} size={[.018, .008, .006]} color="#666960" />
+    <Line points={[[-.112, -.128, .225], [-.072, -.151, .298], [0, -.158, .333], [.083, -.148, .276]]} radius={.004} color="#756444" />
+    {/* Silver headset and a microphone that follows the cheek. */}
+    <Line points={[[.216, -.012, -.01], [.226, .174, -.045], [0, .231, -.051], [-.20, .161, -.048]]} radius={.027} color="#adb3b2" />
+    <Plate at={[.219, .012, .014]} size={[.075, .172, .134]} color="#adb3b2" />
+    <Plate at={[.264, .011, .021]} size={[.018, .112, .09]} color="#606865" radius={.006} />
+    <Plate at={[-.207, .021, .008]} size={[.056, .134, .106]} color="#9ba4a2" />
+    <Plate at={[0, .208, .086]} size={[.123, .054, .078]} color="#b6bab3" />
+    <Line points={[[.255, -.049, .059], [.247, -.128, .142], [.167, -.151, .246], [.099, -.15, .298]]} radius={.013} color="#727b79" />
+    <Sculpt at={[.09, -.15, .307]} size={[.047, .022, .024]} color="#3b4240" />
+  </group>;
+}
+
+/** Smooth resin-style miniature, posed from Sean's hand-on-hip reference. */
+export default function FoxFigurine() {
+  return <group position={[-2.55, 1.12, .82]} rotation={[0, .18, 0]} scale={.78}>
+    <mesh position={[0, .045, .01]} receiveShadow castShadow><cylinderGeometry args={[.44, .46, .09, 64]} /><meshStandardMaterial color="#303436" roughness={.42} /></mesh>
+    <mesh position={[0, .096, .01]} receiveShadow><cylinderGeometry args={[.416, .416, .016, 64]} /><meshStandardMaterial color="#bba57b" roughness={.58} /></mesh>
+    <mesh geometry={tailGeometry} castShadow receiveShadow><meshStandardMaterial vertexColors roughness={.76} /></mesh>
+    <Boot x={-.218} z={.04} turn={-.25} /><Boot x={.20} z={-.015} turn={.18} />
+    <Limb from={[-.122, .797, -.015]} to={[-.217, .473, .006]} radius={.132} color={GREEN} />
+    <Limb from={[.125, .797, -.01]} to={[.201, .476, -.043]} radius={.13} color={GREEN} />
+    <Sculpt at={[0, .783, -.018]} size={[.237, .14, .154]} color={GREEN} />
+    <Sculpt at={[0, 1.014, -.017]} size={[.203, .233, .146]} color="#40562b" />
+    <Plate at={[0, .805, .126]} size={[.369, .057, .042]} color="#31382b" radius={.012} />
+    <Plate at={[.023, .807, .153]} size={[.055, .073, .025]} color="#a7a087" radius={.009} />
+    {[-1, 1].map(side => <group key={side}>
+      <Sculpt at={[side * .161, 1.024, -.01]} size={[.104, .218, .164]} rotation={[0, 0, side * .10]} color={JACKET} />
+      <Plate at={[side * .092, 1.145, .121]} size={[.072, .18, .046]} rotation={[.08, side * -.18, side * -.24]} color="#eef0dc" />
+      <Line points={[[side * .111, 1.05, .144], [side * .105, .949, .15], [side * .115, .835, .125]]} radius={.006} color="#b5b9a3" />
+      <Plate at={[side * .176, .846, .09]} size={[.132, .025, .064]} color="#d0d6be" radius={.01} />
+    </group>)}
+    <Plate at={[.097, 1.086, .162]} size={[.049, .026, .012]} color="#c7bc8c" radius={.003} />
+    {/* Relaxed left arm; right elbow projects outward with the glove on the hip. */}
+    <Limb from={[-.218, 1.121, -.006]} to={[-.325, .972, .006]} radius={.087} color={JACKET} />
+    <Sculpt at={[-.327, .946, .011]} size={[.087, .05, .083]} color="#c4ccca" />
+    <Limb from={[-.331, .927, .009]} to={[-.344, .762, .097]} radius={.054} color={FUR} />
+    <Glove at={[-.347, .686, .123]} rotation={[-.12, -.16, -.05]} />
+    <Limb from={[.217, 1.126, -.018]} to={[.438, 1.012, -.008]} radius={.093} color={JACKET} />
+    <Sculpt at={[.437, .983, .008]} size={[.094, .053, .085]} rotation={[0, 0, -.48]} color="#c4ccca" />
+    <Limb from={[.429, .958, .014]} to={[.324, .822, .102]} radius={.057} color={FUR} />
+    <Glove at={[.275, .795, .142]} rotation={[-.08, -.20, -.70]} />
+    <mesh position={[0, 1.233, .017]} rotation={[Math.PI / 2, 0, 0]} castShadow><torusGeometry args={[.106, .038, 16, 48]} /><meshStandardMaterial color="#ac3433" roughness={.76} /></mesh>
+    <Sculpt at={[.004, 1.174, .151]} size={[.111, .068, .047]} rotation={[0, 0, -.12]} color="#b43c36" />
+    <Sculpt at={[.025, 1.126, .16]} size={[.073, .039, .025]} rotation={[0, 0, -.22]} color="#ac3433" />
+    <Head />
   </group>;
 }

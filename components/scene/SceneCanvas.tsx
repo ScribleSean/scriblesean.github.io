@@ -106,6 +106,12 @@ function ScreenSurface({ children }: { children: ReactNode }) {
   </Html>;
 }
 
+// Signal readiness only after the model textures inside Suspense have loaded.
+function SceneReady({ onReady }: { onReady: () => void }) {
+  useEffect(onReady, [onReady]);
+  return null;
+}
+
 export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, resetKey }: {
   view: CameraView;
   resetKey: number;
@@ -126,7 +132,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       // Keep screen/app clicks out of the scene raycaster and orbit controls.
       events.connect?.(gl.domElement);
       gl.setClearColor("#e7dece");
-      onReady();
     }}
   >
     <color attach="background" args={["#e7dece"]} />
@@ -145,6 +150,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
         <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
       </mesh>
       <ScreenSurface>{screen}</ScreenSurface>
+      <SceneReady onReady={onReady} />
     </Suspense>
     <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
   </Canvas>;

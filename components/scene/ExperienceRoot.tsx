@@ -71,7 +71,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   function enter(contact = false) {
     warmDesktop();
-    const useFallback = degraded;
+    const useFallback = degraded || !sceneReady;
     setInitialApp(contact ? "messages" : null);
     setDesktopOpened(true);
     if (useFallback && !state.mobileOpen) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
@@ -85,12 +85,11 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   }
 
   const fallback = <div className={styles.fallback}>
-    <button type="button" onClick={() => enter()} aria-label="Enter Sean's portfolio through the CRT">
-      {/* The still is used during loading or when WebGL is unavailable. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/scene/mobile-setup.webp" alt="A beige CRT, indigo GameCube, green Slippi controller and Fox figurine" width="960" height="640" fetchPriority="high" />
-      <p>enter the portfolio</p>
-    </button>
+    <div className={styles.loadingDesk}>
+      <span className={styles.loadingMark} aria-hidden="true" />
+      <p role="status">{degraded ? "The desktop is ready." : "Opening the desk…"}</p>
+      <button type="button" onClick={() => enter()} aria-label="Open Sean's desktop">open desktop</button>
+    </div>
   </div>;
 
   const screen = <div onClick={(event) => event.stopPropagation()} className={`${styles.screen} ${reducedMotion ? styles.reduceMotion : ""}`}>
@@ -124,9 +123,9 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   return <main data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
     <h1 className={styles.srOnly}>Sean Arackal</h1>
-    {degraded ? fallback : <SceneBoundary fallback={fallback} onFailure={() => setDegraded(true)}>
+    {degraded || state.mobileOpen ? fallback : <SceneBoundary fallback={fallback} onFailure={() => setDegraded(true)}>
       {!sceneReady && fallback}
-      <div className={styles.canvas}
+      <div className={styles.canvas} data-ready={sceneReady}
         onPointerDownCapture={(event) => { scenePointer.current = { x: event.clientX, y: event.clientY, hit: false }; }}
         onClick={(event) => {
           const pointer = scenePointer.current;
