@@ -122,7 +122,7 @@ function Head() {
     <Sculpt at={[0, .005, 0]} size={[.22, .221, .184]} color={FUR} />
     <Sculpt at={[0, -.121, .104]} size={[.161, .080, .142]} color={CREAM} />
     {[-1, 1].map(side => <group key={side}>
-      <group position={[side * .145, .164, -.027]} rotation={[0, side * -.12, side * -.20]}><Ear /><Ear inner /></group>
+      <group position={[side * .145, .164, -.027]} scale={[1, .65, 1]} rotation={[0, side * -.12, side * -.20]}><Ear /><Ear inner /></group>
       <Sculpt at={[side * .139, -.079, .092]} size={[.108, .074, .12]} rotation={[0, side * -.25, side * -.20]} color={CREAM} />
       <Sculpt at={[side * .19, -.018, -.001]} size={[.074, .11, .105]} rotation={[0, 0, side * -.3]} color={FUR} />
       <Sculpt at={[side * .094, .018, .173]} size={[.078, .042, .025]} rotation={[0, side * .22, side * .22]} color="#f3f0dc" />
