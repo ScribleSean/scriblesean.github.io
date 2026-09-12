@@ -937,3 +937,9 @@
 .reduced * { transition: none !important; }
 
 .page[data-custom-cursor="true"], .page[data-custom-cursor="true"] * { cursor: none !important; }
+
+.freelanceNote { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line, #ccc5b8); }
+.freelanceNote > span { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; opacity: .6; }
+.freelanceNote h3 { margin: 0; font-size: 15px; font-weight: 400; }
+.freelanceNote h3 a { text-decoration: underline; text-underline-offset: 3px; }
+.freelanceNote p { margin: 0; font-size: 12px; opacity: .7; }
