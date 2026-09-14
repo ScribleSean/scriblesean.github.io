@@ -74,11 +74,11 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
       </div>
       <article className={styles.longTermBuild}>
         <div><p className={styles.eyebrow}>EARLY EXPLORATION</p><h3>Repurposing an iPad</h3></div>
-        <div><span className={styles.status}>In progress</span><p>I’m turning an old iPad into a dedicated computing device, exploring what I can build with its own hardware and a custom interface.</p></div>
+        <div><span className={styles.status}>Paused</span><p>Exploring how to turn an old iPad into a dedicated computing device with a custom interface. This project is currently paused.</p></div>
       </article>
       <article className={styles.longTermBuild}>
-        <div><p className={styles.eyebrow}>LONG-TERM PROJECT</p><h3>Orbit</h3></div>
-        <div><span className={styles.status}>Work in progress</span><p>I’m building a personal assistant for my Mac. It’s a longer-term project that I’m developing alongside my main builds.</p></div>
+        <div><p className={styles.eyebrow}>PERSONAL PROJECT</p><h3>Orbit</h3></div>
+        <div><span className={styles.status}>Shelved</span><p>A personal assistant project for my Mac. I’ve shelved it while focusing on other work.</p></div>
       </article>
       <article className={styles.freelanceNote}>
         <span>Freelance</span><h3><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">Website repairs ↗</a></h3><p>Small fixes for existing websites.</p>
