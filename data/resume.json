@@ -27,7 +27,7 @@
         "Implemented multimodal analysis pipelines combining video, audio, OCR, and language-model outputs.",
         "Added event timelines, clip tagging, semantic search, and cross-recording summaries."
       ],
-      "href": "https://revisit.dev",
+      "href": "https://scriblesean.github.io/revisit-studies/review-demo/",
       "tags": [
         "TypeScript",
         "React",
@@ -35,8 +35,8 @@
         "Multimodal AI",
         "Semantic search"
       ],
-      "linkKind": "platform",
-      "linkLabel": "reVISit platform"
+      "linkKind": "demo",
+      "linkLabel": "Explore ReVIEW demo (simulated recordings)"
     },
     {
       "name": "Exercise Form Classification System",
