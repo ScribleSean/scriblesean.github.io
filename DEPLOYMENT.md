@@ -19,7 +19,9 @@ Until activation, the UI preserves drafts and offers the visitor's email app; it
 
 ## Resume
 
-`/resume/` displays the corrected resume. `/resume/sean-arackal-resume.pdf` is the downloadable one-page version. Both use `data/resume.json`; regenerate the PDF with `python3 scripts/build_resume.py` in a Python environment with ReportLab. Verify the rendered PDF after changing its content.
+`public/resume/sean-arackal-resume.pdf` is Sean's approved canonical resume (September 15, 2026). Keep its bytes and formatting unchanged. SHA-256: `dcb80a0f9138caa399f9f1bb49e08a62e7fabc80a7a9e9e0c9060ba9b6c7e735`.
+
+All download links use `/resume/sean-arackal-resume.pdf`. The `/resume/` page and Files app show `sean-arackal-resume.png`, rendered directly from this PDF, with a link to the searchable, printable original. When Sean supplies a replacement, replace the PDF and render its preview together. Portfolio content in `data/resume.json` is separate; do not regenerate the approved resume from it. The legacy script only writes `tmp/legacy-resume-draft.pdf`.
 
 ## Assets
 

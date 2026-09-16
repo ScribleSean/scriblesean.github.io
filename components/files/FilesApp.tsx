@@ -1,6 +1,6 @@
 "use client";
 
-import { contact, education, projects, resumeExperience, skills } from "@/data/resume";
+import { projects } from "@/data/resume";
 import { useState } from "react";
 import styles from "./FilesApp.module.css";
 
@@ -134,28 +134,13 @@ function ProjectDetail({ project }: { project: (typeof projects)[number] }) {
 
 export function ResumeContent() {
   return (
-    <article className={styles.resume}>
-      <div className={styles.resumeHeading}>
-        <p className={styles.kicker}>Resume</p>
-        <h1>Sean Arackal</h1>
-      </div>
-      <p className={styles.contactLine}>{contact.email} · {contact.phone} · {contact.location}</p>
-      <p className={styles.contactLine}><a href={contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> · <a href={contact.github} target="_blank" rel="noreferrer">GitHub</a></p>
-
-      <ResumeSection title="Education">
-        <div className={styles.resumeEntry}><p><strong>{education.institution}</strong></p><p>{education.degree} · {education.honors}</p><p>{education.period} · GPA: {education.gpa}</p></div>
-      </ResumeSection>
-      <ResumeSection title="Technical skills"><p>{skills.join(" · ")}</p></ResumeSection>
-      <ResumeSection title="Selected projects">
-        {projects.map(project => <div className={styles.resumeEntry} key={project.name}><p><strong>{project.name}</strong></p><p>{project.role} · {project.period}</p><ul>{project.outcomes.map(outcome => <li key={outcome}>{outcome}</li>)}</ul></div>)}
-      </ResumeSection>
-      <ResumeSection title="Professional experience">
-        {resumeExperience.map(job => <div className={styles.resumeEntry} key={job.company}><p><strong>{job.role}</strong> · {job.company}</p><p>{job.period} · {job.location}</p><p>{job.details}</p>{"progression" in job && <p>{job.progression}</p>}</div>)}
-      </ResumeSection>
+    <article aria-label="Sean Arackal resume">
+      <p style={{ marginBottom: 16 }}>
+        <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Open resume PDF to read, search, or print ↗</a>
+      </p>
+      {/* A preview rendered directly from the approved PDF keeps every resume view identical. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/resume/sean-arackal-resume.png" alt="Sean Arackal resume, 2026–2027. Open the PDF above for accessible text." style={{ display: "block", width: "100%", height: "auto" }} />
     </article>
   );
-}
-
-function ResumeSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section className={styles.resumeSection}><h2>{title}</h2>{children}</section>;
 }

@@ -21,7 +21,7 @@ The site is a work in progress. I’m continuing to refine the scene models and 
 
 Next.js and React handle the routes and desktop interface. Three.js, React Three Fiber, and Drei render the scene. GitHub Actions builds a static export for GitHub Pages; no application server is required for hosting.
 
-The portfolio, Files app, and resume share curated content in `data/resume.json`. A ReportLab script generates the downloadable PDF. Messages uses a configurable external form endpoint; it is not a live chat service.
+The portfolio and project folders use `data/resume.json`. Resume downloads and previews use the approved PDF in `public/resume/`. Messages uses a configurable external form endpoint; it is not a live chat service.
 
 ## Run locally
 
@@ -58,6 +58,6 @@ Check both the direct portfolio and the embedded desktop after interface changes
 | `components/browser/`, `files/`, `messages/` | Desktop applications |
 | `components/portfolio/` | Direct and embedded portfolio |
 | `data/resume.json` | Shared project and experience content |
-| `scripts/build_resume.py` | Downloadable resume generation |
+| `public/resume/` | Approved resume PDF and matching preview |
 
-See [deployment and asset notes](DEPLOYMENT.md) for hosting, contact configuration, source references, and resume regeneration.
+See [deployment and asset notes](DEPLOYMENT.md) for hosting, contact configuration, source references, and resume updates.

@@ -1,4 +1,4 @@
-"""Generate the public, one-page resume from the same curated data as the site."""
+"""Legacy draft generator. Never overwrites the approved public resume."""
 import json
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -11,7 +11,7 @@ from reportlab.lib.pagesizes import letter
 
 ROOT = Path(__file__).resolve().parents[1]
 data = json.loads((ROOT / 'data/resume.json').read_text())
-OUTPUT = ROOT / 'public/resume/sean-arackal-resume.pdf'
+OUTPUT = ROOT / 'tmp/legacy-resume-draft.pdf'
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 INK = colors.HexColor('#202923')
 MUTED = colors.HexColor('#536052')
