@@ -145,14 +145,14 @@ function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   return null;
 }
 
-export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, resetKey }: {
+// Clicks on empty floor bubble to the DOM container, which handles "back".
+export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onFailure, resetKey }: {
   view: CameraView;
   resetKey: number;
   reducedMotion: boolean;
   screen: ReactNode;
   onReady: () => void;
   onApproach: () => void;
-  onBack: () => void;
   onFailure: () => void;
 }) {
   const screenElement = useRef<HTMLDivElement>(null);
@@ -169,7 +169,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   }, []);
   return <><Canvas
     shadows={{ type: THREE.PCFShadowMap }}
-    onPointerMissed={(event) => { if (event.type === "click") onBack(); }}
     frameloop="demand"
     dpr={pixelRatio}
     camera={{ position: [9, 7.1, 13.3], fov: 37, near: .1, far: 60 }}
@@ -189,11 +188,11 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
     <Suspense fallback={null}>
       <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><DeskModels /></group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.72, 0]} receiveShadow
-        onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
+        onClick={(event) => event.stopPropagation()}>
         <planeGeometry args={[200, 200]} />
         <meshStandardMaterial color="#e7dece" roughness={1} />
       </mesh>
-      <mesh geometry={studioBackdrop} receiveShadow onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
+      <mesh geometry={studioBackdrop} receiveShadow onClick={(event) => event.stopPropagation()}>
         <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
       </mesh>
       <ScreenSurface element={screenElement} />
