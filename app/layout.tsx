@@ -42,6 +42,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // Browser extensions add attributes to <html> and <body> before React
+    // hydrates. suppressHydrationWarning covers only these two elements' own
+    // attributes, not their children, so real mismatches still surface.
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         {children}
