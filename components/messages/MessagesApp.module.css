@@ -124,3 +124,9 @@
 .inputRow { display: flex; align-items: flex-end; gap: 0.5rem; min-width: 0; }
 .inputRow textarea { flex: 1; min-width: 0; }
 .inputRow .secondaryButton { flex: 0 0 2.55rem; width: 2.55rem; height: 2.55rem; padding: 0; }
+
+.editing { outline: 2px dashed #b9b0ef; outline-offset: 2px; }
+.receipt { margin: 0; color: var(--muted); font-size: 0.72rem; }
+.composerActions { align-items: center; }
+.composer .textButton { border: 0; color: var(--muted); background: transparent; font-weight: 500; }
+.composer .textButton:hover, .composer .textButton:focus-visible { color: var(--purple-dark); text-decoration: underline; }

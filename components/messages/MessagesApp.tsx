@@ -1,200 +1,106 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
+import { contact } from "@/data/resume";
 import {
   defaultMessageTransport,
-  formatConversation,
-  getMessageLimitError,
-  getMessageTextLength,
   MAX_CONVERSATION_LENGTH,
   MAX_MESSAGE_COUNT,
   MAX_MESSAGE_LENGTH,
-  Message,
   MessageDeliveryUnavailableError,
-  MessageSubmission,
   MessageTransport,
 } from "@/lib/message-transport";
+import {
+  createMessage,
+  createThreadStore,
+  getPendingMessages,
+  getThreadView,
+  isSent,
+  makeMailtoHref,
+  type ThreadStore,
+} from "@/lib/message-thread";
 
 import styles from "./MessagesApp.module.css";
 
 const welcomeMessage =
   "Thank you for visiting my website! If you find this cool or want to talk about anything with me, I’d be happy to reach out! Just send me a way to contact you, and you’ll hear back from me!";
 
-type SubmissionState = "draft" | "sending" | "sent" | "error";
-
 export type MessagesAppProps = {
   transport?: MessageTransport;
+  /** Pass a store from a parent to keep the thread across remounts. */
+  store?: ThreadStore;
 };
-
-function createMessage(text: string): Message {
-  return {
-    id: crypto.randomUUID(),
-    text,
-    createdAt: new Date().toISOString(),
-  };
-}
-
-function makeMailtoHref(messages: Message[]): string {
-  const submission: MessageSubmission = {
-    messages,
-    submittedAt: new Date().toISOString(),
-  };
-  const subject = "Portfolio conversation";
-  return `mailto:sean.arackal@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(formatConversation(submission))}`;
-}
 
 export default function MessagesApp({
   transport = defaultMessageTransport,
+  store: externalStore,
 }: MessagesAppProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [composerText, setComposerText] = useState("");
-  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [submissionState, setSubmissionState] = useState<SubmissionState>("draft");
-  const [statusMessage, setStatusMessage] = useState("");
-  const [showEmailFallback, setShowEmailFallback] = useState(false);
-  const isSubmittingRef = useRef(false);
+  const [ownStore] = useState(() => externalStore ?? createThreadStore());
+  const store = externalStore ?? ownStore;
+  const state = useSyncExternalStore(store.subscribe, store.getState, store.getState);
+  const { dispatch } = store;
   const threadRef = useRef<HTMLDivElement>(null);
+
+  const { messages, composerText, editingMessageId, submission, statusMessage, showEmailFallback } = state;
+  const view = getThreadView(state);
+  const sending = submission === "sending";
+  const showLimitHint =
+    Boolean(view.limitError) ||
+    view.pending.length >= MAX_MESSAGE_COUNT - 1 ||
+    view.conversationLength >= MAX_CONVERSATION_LENGTH * 0.8;
+  const lastUnsentId = [...messages].reverse().find((message) => !isSent(state, message.id))?.id;
+  const lastSentId = [...messages].reverse().find((message) => isSent(state, message.id))?.id;
 
   useLayoutEffect(() => {
     const thread = threadRef.current;
     if (thread) thread.scrollTop = thread.scrollHeight;
-  }, [messages, submissionState]);
-
-  const isComposerEmpty = !composerText.trim();
-  const messagesWithComposer = useMemo(() => {
-    if (isComposerEmpty) {
-      return messages;
-    }
-
-    if (editingMessageId) {
-      return messages.map((message) =>
-        message.id === editingMessageId ? { ...message, text: composerText } : message,
-      );
-    }
-
-    return [...messages, { id: "composer", text: composerText, createdAt: new Date().toISOString() }];
-  }, [composerText, editingMessageId, isComposerEmpty, messages]);
-  const composerLimitError = getMessageLimitError(messagesWithComposer);
-  const conversationLength = getMessageTextLength(messagesWithComposer);
-  const showLimitHint =
-    Boolean(composerLimitError) ||
-    messagesWithComposer.length >= MAX_MESSAGE_COUNT - 1 ||
-    conversationLength >= MAX_CONVERSATION_LENGTH * 0.8;
-  const canAddOrUpdateMessage = !isComposerEmpty && !composerLimitError;
-  const fallbackHref = useMemo(
-    () =>
-      messagesWithComposer.length
-        ? makeMailtoHref(messagesWithComposer)
-        : "mailto:sean.arackal@gmail.com",
-    [messagesWithComposer],
-  );
-
-  function resetStatus() {
-    if (!isSubmittingRef.current) {
-      setSubmissionState("draft");
-      setStatusMessage("");
-      setShowEmailFallback(false);
-    }
-  }
-
-  function addOrUpdateMessage() {
-    if (
-      !canAddOrUpdateMessage ||
-      isSubmittingRef.current
-    ) {
-      return;
-    }
-
-    const text = composerText;
-    if (editingMessageId) {
-      setMessages((current) =>
-        current.map((message) =>
-          message.id === editingMessageId ? { ...message, text } : message,
-        ),
-      );
-      setEditingMessageId(null);
-    } else {
-      setMessages((current) => [...current, createMessage(text)]);
-    }
-    setComposerText("");
-    resetStatus();
-  }
-
-  function editMessage(message: Message) {
-    if (isSubmittingRef.current) {
-      return;
-    }
-
-    setComposerText(message.text);
-    setEditingMessageId(message.id);
-    resetStatus();
-  }
-
-  function deleteMessage(id: string) {
-    if (isSubmittingRef.current) {
-      return;
-    }
-
-    setMessages((current) => current.filter((message) => message.id !== id));
-    if (editingMessageId === id) {
-      setEditingMessageId(null);
-      setComposerText("");
-    }
-    resetStatus();
-  }
+  }, [messages, submission]);
 
   async function submitConversation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isSubmittingRef.current) {
+    const current = store.getState();
+    if (current.submission === "sending") return;
+
+    const currentView = getThreadView(current);
+    if (currentView.pending.length === 0 || currentView.limitError) {
+      dispatch({
+        type: "invalid",
+        message: currentView.limitError ?? "Write at least one message before sending.",
+      });
       return;
     }
 
-    const messagesToSubmit = messagesWithComposer;
-    if (messagesToSubmit.length === 0 || composerLimitError) {
-      setSubmissionState("error");
-      setShowEmailFallback(false);
-      setStatusMessage(
-        composerLimitError ?? "Write at least one message before sending.",
-      );
-      return;
-    }
-
-    const submission: MessageSubmission = {
-      messages: messagesToSubmit,
-      submittedAt: new Date().toISOString(),
-    };
-    isSubmittingRef.current = true;
-    setSubmissionState("sending");
-    setShowEmailFallback(false);
-    setStatusMessage("Sending conversation…");
+    dispatch({ type: "submit-start", draft: createMessage("") });
+    // Only messages Sean has not received yet are sent.
+    const messagesToSubmit = getPendingMessages(store.getState());
 
     try {
-      await transport(submission);
-      setMessages(messagesToSubmit);
-      setComposerText("");
-      setEditingMessageId(null);
-      setSubmissionState("sent");
-      setStatusMessage("Sent to Sean.");
+      await transport({ messages: messagesToSubmit, submittedAt: new Date().toISOString() });
+      dispatch({ type: "submit-success", ids: messagesToSubmit.map((message) => message.id) });
     } catch (error) {
-      setSubmissionState("error");
-      setShowEmailFallback(true);
-      setStatusMessage(
-        error instanceof MessageDeliveryUnavailableError
-          ? "Message delivery is not configured yet. You can still send this conversation by email."
-          : error instanceof Error
-            ? error.message
-          : "Your conversation could not be sent. Please try again.",
-      );
-    } finally {
-      isSubmittingRef.current = false;
+      dispatch({
+        type: "submit-error",
+        showEmailFallback: true,
+        message:
+          error instanceof MessageDeliveryUnavailableError
+            ? "Message delivery is not configured yet. You can still send this conversation by email."
+            : error instanceof Error
+              ? error.message
+              : "Your conversation could not be sent. Please try again.",
+      });
     }
   }
 
   function handleComposerKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    // Enter during IME composition confirms the conversion, not the message.
+    if (event.nativeEvent.isComposing || event.keyCode === 229) return;
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      addOrUpdateMessage();
+      dispatch({ type: "commit", draft: createMessage("") });
+    } else if (event.key === "Escape" && editingMessageId) {
+      event.preventDefault();
+      dispatch({ type: "cancel-edit" });
     }
   }
 
@@ -208,31 +114,43 @@ export default function MessagesApp({
 
       <div ref={threadRef} data-desktop-scroll className={styles.thread} aria-live="polite">
         <div className={`${styles.bubble} ${styles.incoming}`}>{welcomeMessage}</div>
-        {messages.map((message) => (
-          <div className={styles.outgoingGroup} key={message.id}>
-            <div className={`${styles.bubble} ${styles.outgoing}`}>{message.text}</div>
-            {submissionState !== "sending" && (
-              <div className={styles.messageActions}>
-                <button type="button" onClick={() => editMessage(message)}>
-                  Edit
-                </button>
-                <button type="button" onClick={() => deleteMessage(message.id)}>
-                  Delete
-                </button>
+        {messages.map((message) => {
+          const sent = isSent(state, message.id);
+          return (
+            <div className={styles.outgoingGroup} key={message.id}>
+              <div
+                className={`${styles.bubble} ${styles.outgoing} ${editingMessageId === message.id ? styles.editing : ""}`}
+              >
+                {message.text}
               </div>
-            )}
-          </div>
-        ))}
+              {sent ? (
+                message.id === lastSentId && <p className={styles.receipt}>Delivered</p>
+              ) : (
+                !sending && (
+                  <div className={styles.messageActions}>
+                    {message.id === lastUnsentId && <span className={styles.receipt}>Not sent yet</span>}
+                    <button type="button" onClick={() => dispatch({ type: "edit", id: message.id, draft: createMessage("") })}>
+                      Edit
+                    </button>
+                    <button type="button" onClick={() => dispatch({ type: "delete", id: message.id })}>
+                      Delete
+                    </button>
+                  </div>
+                )
+              )}
+            </div>
+          );
+        })}
         {statusMessage && (
           <p
-            className={submissionState === "error" ? styles.error : styles.status}
-            role={submissionState === "error" ? "alert" : "status"}
+            className={submission === "error" ? styles.error : styles.status}
+            role={submission === "error" ? "alert" : "status"}
           >
             {statusMessage}
           </p>
         )}
-        {submissionState === "error" && showEmailFallback && (
-          <a className={styles.emailFallback} href={fallbackHref}>
+        {submission === "error" && showEmailFallback && (
+          <a className={styles.emailFallback} href={makeMailtoHref(contact.email, view.pending)}>
             Send this conversation by email instead
           </a>
         )}
@@ -243,56 +161,54 @@ export default function MessagesApp({
           Your message
         </label>
         <div className={styles.inputRow}>
-        <textarea
-          id="message-composer"
-          value={composerText}
-          onChange={(event) => {
-            setComposerText(event.target.value);
-            resetStatus();
-          }}
-          onKeyDown={handleComposerKeyDown}
-          placeholder="Message Sean…"
-          rows={1}
-          maxLength={MAX_MESSAGE_LENGTH}
-          aria-describedby={showLimitHint ? "message-limits" : undefined}
-          disabled={submissionState === "sending"}
-        />
-          {!isComposerEmpty && <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={addOrUpdateMessage}
-            disabled={!canAddOrUpdateMessage || submissionState === "sending"}
-            aria-label={editingMessageId ? "Save message" : "Add message"}
-            title={editingMessageId ? "Save message" : "Add message"}
-          >
-            ↑
-          </button>}
-        </div>
-          {!isComposerEmpty && (
-          <div className={styles.composerActions}>
+          <textarea
+            id="message-composer"
+            value={composerText}
+            onChange={(event) => dispatch({ type: "compose", text: event.target.value })}
+            onKeyDown={handleComposerKeyDown}
+            placeholder={editingMessageId ? "Edit your message…" : "Message Sean…"}
+            rows={1}
+            maxLength={MAX_MESSAGE_LENGTH}
+            aria-describedby={showLimitHint ? "message-limits" : undefined}
+            disabled={sending}
+          />
+          {!view.composerEmpty && (
             <button
-              type="submit"
-              className={styles.sendButton}
-              disabled={
-                Boolean(composerLimitError) ||
-                submissionState === "sending"
-              }
+              type="button"
+              className={styles.secondaryButton}
+              onClick={() => dispatch({ type: "commit", draft: createMessage("") })}
+              disabled={!view.canCommit}
+              aria-label={editingMessageId ? "Save message" : "Add message"}
+              title={editingMessageId ? "Save message" : "Add message"}
             >
-              {submissionState === "sending" ? "Sending…" : "Send conversation to Sean"}
+              ↑
             </button>
-          </div>
           )}
+        </div>
+        {(view.showSend || editingMessageId) && (
+          <div className={styles.composerActions}>
+            {editingMessageId && (
+              <button type="button" className={styles.textButton} onClick={() => dispatch({ type: "cancel-edit" })}>
+                Cancel edit
+              </button>
+            )}
+            {view.showSend && (
+              <button type="submit" className={styles.sendButton} disabled={!view.canSend}>
+                {sending ? "Sending…" : "Send conversation to Sean"}
+              </button>
+            )}
+          </div>
+        )}
         {showLimitHint && (
           <p
-            className={composerLimitError ? styles.limitError : styles.limitHint}
+            className={view.limitError ? styles.limitError : styles.limitHint}
             id="message-limits"
-            role={composerLimitError ? "alert" : undefined}
+            role={view.limitError ? "alert" : undefined}
           >
-            {composerLimitError ??
-              `${messagesWithComposer.length}/${MAX_MESSAGE_COUNT} messages · ${conversationLength.toLocaleString()}/${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`}
+            {view.limitError ??
+              `${view.pending.length}/${MAX_MESSAGE_COUNT} messages · ${view.conversationLength.toLocaleString()}/${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`}
           </p>
         )}
-
       </form>
     </section>
   );
