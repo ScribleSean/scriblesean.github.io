@@ -68,6 +68,8 @@ test("posts URL-encoded plain text and accepts explicit boolean or string succes
 
   const parsed = new URLSearchParams(postedBody);
   assert.equal(parsed.get("_subject"), "New portfolio conversation");
+  // The body is form-encoded, so decode it before checking what was sent.
+  assert.match(postedBody, /%3Cstrong%3E/);
   assert.doesNotMatch(postedBody, /<strong>/);
   assert.match(
     parsed.get("conversation") ?? "",
@@ -169,4 +171,14 @@ test("rejects excessive bubbles and conversation text without trimming it", asyn
       }),
     new RegExp(`up to ${MAX_CONVERSATION_LENGTH.toLocaleString()} characters`),
   );
+});
+
+test("the timeout still applies when headers arrive but the body stalls", async () => {
+  const transport = createMessageTransport(
+    "https://example.test/form",
+    async () => ({ ok: true, status: 200, json: () => new Promise<never>(() => {}) }),
+    5,
+  );
+
+  await assert.rejects(() => transport(submission), /timed out/);
 });

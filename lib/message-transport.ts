@@ -148,52 +148,71 @@ export function createMessageTransport(
 
     const abortController = new AbortController();
     const timeout = setTimeout(() => abortController.abort(), timeoutMs);
-    let response: FetchResponse;
+    const timeoutSeconds = Math.ceil(timeoutMs / 1_000);
+    const timedOut = () =>
+      new MessageDeliveryError(
+        `Your conversation timed out after ${timeoutSeconds} ${timeoutSeconds === 1 ? "second" : "seconds"}. Please try again.`,
+      );
+    // The timer covers the whole exchange, including reading the body, so a
+    // response that sends headers and then stalls cannot hang the UI.
     try {
-      response = await fetchImplementation(endpoint, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        },
-        body: formBody.toString(),
-        signal: abortController.signal,
-      });
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        const timeoutSeconds = Math.ceil(timeoutMs / 1_000);
+      let response: FetchResponse;
+      try {
+        response = await fetchImplementation(endpoint, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          body: formBody.toString(),
+          signal: abortController.signal,
+        });
+      } catch (error) {
+        if (abortController.signal.aborted || (error instanceof Error && error.name === "AbortError")) {
+          throw timedOut();
+        }
         throw new MessageDeliveryError(
-          `Your conversation timed out after ${timeoutSeconds} ${timeoutSeconds === 1 ? "second" : "seconds"}. Please try again.`,
+          "Your conversation could not be sent. Check your connection and try again.",
         );
       }
-      throw new MessageDeliveryError(
-        "Your conversation could not be sent. Check your connection and try again.",
-      );
+
+      if (!response.ok) {
+        throw new MessageDeliveryError(
+          `Your conversation could not be sent (status ${response.status}). Please try again.`,
+        );
+      }
+
+      let data: unknown;
+      try {
+        data = await untilAborted(response.json(), abortController.signal);
+      } catch {
+        if (abortController.signal.aborted) throw timedOut();
+        throw new MessageDeliveryError(
+          "The delivery service returned an invalid response. Please try again.",
+        );
+      }
+
+      if (!hasSuccessfulProviderResponse(data)) {
+        throw new MessageDeliveryError(
+          "The delivery service could not accept your conversation. Please try again.",
+        );
+      }
     } finally {
       clearTimeout(timeout);
     }
-
-    if (!response.ok) {
-      throw new MessageDeliveryError(
-        `Your conversation could not be sent (status ${response.status}). Please try again.`,
-      );
-    }
-
-    let data: unknown;
-    try {
-      data = await response.json();
-    } catch {
-      throw new MessageDeliveryError(
-        "The delivery service returned an invalid response. Please try again.",
-      );
-    }
-
-    if (!hasSuccessfulProviderResponse(data)) {
-      throw new MessageDeliveryError(
-        "The delivery service could not accept your conversation. Please try again.",
-      );
-    }
   };
+}
+
+function untilAborted<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
+  if (signal.aborted) return Promise.reject(new Error("aborted"));
+  return new Promise<T>((resolve, reject) => {
+    const onAbort = () => reject(new Error("aborted"));
+    signal.addEventListener("abort", onAbort, { once: true });
+    promise.then(
+      (value) => { signal.removeEventListener("abort", onAbort); resolve(value); },
+      (error) => { signal.removeEventListener("abort", onAbort); reject(error); },
+    );
+  });
 }
 
 export const defaultMessageTransport = createMessageTransport(
