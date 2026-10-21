@@ -1,10 +1,11 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { contact, experience, projects } from "@/data/resume";
 import OpenSourceContributions from "@/components/contributions/OpenSourceContributions";
+import FeaturedGrid from "@/components/projects/FeaturedGrid";
+import { featured } from "@/data/featured-projects";
 import styles from "./PortfolioContent.module.css";
 
 type PortfolioContentProps = { onContact?: () => void; embedded?: boolean };
@@ -52,33 +53,11 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
 
     <section className={`${styles.section} ${styles.wrap}`} id="work">
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div><p>Projects I’m still building<br />and improving.</p></div>
-      <div className={styles.currentTimeline}><p className={styles.timelineDate}>September 2026 · Ongoing</p><div className={styles.buildGrid}>
-        <article className={styles.buildCard}>
-          <a className={`${styles.visualLink} ${styles.sceneVisual}`} href="https://scriblesean.github.io/observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory synthetic demo"><Image src="/scene/observatory-demo.jpg" alt="Workspace Observatory activity dashboard with fictional sample records" width="1280" height="720" loading="lazy" /><span>SYNTHETIC DEMO PREVIEW</span></a>
-          <div className={styles.buildBody}>
-            <div className={styles.buildMeta}><span>LOCAL DESKTOP APP</span><span className={styles.status}>Early preview</span></div>
-            <h3>Workspace Observatory</h3><p>I made a tool that runs locally and shows my screen time, AI usage, and dictation stats in one place. I’m still adding features and improving how it works across my computers.</p>
-            <div className={styles.buildDetail}><span>Native Mac app</span><span>Private by default</span><span>Open source</span></div>
-            <div className={styles.buildLinks}><a href="https://scriblesean.github.io/observatory/" target="_blank" rel="noreferrer">Explore the synthetic demo ↗</a><a href="https://github.com/ScribleSean/observatory" target="_blank" rel="noreferrer">Source code ↗</a></div>
-          </div>
-        </article>
-        <article className={styles.buildCard}>
-          <Link className={`${styles.visualLink} ${styles.sceneVisual}`} href="/" aria-label="Explore the interactive GameCube portfolio"><Image src="/scene/interactive-scene.jpg" alt="The live 3D portfolio with a green GameCube, purple controller, CRT and Fox figurine" width="1280" height="720" loading="lazy" /><span>LIVE SITE PREVIEW</span></Link>
-          <div className={styles.buildBody}>
-            <div className={styles.buildMeta}><span>PERSONAL WEBSITE</span><span className={styles.status}>Live</span></div>
-            <h3>Interactive portfolio</h3><p>I built this site around a 3D GameCube setup. Clicking the CRT opens a desktop where you can browse my projects and send me a message. I’m still working on the models and the interface.</p>
-            <div className={styles.buildDetail}><span>Three.js</span><span>React</span><span>Next.js</span></div>
-            <div className={styles.buildLinks}><Link href="/">Open the 3D site ↗</Link><a href="https://github.com/ScribleSean/scriblesean.github.io" target="_blank" rel="noreferrer">Source code ↗</a></div>
-          </div>
-        </article>
-      </div>
-      <article className={styles.longTermBuild}>
-        <div><p className={styles.eyebrow}>EARLY EXPLORATION</p><h3>Repurposing an iPad</h3></div>
-        <div><span className={styles.status}>Paused</span><p>Exploring how to turn an old iPad into a dedicated computing device with a custom interface. This project is currently paused.</p></div>
-      </article>
-      <article className={styles.longTermBuild}>
-        <div><p className={styles.eyebrow}>PERSONAL PROJECT</p><h3>Orbit</h3></div>
-        <div><span className={styles.status}>Shelved</span><p>A personal assistant project for my Mac. I’ve shelved it while focusing on other work.</p></div>
+      <div className={styles.currentTimeline}><p className={styles.featuredIntro}>{featured.intro}</p>
+      <FeaturedGrid newTab={embedded} />
+      <p className={styles.featuredMore}><Link href="/projects/" {...(embedded ? { target: "_blank", rel: "noreferrer" } : {})}>See every project page ↗</Link></p>
+      <article className={styles.freelanceNote}>
+        <span>This site</span><h3>{embedded ? "Interactive portfolio" : <Link href="/">Interactive portfolio ↗</Link>}</h3><p>A 3D GameCube desk with a desktop inside the CRT. <a href="https://github.com/ScribleSean/scriblesean.github.io" target="_blank" rel="noreferrer">Source ↗</a></p>
       </article>
       <article className={styles.freelanceNote}>
         <span>Freelance</span><h3><a href="https://scriblesean.github.io/website-repairs/" target="_blank" rel="noreferrer">Website repairs ↗</a></h3><p>Small fixes for existing websites.</p>

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "portfolio:gather": "node scripts/portfolio-agent/gather.mjs",
+    "portfolio:screenshots": "node scripts/portfolio-agent/screenshots.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

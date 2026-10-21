@@ -125,3 +125,8 @@
 .freelanceNote h3 { margin: 0; font-size: 15px; font-weight: 400; }
 .freelanceNote h3 a { text-decoration: underline; text-underline-offset: 3px; }
 .freelanceNote p { margin: 0; font-size: 12px; opacity: .7; }
+/* Featured projects (data/featured-projects.json) */
+.featuredIntro { position: relative; max-width: 640px; margin: 0 0 26px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.featuredIntro::before { content: ""; position: absolute; left: -32px; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: #84966e; }
+.featuredMore { margin: 16px 0 0; font-size: 12px; }
+.featuredMore a { color: #5d7a3e; text-decoration: underline; text-underline-offset: 3px; }
