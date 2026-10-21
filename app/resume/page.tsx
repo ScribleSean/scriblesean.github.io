@@ -1,6 +1,7 @@
-"use client";
-
+import type { Metadata } from "next";
 import { ResumeContent } from "@/components/files/FilesApp";
+
+export const metadata: Metadata = { title: "Resume" };
 
 export default function ResumePage() {
   return <main style={{ maxWidth: 860, margin: "0 auto", padding: "32px 24px", background: "white", minHeight: "100dvh" }}>
