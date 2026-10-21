@@ -6,7 +6,7 @@ Restored from that baseline: camera easing, orbit damping, hover focus, desk geo
 
 The camera's distance/polar limits, clipping and fog still accommodate the scaled mobile viewport, preventing unreachable targets. Canvas resolution respects the physical mobile viewport, with the baseline 1.5 maximum pixel ratio. Graphics-context recovery remains available.
 
-Build the static export with `npm run build -- --webpack`, then serve `out/`. Browser checks accept `PLAYWRIGHT_MODULE`, `CHROME_PATH` and `TEST_URL` for an existing Playwright/Chrome installation and local or deployed URL:
+Build the static export with `npm run build` (the same Turbopack build CI deploys), then serve `out/`. Browser checks accept `PLAYWRIGHT_MODULE`, `CHROME_PATH` and `TEST_URL` for an existing Playwright/Chrome installation and local or deployed URL:
 
 - `tests/camera-motion.browser.mjs`: original easing settles, hover approaches/withdraws, initial autoplay is requested, and desk model clicks work. Its player is mocked to isolate camera behavior.
 - `tests/scene-performance.browser.mjs`: viewport fitting, settled idle rendering, video initialization, and desktop interactions. `TEST_DEVICE` selects a scenario. Geometry counts are observations, not acceptance targets for the restored baseline.
