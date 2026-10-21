@@ -66,6 +66,10 @@ export function clampFrame(frame: Pick<WindowFrame, "x" | "y" | "width" | "heigh
   };
 }
 
+function maximizedFrame(viewport: Viewport) {
+  return clampFrame({ x: EDGE_GAP, y: EDGE_GAP, width: viewport.width - EDGE_GAP * 2, height: viewport.height - EDGE_GAP * 2 }, viewport);
+}
+
 function nextZ(state: WindowState) {
   return Math.max(...Object.values(state).map((frame) => frame.z), 0) + 1;
 }
@@ -86,6 +90,11 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
   switch (action.type) {
     case "open": {
       const active = state[action.app];
+      // A window minimized while maximized comes back maximized, keeping its
+      // remembered size for Restore.
+      if (active.mounted && active.restoreFrame) {
+        return update(action.app, { ...active, ...maximizedFrame(action.viewport), mounted: true, status: "maximized", z: nextZ(state) });
+      }
       const base = !active.mounted ? { ...defaults[action.app], z: nextZ(state) } : active;
       const frame = clampFrame(base, action.viewport);
       return update(action.app, { ...base, ...frame, mounted: true, status: "open", z: nextZ(state) });
@@ -102,7 +111,8 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
     }
     case "close": {
       const active = state[action.app];
-      return update(action.app, { ...active, status: "closed", restoreFrame: undefined });
+      // Closing a maximized window returns it to its normal size for next time.
+      return update(action.app, { ...active, ...active.restoreFrame, status: "closed", restoreFrame: undefined });
     }
     case "move": {
       const active = state[action.app];
@@ -123,10 +133,9 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
         return update(action.app, { ...active, ...clampFrame(restore, action.viewport), status: "open", restoreFrame: undefined, z: nextZ(state) });
       }
       if (active.status !== "open") return state;
-      const frame = clampFrame({ x: EDGE_GAP, y: EDGE_GAP, width: action.viewport.width - EDGE_GAP * 2, height: action.viewport.height - EDGE_GAP * 2 }, action.viewport);
       return update(action.app, {
         ...active,
-        ...frame,
+        ...maximizedFrame(action.viewport),
         status: "maximized",
         restoreFrame: { x: active.x, y: active.y, width: active.width, height: active.height },
         z: nextZ(state),
@@ -135,7 +144,7 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
     case "reflow":
       return Object.fromEntries(Object.entries(state).map(([app, frame]) => {
         if (frame.status === "maximized") {
-          return [app, { ...frame, ...clampFrame({ x: EDGE_GAP, y: EDGE_GAP, width: action.viewport.width - EDGE_GAP * 2, height: action.viewport.height - EDGE_GAP * 2 }, action.viewport) }];
+          return [app, { ...frame, ...maximizedFrame(action.viewport) }];
         }
         return [app, { ...frame, ...clampFrame(frame, action.viewport) }];
       })) as WindowState;

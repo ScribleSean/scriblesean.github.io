@@ -70,3 +70,25 @@ test("maximized apps stay below the top bar and beside the dock after reflow", (
     assert.ok(narrow[app].y + narrow[app].height <= 644);
   }
 });
+
+test("minimizing a maximized window and reopening it from the dock keeps Restore working (finding 13)", () => {
+  const open = windowReducer(createWindowState(), { type: "open", app: "files", viewport });
+  let state = windowReducer(open, { type: "toggle-maximize", app: "files", viewport });
+  state = windowReducer(state, { type: "minimize", app: "files" });
+  state = windowReducer(state, { type: "open", app: "files", viewport });
+  assert.equal(state.files.status, "maximized");
+
+  state = windowReducer(state, { type: "toggle-maximize", app: "files", viewport });
+  assert.equal(state.files.status, "open");
+  assert.equal(state.files.width, open.files.width);
+  assert.equal(state.files.height, open.files.height);
+});
+
+test("closing a maximized window reopens it at its normal size", () => {
+  const open = windowReducer(createWindowState(), { type: "open", app: "files", viewport });
+  let state = windowReducer(open, { type: "toggle-maximize", app: "files", viewport });
+  state = windowReducer(state, { type: "close", app: "files" });
+  state = windowReducer(state, { type: "open", app: "files", viewport });
+  assert.equal(state.files.status, "open");
+  assert.equal(state.files.width, open.files.width);
+});
