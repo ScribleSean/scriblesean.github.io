@@ -5,8 +5,8 @@ import { useRef, useState } from "react";
 import styles from "./PhotosApp.module.css";
 
 const photos = [
-  { src: "/scene/interactive-scene.png", title: "A little world on my desk", note: "Interactive portfolio · project screenshot" },
-  { src: "/scene/observatory-demo.png", title: "What I've been building", note: "Workspace Observatory · synthetic demo" },
+  { src: "/scene/interactive-scene.jpg", title: "A little world on my desk", note: "Interactive portfolio · project screenshot" },
+  { src: "/scene/observatory-demo.jpg", title: "What I've been building", note: "Workspace Observatory · synthetic demo" },
   { src: "/scene/mobile-setup.webp", title: "The setup, up close", note: "Portfolio scene · rendered artwork" },
 ];
 

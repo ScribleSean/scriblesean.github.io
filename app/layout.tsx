@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "@/styles/globals.css";
+import { ogImage } from "@/lib/site";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
 
-// Keep the desktop composition on phones. Omitting initialScale lets the
-// browser fit this layout to the device, while preserving pinch-to-zoom.
-export const viewport: Viewport = { width: 1200, initialScale: undefined };
+// Pages that show the 3D scene override this with sceneViewport (lib/site.ts).
+export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -25,12 +25,14 @@ export const metadata: Metadata = {
     siteName: "Sean Arackal",
     locale: "en_US",
     type: "website",
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
     title: "Sean Arackal",
     description:
       "Software, AI, and programming education. Explore my projects and interactive portfolio.",
+    images: [ogImage],
   },
 };
 

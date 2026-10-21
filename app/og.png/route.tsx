@@ -2,22 +2,14 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-/** Required when using `output: "export"` (static HTML export). */
+import { ogImage } from "@/lib/site";
+
+// The social card is written to out/og.png at build time. A file name with an
+// extension lets GitHub Pages serve it as image/png, which link previews need.
 export const dynamic = "force-static";
 
-export const alt = "Sean Arackal: AI, deep learning, and software engineering. An interactive portfolio built around a GameCube and CRT desktop.";
-
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
-export const contentType = "image/png";
-
-export default async function OpenGraphImage() {
-  const scene = await readFile(path.join(process.cwd(), "public/scene/interactive-scene.png"));
-  // The existing screenshot has a .png name but contains JPEG bytes.
-  const sceneType = scene[0] === 0xff ? "image/jpeg" : "image/png";
+export async function GET() {
+  const scene = await readFile(path.join(process.cwd(), "public/scene/interactive-scene.jpg"));
   return new ImageResponse(
     (
       <div
@@ -46,14 +38,12 @@ export default async function OpenGraphImage() {
             <div style={{ display: "flex", fontSize: 36 }}>Software engineering.</div>
             <div style={{ display: "flex", marginTop: 36, fontSize: 23, color: "#64675d" }}>Step inside my portfolio</div>
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`data:${sceneType};base64,${scene.toString("base64")}`} alt="" width={560} height={315} style={{ borderRadius: 22 }} />
+          {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse renders plain <img>. */}
+          <img src={`data:image/jpeg;base64,${scene.toString("base64")}`} alt="" width={560} height={315} style={{ borderRadius: 22 }} />
         </div>
         <div style={{ display: "flex", height: 2, backgroundColor: "#a2ad8b", width: "100%" }} />
       </div>
     ),
-    {
-      ...size,
-    },
+    { width: ogImage.width, height: ogImage.height },
   );
 }

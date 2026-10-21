@@ -54,7 +54,7 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div><p>Projects I’m still building<br />and improving.</p></div>
       <div className={styles.currentTimeline}><p className={styles.timelineDate}>September 2026 · Ongoing</p><div className={styles.buildGrid}>
         <article className={styles.buildCard}>
-          <a className={`${styles.visualLink} ${styles.sceneVisual}`} href="https://scriblesean.github.io/observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory synthetic demo"><Image src="/scene/observatory-demo.png" alt="Workspace Observatory activity dashboard with fictional sample records" width="1280" height="720" loading="lazy" /><span>SYNTHETIC DEMO PREVIEW</span></a>
+          <a className={`${styles.visualLink} ${styles.sceneVisual}`} href="https://scriblesean.github.io/observatory/" target="_blank" rel="noreferrer" aria-label="Explore the Workspace Observatory synthetic demo"><Image src="/scene/observatory-demo.jpg" alt="Workspace Observatory activity dashboard with fictional sample records" width="1280" height="720" loading="lazy" /><span>SYNTHETIC DEMO PREVIEW</span></a>
           <div className={styles.buildBody}>
             <div className={styles.buildMeta}><span>LOCAL DESKTOP APP</span><span className={styles.status}>Early preview</span></div>
             <h3>Workspace Observatory</h3><p>I made a tool that runs locally and shows my screen time, AI usage, and dictation stats in one place. I’m still adding features and improving how it works across my computers.</p>
@@ -63,7 +63,7 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
           </div>
         </article>
         <article className={styles.buildCard}>
-          <Link className={`${styles.visualLink} ${styles.sceneVisual}`} href="/" aria-label="Explore the interactive GameCube portfolio"><Image src="/scene/interactive-scene.png" alt="The live 3D portfolio with a green GameCube, purple controller, CRT and Fox figurine" width="1280" height="720" loading="lazy" /><span>LIVE SITE PREVIEW</span></Link>
+          <Link className={`${styles.visualLink} ${styles.sceneVisual}`} href="/" aria-label="Explore the interactive GameCube portfolio"><Image src="/scene/interactive-scene.jpg" alt="The live 3D portfolio with a green GameCube, purple controller, CRT and Fox figurine" width="1280" height="720" loading="lazy" /><span>LIVE SITE PREVIEW</span></Link>
           <div className={styles.buildBody}>
             <div className={styles.buildMeta}><span>PERSONAL WEBSITE</span><span className={styles.status}>Live</span></div>
             <h3>Interactive portfolio</h3><p>I built this site around a 3D GameCube setup. Clicking the CRT opens a desktop where you can browse my projects and send me a message. I’m still working on the models and the interface.</p>

@@ -4,7 +4,7 @@ A personal portfolio built around a 3D GameCube and CRT. Enter the screen to exp
 
 **[Explore the interactive site](https://scriblesean.github.io/)** · **[Read the portfolio](https://scriblesean.github.io/portfolio/)** · **[Download my resume](https://scriblesean.github.io/resume/sean-arackal-resume.pdf)**
 
-[![Live 3D portfolio with a CRT, green GameCube, purple controller, and Fox figurine](public/scene/interactive-scene.png)](https://scriblesean.github.io/)
+[![Live 3D portfolio with a CRT, green GameCube, purple controller, and Fox figurine](public/scene/interactive-scene.jpg)](https://scriblesean.github.io/)
 
 *Screenshot of the running site, September 2026.*
 
