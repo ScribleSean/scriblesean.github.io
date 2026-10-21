@@ -8,8 +8,8 @@ test('web addresses and search terms resolve to navigable pages', () => {
   assert.equal(resolveBrowserAddress('/portfolio/'), '/portfolio/');
   const search = new URL(resolveBrowserAddress('gamecube controller'));
   assert.equal(search.searchParams.get('q'), 'gamecube controller');
-  assert.equal(search.searchParams.get('igu'), '1');
-  assert.equal(resolveBrowserAddress('google.com'), 'https://www.google.com/webhp?igu=1');
+  assert.equal(search.searchParams.get('igu'), null);
+  assert.equal(resolveBrowserAddress('google.com'), 'https://google.com/');
 });
 
 test('active URLs and embedded credentials are rejected', () => {
@@ -23,4 +23,8 @@ test('absolute portfolio addresses reuse the built-in page', () => {
     assert.equal(resolveBrowserAddress(value), '/portfolio/');
   }
   assert.equal(resolveBrowserAddress('https://scriblesean.github.io/'), 'https://scriblesean.github.io/');
+});
+
+test('an incomplete address gets a readable message, not the raw URL error', () => {
+  assert.throws(() => resolveBrowserAddress('https://'), /complete website address/);
 });

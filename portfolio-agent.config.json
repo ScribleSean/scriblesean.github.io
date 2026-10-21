@@ -1,0 +1,61 @@
+{
+  "$comment": "Projects the update-portfolio agent may publish. Only projects listed here are ever read or published; anything else stays private. Order here is the order on the site. 'ref' is the git branch or tag to read (the repo is never checked out or changed). 'public' controls whether a source link may appear. A teaser entry has no repo and is never read. 'images' are exported to the output folder for review; the skill copies only the ones a page uses into public/projects/<slug>/. Folders and projects that must never be read or named live in portfolio-agent.private.json, which is gitignored.",
+  "outputDir": "tmp/portfolio-agent",
+  "draftFile": "data/featured-projects.json",
+  "projects": [
+    {
+      "slug": "beeline",
+      "name": "Beeline",
+      "repo": "~/Developer/beeline",
+      "ref": "main",
+      "docs": [
+        "docs/VOICE-MERGE.md"
+      ],
+      "public": true,
+      "links": {
+        "source": "https://github.com/ScribleSean/beeline"
+      },
+      "notes": "VoiceControl has been folded into Beeline. Treat it as part of Beeline, never as a separate project.",
+      "images": [
+        "docs/icon.png",
+        "docs/bar.png",
+        "docs/bar-dark.png",
+        "docs/plan.png",
+        "docs/answer.png"
+      ]
+    },
+    {
+      "slug": "observatory",
+      "name": "Observatory",
+      "repo": "~/Developer/observatory",
+      "ref": "main",
+      "docs": [
+        "docs/PRODUCT-DIRECTION.md",
+        "docs/DESIGN.md",
+        "docs/ROADMAP.md",
+        "docs/BRAND.md"
+      ],
+      "public": true,
+      "links": {
+        "source": "https://github.com/ScribleSean/observatory",
+        "demo": "https://scriblesean.github.io/observatory/"
+      },
+      "notes": "Open source and monitor-only: it shows limits, agents, time and cost; it never acts on your behalf.",
+      "images": [
+        "docs/images/dashboard-one-computer-light.png",
+        "docs/images/dashboard-one-computer-dark.png",
+        "docs/images/dashboard-agents-light.png",
+        "docs/images/dashboard-agents-dark.png",
+        "public/brand/telescope.svg"
+      ]
+    },
+    {
+      "slug": "next",
+      "name": "Something new",
+      "teaser": true,
+      "public": false,
+      "links": {},
+      "notes": "A private project. Never read its repo, name it, or describe what it does."
+    }
+  ]
+}

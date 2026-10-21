@@ -1,10 +1,10 @@
-# Sean Arackal — interactive portfolio
+# Sean Arackal: interactive portfolio
 
 A personal portfolio built around a 3D GameCube and CRT. Enter the screen to explore a desktop with project files, a browser, and a messaging app.
 
 **[Explore the interactive site](https://scriblesean.github.io/)** · **[Read the portfolio](https://scriblesean.github.io/portfolio/)** · **[Download my resume](https://scriblesean.github.io/resume/sean-arackal-resume.pdf)**
 
-[![Live 3D portfolio with a CRT, green GameCube, purple controller, and Fox figurine](public/scene/interactive-scene.png)](https://scriblesean.github.io/)
+[![Live 3D portfolio with a CRT, green GameCube, purple controller, and Fox figurine](public/scene/interactive-scene.jpg)](https://scriblesean.github.io/)
 
 *Screenshot of the running site, September 2026.*
 
@@ -15,7 +15,7 @@ A personal portfolio built around a 3D GameCube and CRT. Enter the screen to exp
 - Open the portfolio in the desktop browser, or use the direct portfolio link above.
 - Open Messages to compose a conversation and explicitly submit it to me.
 
-The site is a work in progress. I’m continuing to refine the scene models and interface. External websites may block embedding in the desktop browser; its external-tab action opens them normally.
+The site is a work in progress. I’m continuing to refine the scene models and interface. The desktop browser shows the portfolio itself; other websites and searches open in a new tab.
 
 ## How it is built
 
@@ -25,7 +25,7 @@ The portfolio and project folders use `data/resume.json`. Resume downloads and p
 
 ## Run locally
 
-Requires Node.js 20.9 or newer.
+Requires Node.js 22 or newer (CI builds on Node 24).
 
 ```bash
 npm ci
@@ -35,7 +35,7 @@ npm run dev
 Open `http://localhost:3000`. For a static production preview:
 
 ```bash
-npm run build -- --webpack
+npm run build
 python3 -m http.server 3000 --directory out
 ```
 
@@ -43,8 +43,9 @@ python3 -m http.server 3000 --directory out
 
 ```bash
 npm run lint
-node --import tsx --test tests/*.test.ts
-npm run build -- --webpack
+npm run typecheck
+npm test
+npm run build
 ```
 
 Check both the direct portfolio and the embedded desktop after interface changes. The automated checks cover desktop window behavior and message handling; they do not establish email receipt or replace visual inspection of the 3D scene.

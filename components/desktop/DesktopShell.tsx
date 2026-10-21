@@ -15,8 +15,11 @@ type Props = {
   reducedMotion: boolean;
   onReducedMotionChange: (value: boolean) => void;
   wallpaperUrl: string;
-  initialApp?: "chrome" | "files" | "messages" | "settings" | "photos" | null;
+  /** Each new request id opens its app, even if the same app was asked for before. */
+  openRequest?: AppOpenRequest | null;
 };
+
+export type AppOpenRequest = { app: DesktopAppId; id: number };
 
 const appLabels: Record<DesktopAppId | "slippi", string> = {
   chrome: "Portfolio in Chrome",
@@ -41,20 +44,22 @@ function Icon({ app }: { app: DesktopAppId | "slippi" }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.2C7 5.5 9.3 4 12 4s5 1.5 5 4.2c1.6.5 2.5 1.6 2.5 3.2 0 2.3-1.7 4.1-3.8 4.1-.6 2.8-2 4.5-3.7 4.5s-3.1-1.7-3.7-4.5c-2.1 0-3.8-1.8-3.8-4.1 0-1.6.9-2.7 2.5-3.2Z" fill="#69c46e"/><path d="M8.2 10.7c.7-.8 1.6-1.1 2.5-1.1h2.6c.9 0 1.8.3 2.5 1.1M9.8 13.1h.1m4.2 0h.1" fill="none" stroke="#163c29" strokeLinecap="round" strokeWidth="1.25"/><path d="M10.3 15c.9.6 2.5.6 3.4 0" fill="none" stroke="#163c29" strokeLinecap="round" strokeWidth="1.2"/></svg>;
 }
 
+let clockFormat: Intl.DateTimeFormat | undefined;
 function useClock() {
   const [date, setDate] = useState(() => new Date());
   useEffect(() => {
     const timer = window.setInterval(() => setDate(new Date()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
-  return new Intl.DateTimeFormat(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" }).format(date);
+  clockFormat ??= new Intl.DateTimeFormat(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
+  return clockFormat.format(date);
 }
 
-export default function DesktopShell({ portfolio, files, messages, photos, onRestoreGame, onBackToDesk, reducedMotion, onReducedMotionChange, wallpaperUrl, initialApp = null }: Props) {
+export default function DesktopShell({ portfolio, files, messages, photos, onRestoreGame, onBackToDesk, reducedMotion, onReducedMotionChange, wallpaperUrl, openRequest = null }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [windows, dispatch] = useReducer(windowReducer, undefined, createWindowState);
   const [viewport, setViewport] = useState<Viewport>({ width: 1000, height: 720 });
-  const lastInitialApp = useRef<string | null>(null);
+  const lastRequestId = useRef<number | null>(null);
   const clock = useClock();
 
   useEffect(() => {
@@ -70,11 +75,11 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
   }, []);
 
   useEffect(() => {
-    if (initialApp && lastInitialApp.current !== initialApp) {
-      dispatch({ type: "open", app: initialApp, viewport });
+    if (openRequest && lastRequestId.current !== openRequest.id) {
+      dispatch({ type: "open", app: openRequest.app, viewport });
     }
-    lastInitialApp.current = initialApp;
-  }, [initialApp, viewport]);
+    lastRequestId.current = openRequest?.id ?? null;
+  }, [openRequest, viewport]);
 
   const openApp = (app: DesktopAppId) => dispatch({ type: "open", app, viewport });
   const windowContent = useMemo(() => ({

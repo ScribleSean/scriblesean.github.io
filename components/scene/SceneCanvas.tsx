@@ -134,6 +134,13 @@ function ScreenSurface({ element }: { element: React.RefObject<HTMLDivElement | 
   return null;
 }
 
+// Rendered inside the Suspense boundary, so the loading overlay stays up until
+// the desk textures have loaded, not just until the WebGL context exists.
+function SceneReady({ onReady }: { onReady: () => void }) {
+  useEffect(() => { onReady(); }, [onReady]);
+  return null;
+}
+
 // A lost WebGL context must not leave a black, unusable computer.
 function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   const { gl } = useThree();
@@ -145,14 +152,14 @@ function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   return null;
 }
 
-export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onBack, onFailure, resetKey }: {
+// Clicks on empty floor bubble to the DOM container, which handles "back".
+export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onFailure, resetKey }: {
   view: CameraView;
   resetKey: number;
   reducedMotion: boolean;
   screen: ReactNode;
   onReady: () => void;
   onApproach: () => void;
-  onBack: () => void;
   onFailure: () => void;
 }) {
   const screenElement = useRef<HTMLDivElement>(null);
@@ -169,7 +176,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   }, []);
   return <><Canvas
     shadows={{ type: THREE.PCFShadowMap }}
-    onPointerMissed={(event) => { if (event.type === "click") onBack(); }}
     frameloop="demand"
     dpr={pixelRatio}
     camera={{ position: [9, 7.1, 13.3], fov: 37, near: .1, far: 60 }}
@@ -178,7 +184,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       // Keep screen/app clicks out of the scene raycaster and orbit controls.
       events.connect?.(gl.domElement);
       gl.setClearColor("#e7dece");
-      onReady();
     }}
   >
     <color attach="background" args={["#e7dece"]} />
@@ -189,16 +194,17 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
     <Suspense fallback={null}>
       <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><DeskModels /></group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.72, 0]} receiveShadow
-        onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
+        onClick={(event) => event.stopPropagation()}>
         <planeGeometry args={[200, 200]} />
         <meshStandardMaterial color="#e7dece" roughness={1} />
       </mesh>
-      <mesh geometry={studioBackdrop} receiveShadow onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onBack(); }}>
+      <mesh geometry={studioBackdrop} receiveShadow onClick={(event) => event.stopPropagation()}>
         <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
       </mesh>
       <ScreenSurface element={screenElement} />
-      <ContextRecovery onFailure={onFailure} />
+      <SceneReady onReady={onReady} />
     </Suspense>
+    <ContextRecovery onFailure={onFailure} />
     <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
   </Canvas><div ref={screenElement} data-crt-surface style={{ position: "absolute", left: 0, top: 0, width: 960, height: 720, transformOrigin: "0 0", visibility: "hidden", zIndex: 10 }}>{screen}</div></>;
 }

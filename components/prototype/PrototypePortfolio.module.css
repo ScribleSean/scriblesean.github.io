@@ -270,24 +270,6 @@
   border-bottom:1px solid #99a37e;
   padding-bottom:5px
 }
-.orbit {
-  background:#e6e9df;
-  padding-bottom:28px
-}
-.orbit h3 {
-  font-size:52px;
-  margin-top:32px
-}
-.orbit p {
-  max-width:290px
-}
-.orbitMark {
-  position:absolute;
-  right:28px;
-  top:70px;
-  font:120px/.8 Georgia;
-  color:#7c886647
-}
 .projectGrid {
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -648,7 +630,7 @@
 .embedded .widget {
   padding:20px 20px 0
 }
-.embedded .repair,.embedded .orbit {
+.embedded .repair {
   padding-bottom:24px
 }
 .embedded .photoTeaser {
@@ -760,7 +742,7 @@
 .widget p {
   font-size:12px
 }
-.repair,.orbit,.embedded .repair,.embedded .orbit {
+.repair,.embedded .repair {
   padding-bottom:25px
 }
 .repair h3 {

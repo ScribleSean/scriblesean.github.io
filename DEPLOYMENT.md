@@ -34,4 +34,4 @@ All download links use `/resume/sean-arackal-resume.pdf`. The `/resume/` page an
 
 ## Embedded browser
 
-Chrome supports typed website addresses, Google searches, reload, portfolio home, and back/forward through addresses entered in its toolbar. The approach follows the iframe browser in https://yoshik-portfolio.vercel.app/. External pages remain subject to their embedding policies; an external-tab link is always available. Cross-origin navigation inside a page cannot synchronize the toolbar address or its history. Google search and example.com were verified in the production preview.
+Chrome shows the portfolio inside the window and supports typed website addresses, Google searches, reload, portfolio home, and back/forward through addresses entered in its toolbar. Outside websites and searches open in a new browser tab rather than an iframe; the window then offers a link back to them and a way home. The toolbar idea came from https://yoshik-portfolio.vercel.app/.

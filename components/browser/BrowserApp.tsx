@@ -16,8 +16,11 @@ export default function BrowserApp({ portfolio }: { portfolio: ReactNode }) {
     try {
       const next = resolveBrowserAddress(value);
       if (next !== PORTFOLIO_HOME) window.open(next, "_blank", "noopener,noreferrer");
-      setHistory((items) => [...items.slice(0, index + 1), next]);
-      setIndex(index + 1);
+      // Going to the page already shown (such as Home on Home) adds no entry.
+      if (next !== history[index]) {
+        setHistory((items) => [...items.slice(0, index + 1), next]);
+        setIndex(index + 1);
+      }
       setAddress(display(next));
       setError("");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Invalid address"); }

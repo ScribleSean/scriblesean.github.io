@@ -1,7 +1,11 @@
 # Message delivery setup
 
-`MessagesApp` sends only the visitor's submitted chat bubbles. It does not retain
-typing, deleted bubbles, the welcome copy, or any fake read/delivered state.
+`MessagesApp` sends only the visitor's chat bubbles that have not been sent yet,
+plus any text still in the box. It does not send deleted bubbles or the welcome
+copy. Unsent bubbles are labeled "Not sent yet" and the Send button stays
+visible until they go out. "Delivered" appears only after the endpoint confirms
+success, and delivered bubbles can no longer be edited or deleted. Thread logic
+lives in `lib/message-thread.ts`.
 
 ## Recommended zero-cost activation
 

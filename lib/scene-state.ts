@@ -26,6 +26,7 @@ export function sceneReducer(state: SceneState, action: SceneAction): SceneState
   }
 }
 
-export function shouldPlayGame(state: SceneState, documentVisible: boolean): boolean {
-  return documentVisible && !state.mobileOpen && state.screen === "game";
+/** The looping match only plays when visible and the visitor has not asked to pause or reduce motion. */
+export function shouldPlayGame(state: SceneState, documentVisible: boolean, paused = false): boolean {
+  return !paused && documentVisible && !state.mobileOpen && state.screen === "game";
 }

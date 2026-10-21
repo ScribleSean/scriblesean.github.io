@@ -1,0 +1,179 @@
+{
+  "checkedThrough": "2026-10-21",
+  "heading": "Small tools for my Mac",
+  "intro": "I’m building a few small apps that each do one job well and stay out of the way. Beeline does things for me, Observatory keeps watch, and one more is on the way.",
+  "projects": [
+    {
+      "slug": "beeline",
+      "name": "Beeline",
+      "verb": "Do",
+      "kind": "Mac app",
+      "status": "In progress",
+      "tagline": "Type or talk to your Mac, and a small bee shows where it acts.",
+      "summary": "A Mac assistant I open with ⌘Space. I type, or hold the keys and talk, and it opens things, changes settings, presses buttons and runs short plans.",
+      "icon": "/projects/beeline/icon.png",
+      "hero": {
+        "light": "/projects/beeline/bar-light.jpg",
+        "dark": "/projects/beeline/bar-dark.jpg",
+        "width": 1440,
+        "height": 786,
+        "alt": "The Beeline bar searching for wifi, with Open Wi-Fi as the top hit and actions to turn Wi-Fi off or on"
+      },
+      "sections": [
+        {
+          "title": "What it does",
+          "body": [
+            "Beeline opens apps, files, tabs and System Settings pages from everyday words like “night shift”. It also runs menu commands, presses buttons in the app in front, tiles windows, converts units and currencies, and handles file chores like compressing or moving what’s selected in Finder.",
+            "Holding ⌘Space turns the search field into a microphone. My words fill the bar as I speak, and Return runs the top result. For bigger requests it asks Claude for a short plan, shows every step, and runs nothing until I approve it."
+          ]
+        },
+        {
+          "title": "The bee",
+          "body": [
+            "Before Beeline presses something, a small drawn bee flies from the bar to the button, menu or window, a ring settles on the target, and a label says what is about to happen. My real pointer never moves.",
+            "Escape stops a run from any app, and clicking or typing myself takes over. Anything that can’t be undone, like emptying the Trash, pressing Send or a dialog’s OK, needs Return twice, and the card says exactly what it will touch."
+          ]
+        },
+        {
+          "title": "Where it came from",
+          "body": [
+            "Voice control started as a separate prototype. I folded it into Beeline so there is one bar for typing and talking, and kept only the parts that held up: the on-screen cursor idea and a safe way to stop."
+          ]
+        }
+      ],
+      "gallery": [
+        {
+          "src": "/projects/beeline/plan.jpg",
+          "width": 1440,
+          "height": 846,
+          "alt": "A three-step plan in the Beeline bar: put Notes on the left, turn Wi-Fi off, keep the Mac awake, with Cancel and Run buttons",
+          "caption": "Bigger requests become a plan I approve first."
+        },
+        {
+          "src": "/projects/beeline/answer.jpg",
+          "width": 1440,
+          "height": 658,
+          "alt": "A currency conversion shown as a large answer in the Beeline bar",
+          "caption": "Quick answers appear right in the bar."
+        }
+      ],
+      "highlights": [
+        "On-device speech while ⌘Space is held",
+        "Uses Apple’s on-device model for loose requests, and learns what I pick",
+        "Watches Escape to stop a run without ever swallowing the key",
+        "Runs on the Mac; goes online only for currency rates and requests I send to Claude"
+      ],
+      "connects": [
+        {
+          "slug": "observatory",
+          "text": "Plans come from Claude, and Observatory shows how much of that usage is left."
+        }
+      ],
+      "stack": [
+        "Swift",
+        "AppKit",
+        "Speech",
+        "Foundation Models",
+        "Accessibility API"
+      ],
+      "links": [
+        {
+          "label": "Source code",
+          "href": "https://github.com/ScribleSean/beeline"
+        }
+      ]
+    },
+    {
+      "slug": "observatory",
+      "name": "Observatory",
+      "verb": "Watch",
+      "kind": "Menu bar app · Mac and Windows",
+      "status": "Open source",
+      "tagline": "A calm menu bar companion that watches my AI limits, agents, time and cost.",
+      "summary": "One glance tells me how much of my Claude Code and Codex limits is left, which agents are waiting on me, where my screen time went, and what the day cost. It runs on my own computer and never touches any of them.",
+      "mark": "telescope",
+      "hero": {
+        "light": "/projects/observatory/dashboard-light.jpg",
+        "dark": "/projects/observatory/dashboard-dark.jpg",
+        "width": 1600,
+        "height": 1375,
+        "alt": "The Observatory dashboard with fictional data: tiles for limits, agents, screen time and cost, then the Limits page"
+      },
+      "sections": [
+        {
+          "title": "Four questions",
+          "body": [
+            "Observatory answers four things at a glance: am I near my limits, what are my agents doing, where did my time go, and what did it cost. The menu bar shows one number, the lowest limit left, with an amber dot when an agent is waiting on me.",
+            "The dashboard opens in my browser and breaks each answer down: limit windows with reset times and pace, screen time by app and category, and tokens priced at public API rates."
+          ]
+        },
+        {
+          "title": "An agents panel",
+          "body": [
+            "The Agents page lists every Claude Code session as working, waiting on me, idle or done, with recent Codex jobs beside them. It reads only the small status files those tools already keep, never transcripts or job output."
+          ]
+        },
+        {
+          "title": "Monitor only",
+          "body": [
+            "It never starts, stops or answers an agent, and it never changes the tools it reads. It sends nothing to any server and has no telemetry. Saved data holds totals and status, never prompts, messages or window titles.",
+            "Unknown is never shown as zero, and dollar figures are labeled as estimates, not bills."
+          ]
+        },
+        {
+          "title": "One computer first",
+          "body": [
+            "Setup is one command. It builds the dashboard and a small menu bar app on my own computer and starts them at login, with no account and no installer. A Mac and a Windows PC can optionally share one view over SSH, with combined sums clearly labeled."
+          ]
+        }
+      ],
+      "gallery": [
+        {
+          "src": "/projects/observatory/agents-light.jpg",
+          "darkSrc": "/projects/observatory/agents-dark.jpg",
+          "width": 1600,
+          "height": 1375,
+          "alt": "The Observatory Agents page with fictional data: sessions on two computers labeled Waiting on you, Working, Idle and Done",
+          "caption": "The Agents panel across two computers, with fictional data."
+        }
+      ],
+      "highlights": [
+        "Claude Code and Codex get equal weight everywhere",
+        "Screen time from ActivityWatch, grouped by app and category",
+        "Tests plant fake prompts and keys and check none reach saved data",
+        "MIT licensed, with a demo that uses fictional data"
+      ],
+      "connects": [
+        {
+          "slug": "beeline",
+          "text": "Keeps an eye on the agents and limits behind Beeline’s plans."
+        }
+      ],
+      "stack": [
+        "Node.js",
+        "Swift",
+        "C#",
+        "Vite",
+        "ActivityWatch"
+      ],
+      "links": [
+        {
+          "label": "Try the demo",
+          "href": "https://scriblesean.github.io/observatory/"
+        },
+        {
+          "label": "Source code",
+          "href": "https://github.com/ScribleSean/observatory"
+        }
+      ]
+    },
+    {
+      "slug": "next",
+      "name": "Something new",
+      "verb": "Soon",
+      "teaser": true,
+      "status": "Coming later",
+      "summary": "A new app I’m working on in private. More here when it’s ready."
+    }
+  ]
+}

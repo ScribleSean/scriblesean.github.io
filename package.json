@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "portfolio:gather": "node scripts/portfolio-agent/gather.mjs",
+    "portfolio:screenshots": "node scripts/portfolio-agent/screenshots.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -30,6 +34,6 @@
     "typescript": "^5.9.3"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22"
   }
 }

@@ -128,3 +128,9 @@ dist
 
 # Local artifact previews
 /tmp/
+
+# macOS Finder metadata
+.DS_Store
+
+# Local list of private projects and folders the portfolio agent must never publish
+portfolio-agent.private.json
