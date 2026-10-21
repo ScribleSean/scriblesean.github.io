@@ -134,6 +134,13 @@ function ScreenSurface({ element }: { element: React.RefObject<HTMLDivElement | 
   return null;
 }
 
+// Rendered inside the Suspense boundary, so the loading overlay stays up until
+// the desk textures have loaded, not just until the WebGL context exists.
+function SceneReady({ onReady }: { onReady: () => void }) {
+  useEffect(() => { onReady(); }, [onReady]);
+  return null;
+}
+
 // A lost WebGL context must not leave a black, unusable computer.
 function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   const { gl } = useThree();
@@ -177,7 +184,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       // Keep screen/app clicks out of the scene raycaster and orbit controls.
       events.connect?.(gl.domElement);
       gl.setClearColor("#e7dece");
-      onReady();
     }}
   >
     <color attach="background" args={["#e7dece"]} />
@@ -196,8 +202,9 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
         <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
       </mesh>
       <ScreenSurface element={screenElement} />
-      <ContextRecovery onFailure={onFailure} />
+      <SceneReady onReady={onReady} />
     </Suspense>
+    <ContextRecovery onFailure={onFailure} />
     <CameraRig view={view} reducedMotion={reducedMotion} resetKey={resetKey} />
   </Canvas><div ref={screenElement} data-crt-surface style={{ position: "absolute", left: 0, top: 0, width: 960, height: 720, transformOrigin: "0 0", visibility: "hidden", zIndex: 10 }}>{screen}</div></>;
 }

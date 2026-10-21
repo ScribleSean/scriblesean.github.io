@@ -51,7 +51,13 @@ function loadYoutube(): Promise<YoutubeApi> {
         script.async = true;
         document.head.appendChild(script);
       }
-      script.addEventListener("error", () => reject(new Error("Video unavailable")), { once: true });
+      script.addEventListener("error", () => {
+        // Forget the failed attempt so the next mount can try again.
+        youtubePromise = undefined;
+        window.onYouTubeIframeAPIReady = previous;
+        script?.remove();
+        reject(new Error("Video unavailable"));
+      }, { once: true });
     });
   }
   return youtubePromise;
