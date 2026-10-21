@@ -186,7 +186,12 @@ export function createMessageTransport(
       try {
         data = await untilAborted(response.json(), abortController.signal);
       } catch {
-        if (abortController.signal.aborted) throw timedOut();
+        // The service answered but its reply stalled, so it may have the message.
+        if (abortController.signal.aborted) {
+          throw new MessageDeliveryError(
+            "The delivery service stopped responding. Your conversation may already have been sent, so check before sending it again.",
+          );
+        }
         throw new MessageDeliveryError(
           "The delivery service returned an invalid response. Please try again.",
         );

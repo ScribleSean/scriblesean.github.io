@@ -30,7 +30,9 @@ function warmDesktop() {
 
 // The CRT screen is rendered once, into this detached node, and the node is
 // moved between the 3D canvas and the flat fallback. Switching modes then
-// keeps the desktop, its windows and any message drafts mounted.
+// keeps the desktop, its windows and any message drafts mounted. (Going back
+// to the room after a WebGL failure still unmounts it; drafts survive because
+// the Messages store lives in this component.)
 function createScreenHost() {
   if (typeof document === "undefined") return null;
   const host = document.createElement("div");
@@ -103,7 +105,11 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     if (["work", "experience", "education", "skills", "contact", "top"].includes(section)) window.location.replace(`/portfolio/#${section}`);
     // A reload of ?view=portfolio starts in the room, so drop the stale entry
     // marker; otherwise "back to desk" would call history.back() off the page.
-    if (window.history.state?.seanMobile) window.history.replaceState(null, "", window.location.pathname);
+    if (window.history.state?.seanMobile) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("view");
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    }
     const onPop = () => {
       // Forward into the flat desktop re-opens it; anything else goes back.
       if (window.history.state?.seanMobile) {
@@ -222,6 +228,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>click to approach · drag to rotate · scroll to zoom</button>}
     {!degraded && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
     {state.mobileOpen && <div className={styles.fallbackDesktop}>{screenSlot}</div>}
-    {screenHost && slot.count > 0 && createPortal(screen, screenHost)}
+    {/* The portal sits outside SceneBoundary, so it needs its own boundary. */}
+    {screenHost && slot.count > 0 && createPortal(<DesktopBoundary>{screen}</DesktopBoundary>, screenHost)}
   </main>;
 }

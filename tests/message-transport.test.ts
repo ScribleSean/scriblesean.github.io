@@ -180,5 +180,5 @@ test("the timeout still applies when headers arrive but the body stalls", async 
     5,
   );
 
-  await assert.rejects(() => transport(submission), /timed out/);
+  await assert.rejects(() => transport(submission), /stopped responding/);
 });
