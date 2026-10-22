@@ -52,7 +52,6 @@ function loadYoutube(): Promise<YoutubeApi> {
         document.head.appendChild(script);
       }
       script.addEventListener("error", () => {
-        // Forget the failed attempt so the next mount can try again.
         youtubePromise = undefined;
         window.onYouTubeIframeAPIReady = previous;
         script?.remove();
@@ -80,8 +79,7 @@ export default function MeleePlayer({ playing }: { playing: boolean }) {
 
   useEffect(() => {
     if (!playing) return;
-    // YouTube can clear its end bound after a seek. Keep our segment bounded
-    // without a render loop, and stop polling whenever the game is hidden.
+    // YouTube can clear its end bound after a seek.
     const timer = window.setInterval(() => {
       const active = player.current;
       if (active && active.getCurrentTime() >= MATCH_END_SECONDS) {
@@ -148,7 +146,6 @@ export default function MeleePlayer({ playing }: { playing: boolean }) {
 
   return (
     <div className={styles.melee} aria-label="Silent Falco versus Marth TAS video">
-      {/* An ordinary poster remains visible until the embedded player is ready. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className={styles.videoPoster} src="/scene/melee-poster.jpg" alt="Marth versus Falco TAS match" />
       <div className={styles.youtube} ref={container} style={{ opacity: status === "playing" ? 1 : 0 }} />

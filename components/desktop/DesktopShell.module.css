@@ -12,5 +12,4 @@
 
 .messageContent { height: 100%; min-height: 0; overflow: hidden; }
 
-/* Reserve one-finger drags for window movement; app bodies retain native scrolling. */
 .titleBar, .resizeHandle { touch-action: none; }

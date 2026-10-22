@@ -28,11 +28,6 @@ function warmDesktop() {
   ]).catch(() => { desktopWarmup = undefined; });
 }
 
-// The CRT screen is rendered once, into this detached node, and the node is
-// moved between the 3D canvas and the flat fallback. Switching modes then
-// keeps the desktop, its windows and any message drafts mounted. (Going back
-// to the room after a WebGL failure still unmounts it; drafts survive because
-// the Messages store lives in this component.)
 function createScreenHost() {
   if (typeof document === "undefined") return null;
   const host = document.createElement("div");
@@ -103,15 +98,12 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   useEffect(() => {
     const section = window.location.hash.slice(1);
     if (["work", "experience", "education", "skills", "contact", "top"].includes(section)) window.location.replace(`/portfolio/#${section}`);
-    // A reload of ?view=portfolio starts in the room, so drop the stale entry
-    // marker; otherwise "back to desk" would call history.back() off the page.
     if (window.history.state?.seanMobile) {
       const url = new URL(window.location.href);
       url.searchParams.delete("view");
       window.history.replaceState(null, "", url.pathname + url.search + url.hash);
     }
     const onPop = () => {
-      // Forward into the flat desktop re-opens it; anything else goes back.
       if (window.history.state?.seanMobile) {
         setDesktopOpened(true);
         dispatch({ type: "enter", mobile: true });
@@ -127,7 +119,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const recoverDesktop = useCallback(() => {
     setDegraded(true);
     setDesktopOpened(true);
-    // Same history entry as enter(), so Back returns to the room, not off the site.
     if (!window.history.state?.seanMobile) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
     dispatch({ type: "enter", mobile: true });
   }, []);
@@ -189,7 +180,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       /></DesktopBoundary>}
     </div>
     <div className={`${styles.gameLayer} ${state.screen === "desktop" ? styles.minimized : ""}`} inert={state.screen === "desktop"}>
-      {/* Moving the screen reloads the YouTube iframe, so start a fresh player. */}
+      {/* Moving the screen reloads the YouTube iframe. */}
       <MeleePlayer key={slot.generation} playing={shouldPlayGame(state, documentVisible, gamePaused)} />
     </div>
     {state.screen === "game" && <button type="button" className={styles.screenHit}
@@ -215,7 +206,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
           const pointer = scenePointer.current;
           if (!pointer.hit && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 5) backToDesk();
         }}>
-        {/* Clicks on empty floor reach this handler; the scene does not also call backToDesk. */}
         <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screenSlot} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onFailure={recoverDesktop} />
       </div>
     </SceneBoundary>}
@@ -228,7 +218,6 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>click to approach · drag to rotate · scroll to zoom</button>}
     {!degraded && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
     {state.mobileOpen && <div className={styles.fallbackDesktop}>{screenSlot}</div>}
-    {/* The portal sits outside SceneBoundary, so it needs its own boundary. */}
     {screenHost && slot.count > 0 && createPortal(<DesktopBoundary>{screen}</DesktopBoundary>, screenHost)}
   </main>;
 }

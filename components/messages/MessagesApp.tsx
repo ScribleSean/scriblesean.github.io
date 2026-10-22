@@ -28,7 +28,6 @@ const welcomeMessage =
 
 export type MessagesAppProps = {
   transport?: MessageTransport;
-  /** Pass a store from a parent to keep the thread across remounts. */
   store?: ThreadStore;
 };
 
@@ -72,7 +71,6 @@ export default function MessagesApp({
     }
 
     dispatch({ type: "submit-start", draft: createMessage("") });
-    // Only messages Sean has not received yet are sent.
     const messagesToSubmit = getPendingMessages(store.getState());
 
     try {

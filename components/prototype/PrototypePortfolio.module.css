@@ -892,7 +892,6 @@
 }
 
 
-/* Components also respond to the width of a resized desktop window. */
 .page { container-type: inline-size; }
 .header nav a { display: inline-flex; align-items: center; min-height: 44px; }
 .timeline > * { min-width: 0; }

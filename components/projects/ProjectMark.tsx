@@ -1,7 +1,6 @@
 import type { FeaturedProject } from "@/data/featured-projects";
 import styles from "./ProjectMark.module.css";
 
-/** The app icon, or a drawn mark for projects without one. */
 export default function ProjectMark({ project, size = 56 }: { project: FeaturedProject; size?: number }) {
   if (project.icon) {
     // eslint-disable-next-line @next/next/no-img-element -- static export serves images as-is.

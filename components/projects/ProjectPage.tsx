@@ -5,7 +5,6 @@ import styles from "./ProjectPage.module.css";
 
 const updated = new Date(`${featured.checkedThrough}T12:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
 
-/** Light image with an optional dark variant that follows the system appearance. */
 function Shot({ image, priority = false }: { image: ProjectImage; priority?: boolean }) {
   return (
     <picture className={styles.shot}>

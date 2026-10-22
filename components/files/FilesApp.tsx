@@ -138,7 +138,6 @@ export function ResumeContent() {
       <p style={{ marginBottom: 16 }}>
         <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Open resume PDF to read, search, or print ↗</a>
       </p>
-      {/* A preview rendered directly from the approved PDF keeps every resume view identical. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/resume/sean-arackal-resume.png" alt="Sean Arackal resume, 2026–2027. Open the PDF above for accessible text." style={{ display: "block", width: "100%", height: "auto" }} />
     </article>

@@ -8,7 +8,6 @@ import * as THREE from "three";
 import DeskModels from "./DeskModels";
 import type { CameraView } from "@/lib/scene-state";
 
-// A small studio sweep replaces the clipped ground-plane horizon.
 const studioBackdrop = (() => {
   const points: [number, number][] = [[-.72, -6]];
   for (let segment = 1; segment <= 16; segment++) {
@@ -56,10 +55,8 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
       const distance = Math.max(3.3, 1.34 / (Math.tan(37 * Math.PI / 360) * aspect));
       targetPosition.current.z = .92 + distance;
     } else {
-      // Preserve the composition when the preview pane becomes narrow.
       targetPosition.current.sub(targetLook.current).multiplyScalar(Math.max(1, 1.35 / aspect)).add(targetLook.current);
     }
-    // Keep the original camera motion reachable in the scaled mobile viewport.
     const distance = targetPosition.current.distanceTo(targetLook.current);
     if (controls.current) controls.current.maxDistance = Math.max(30, distance * 1.1);
     /* eslint-disable react-hooks/immutability -- Three.js camera and fog are mutable. */
@@ -87,7 +84,6 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
     controls.current.target.lerp(targetLook.current, factor);
     controls.current.update();
     if (camera.position.distanceToSquared(targetPosition.current) < .000002 && controls.current.target.distanceToSquared(targetLook.current) < .000002) {
-      // Finish at the exact projection, rather than retaining a fractional tilt.
       camera.position.copy(targetPosition.current);
       controls.current.target.copy(targetLook.current);
       controls.current.update();
@@ -111,7 +107,6 @@ function ScreenSurface({ element }: { element: React.RefObject<HTMLDivElement | 
     if (!screen) return;
     camera.updateMatrixWorld();
     projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-    // Match the CRT's 2.56 x 1.92 opening, immediately in front of its glass.
     origin.set(-.58 - 1.28, 2.49 + .96, .965, 1).applyMatrix4(projection);
     dx.set(2.56 / 960, 0, 0, 0).applyMatrix4(projection);
     dy.set(0, -1.92 / 720, 0, 0).applyMatrix4(projection);
@@ -125,7 +120,6 @@ function ScreenSurface({ element }: { element: React.RefObject<HTMLDivElement | 
     const c = (dy.x + dy.w) * x, d = (-dy.y + dy.w) * y;
     const tx = (origin.x + origin.w) * x, ty = (-origin.y + origin.w) * y;
     const p = dx.w / origin.w, q = dy.w / origin.w;
-    // Use native 2D hit testing once perspective is below a subpixel difference.
     screen.style.transform = Math.abs(p * 960) + Math.abs(q * 720) < .0001
       ? `matrix(${a},${b},${c},${d},${tx},${ty})`
       : `matrix3d(${a},${b},0,${p},${c},${d},0,${q},0,0,1,0,${tx},${ty},0,1)`;
@@ -134,14 +128,11 @@ function ScreenSurface({ element }: { element: React.RefObject<HTMLDivElement | 
   return null;
 }
 
-// Rendered inside the Suspense boundary, so the loading overlay stays up until
-// the desk textures have loaded, not just until the WebGL context exists.
 function SceneReady({ onReady }: { onReady: () => void }) {
   useEffect(() => { onReady(); }, [onReady]);
   return null;
 }
 
-// A lost WebGL context must not leave a black, unusable computer.
 function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   const { gl } = useThree();
   useEffect(() => {
@@ -152,7 +143,6 @@ function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   return null;
 }
 
-// Clicks on empty floor bubble to the DOM container, which handles "back".
 export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onFailure, resetKey }: {
   view: CameraView;
   resetKey: number;
@@ -181,7 +171,6 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
     camera={{ position: [9, 7.1, 13.3], fov: 37, near: .1, far: 60 }}
     gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
     onCreated={({ gl, events }) => {
-      // Keep screen/app clicks out of the scene raycaster and orbit controls.
       events.connect?.(gl.domElement);
       gl.setClearColor("#e7dece");
     }}

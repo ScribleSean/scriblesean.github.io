@@ -15,7 +15,6 @@ type Props = {
   reducedMotion: boolean;
   onReducedMotionChange: (value: boolean) => void;
   wallpaperUrl: string;
-  /** Each new request id opens its app, even if the same app was asked for before. */
   openRequest?: AppOpenRequest | null;
 };
 
@@ -114,7 +113,6 @@ function DesktopWindow({ app, title, frame, viewport, onAction, children }: { ap
     let raf = 0;
     const pending = new Map<HTMLElement, { x: number; y: number }>();
     // Chromium does not reliably wheel-scroll the projected 3D HTML surface.
-    // Only handle declared scroll regions; avoid style reads and DOM scans.
     const wheel = (event: WheelEvent) => {
       if (event.ctrlKey || event.metaKey || !(event.target instanceof Element) || event.target.closest("textarea")) return;
       const target = event.target.closest<HTMLElement>("[data-desktop-scroll]");

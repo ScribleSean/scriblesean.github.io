@@ -63,7 +63,6 @@ function Cable({ points, radius = .024 }: { points: Vec3[]; radius?: number }) {
   </mesh>;
 }
 
-// A single instanced draw call for every speaker perforation.
 function Speaker({ at }: { at: Vec3 }) {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const points = useMemo(() => {
@@ -90,12 +89,10 @@ function Speaker({ at }: { at: Vec3 }) {
 
 export function Television() {
   return <group position={[-.58, 0, .02]}>
-    {/* Layered warm-ivory housing gives the CRT a glossy, molded-plastic presence. */}
     <Box at={[0, 2.23, -.42]} size={[2.45, 2.33, 1.98]} color="#b7ab96" radius={.2} roughness={.5} />
     <Box at={[0, 2.23, .49]} size={[3.24, 2.98, .76]} color="#e1d6c2" radius={.2} roughness={.43} />
     <Box at={[0, 3.57, .34]} size={[2.92, .11, .46]} color="#eee5d4" radius={.055} roughness={.38} />
     <Box at={[0, 1.01, .12]} size={[2.73, .18, 1.5]} color="#c3b7a2" radius={.065} roughness={.52} />
-    {/* The wide ivory inner surround deepens the screen without changing its projection opening. */}
     <Box at={[0, 2.49, .86]} size={[2.94, 2.31, .13]} color="#c5b8a4" radius={.16} roughness={.38} />
     <Box at={[0, 2.49, .884]} size={[2.72, 2.08, .1]} color="#27242a" radius={.14} roughness={.33} />
     <Box at={[0, 2.49, .928]} size={[2.56, 1.92, .028]} color="#0a0a11" radius={.095} roughness={.24} />
@@ -112,7 +109,6 @@ export function Television() {
       <Disc at={[.29 + i * .16, 1.115, .867]} radius={.057} color="#514637" />
       <Disc at={[.29 + i * .16, 1.115, .925]} radius={.036} color={color} depth={.13} />
     </group>)}
-    {/* Deep, narrow ventilation slots on the visible left side. */}
     {Array.from({ length: 12 }, (_, i) => <Box key={i} at={[-1.236, 2.23, -.92 + i * .092]} size={[.01, .45, .028]} color="#696253" radius={.004} />)}
   </group>;
 }
@@ -135,7 +131,6 @@ function SlippiEmblem() {
 
 export function GameCube() {
   return <group position={[2.02, 1.61, -.02]}>
-    {/* A cream-and-green Slippi console, intentionally distinct from its classic controller. */}
     <Box size={[1.43, 1.35, 1.43]} color={GREEN} radius={.06} roughness={.48} />
     <Box at={[0, -.48, .719]} size={[1.34, .31, .024]} color="#2b533f" radius={.008} roughness={.54} />
     <Box at={[0, -.045, .735]} size={[1.29, .6, .03]} color="#e7dfce" radius={.015} roughness={.42} />
@@ -183,7 +178,6 @@ export function Controller() {
       <extrudeGeometry args={[body, { depth: .13, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: .07, bevelThickness: .07, curveSegments: 16 }]} />
       <meshStandardMaterial color={INDIGO} roughness={.46} />
     </mesh>
-    {/* Center bridge and two shoulder caps give the classic GameCube silhouette its weight. */}
     <Box at={[0, .17, .02]} size={[.56, .11, .42]} color="#43376e" radius={.13} roughness={.43} />
     <Box at={[-.58, .18, .02]} size={[.17, .07, .32]} color="#3b3065" radius={.045} roughness={.38} />
     <Box at={[.58, .18, .02]} size={[.17, .07, .32]} color="#3b3065" radius={.045} roughness={.38} />
@@ -230,7 +224,6 @@ function MeleeCover() {
 
 export function GameCase() {
   return <group position={[-2.53, 1.015, .74]} rotation={[0, .18, 0]}>
-    {/* Matte black case, printed insert, and a thin clear sleeve read as a real boxed game. */}
     <Box size={[1.10, .105, 1.48]} color="#17171a" radius={.025} roughness={.36} />
     <Box at={[-.505, .025, 0]} size={[.065, .12, 1.40]} color="#09090b" radius={.008} roughness={.3} />
     <MeleeCover />
@@ -249,9 +242,7 @@ export default function DeskModels() {
     <Controller />
     <GameCase />
     <FoxFigurine />
-    {/* Controller lead: top center of controller to front port one. */}
     <Cable points={[[.95, 1.25, .65], [1.12, .98, .50], [2.92, .96, 1.22], [3.04, 1.0, 1.03], [1.57, 1.64, .98], [1.57, 1.64, .87]]} />
-    {/* RCA inputs: short separate tails join a cable along the TV side to the rear of the console. */}
     {[0, 1, 2].map((i) => <Cable key={i} radius={.014} points={[[-.29 + i * .16, 1.115, 1.0], [-.25 + i * .16, 1.00, 1.15], [.28, .955, 1.06], [.99, .95, .95]]} />)}
     <Cable radius={.026} points={[[.99, .95, .95], [1.05, .95, .15], [1.14, .95, -.93], [1.90, 1.12, -.97], [2.02, 1.3, -.78]]} />
   </group>;

@@ -86,11 +86,6 @@ function GlovedHand({ at, rotation = [0, 0, 0] }: { at: Vec3; rotation?: Vec3 })
   </group>;
 }
 
-/**
- * A compact, high-readability Fox McCloud desk figurine. Its transform matches
- * the former FoxCollectible group in DeskModels, so it can replace that element
- * directly without changing the room composition.
- */
 export default function FoxFigurine() {
   return <group position={[-2.55, 1.12, .82]} rotation={[0, .18, 0]} scale={.85}>
     <mesh position={[0, .045, 0]} receiveShadow castShadow>
@@ -102,7 +97,6 @@ export default function FoxFigurine() {
       <meshStandardMaterial color="#b99f70" roughness={.56} />
     </mesh>
 
-    {/* A braced stance gives the miniature a readable fighting silhouette. */}
     <TaperedLimb from={[-.12, .60, -.02]} to={[-.28, .34, .14]} topRadius={.105} bottomRadius={.085} color={PANTS} />
     <TaperedLimb from={[-.28, .34, .14]} to={[-.39, .16, .27]} topRadius={.085} bottomRadius={.07} color={PANTS} />
     <TaperedLimb from={[.12, .60, -.03]} to={[.25, .37, -.08]} topRadius={.105} bottomRadius={.085} color={PANTS} />
@@ -128,7 +122,6 @@ export default function FoxFigurine() {
     <TaperedLimb from={[.37, .79, .17]} to={[.18, 1.04, .31]} topRadius={.068} bottomRadius={.052} color={JACKET} />
     <GlovedHand at={[.18, 1.06, .31]} rotation={[.14, -.20, .28]} />
 
-    {/* The orange tail sits behind the jacket and ends in a cream tip. */}
     <TaperedLimb from={[-.13, .67, -.12]} to={[-.43, .53, -.40]} topRadius={.13} bottomRadius={.085} color={FUR} />
     <TaperedLimb from={[-.43, .53, -.40]} to={[-.53, .71, -.42]} topRadius={.085} bottomRadius={.05} color={MUZZLE} />
 
