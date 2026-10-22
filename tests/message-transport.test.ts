@@ -87,21 +87,8 @@ test("keeps failure visible to the caller when the endpoint rejects delivery", a
   await assert.rejects(() => transport(submission), /status 429/);
 });
 
-test("does not treat a 200 FormSubmit error response as a sent conversation", async () => {
-  const transport = createMessageTransport(
-    "https://example.test/form",
-    async () => ({
-      ok: true,
-      status: 200,
-      json: async () => ({ success: false, message: "Form is not active" }),
-    }),
-  );
-
-  await assert.rejects(() => transport(submission), /could not accept/);
-});
-
-test("rejects false, string false, and missing provider success values", async () => {
-  for (const response of [{ success: false }, { success: "false" }, {}]) {
+test("a 200 reply with false, string false, or missing success is not a sent conversation", async () => {
+  for (const response of [{ success: false, message: "Form is not active" }, { success: "false" }, {}]) {
     const transport = createMessageTransport(
       "https://example.test/form",
       async () => ({ ok: true, status: 200, json: async () => response }),
