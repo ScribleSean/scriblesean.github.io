@@ -33,13 +33,12 @@ transport used by this component. The transport parses the JSON response and
 only reports Sent when its `success` value is `true`; an HTTP 200 response with
 `success: false` remains an error in the UI.
 
-## Current blocker
+## Status
 
-The repository has no configured endpoint and the FormSubmit destination has
-not been activated. The owner must activate the endpoint before in-page delivery
-can be enabled.
-Until then, the app reports the configuration state honestly and exposes an
-email fallback that opens a pre-filled message to `sean.arackal@gmail.com`.
+The deploy workflow passes the repository variable `NEXT_PUBLIC_CONTACT_ENDPOINT`
+to the build, and the variable is set. A build without it reports the
+configuration state honestly and exposes an email fallback that opens a
+pre-filled message to `sean.arackal@gmail.com`.
 
 ## Sources
 

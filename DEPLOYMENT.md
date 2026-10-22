@@ -4,7 +4,7 @@ The repository exports to GitHub Pages using the existing workflow. Pushing to m
 
 ## Verification
 
-Run `npm run lint`, `npx tsx --test tests/*.test.ts`, and `npm run build`. Serve `out/` with an ordinary static server to inspect the production result. The 3D renderer draws on demand; camera damping stops after movement settles. Shadows use a bounded 1024px map. Apps are loaded on first open and kept mounted while hidden. Video is silent and pauses behind the desktop or in a hidden document.
+Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. Serve `out/` with an ordinary static server to inspect the production result. The 3D renderer draws on demand; camera damping stops after movement settles. Shadows use a bounded 1024px map. Apps are loaded on first open and kept mounted while hidden. Video is silent and pauses behind the desktop or in a hidden document.
 
 ## Email activation
 
