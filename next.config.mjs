@@ -10,7 +10,6 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
-  // Required for GitHub Pages (static hosting only — no Node server).
   output: "export",
   trailingSlash: true,
   images: {

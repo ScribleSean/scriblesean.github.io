@@ -4,8 +4,7 @@ import path from "node:path";
 
 import { ogImage } from "@/lib/site";
 
-// The social card is written to out/og.png at build time. A file name with an
-// extension lets GitHub Pages serve it as image/png, which link previews need.
+// A file name with an extension lets GitHub Pages serve it as image/png, which link previews need.
 export const dynamic = "force-static";
 
 export async function GET() {

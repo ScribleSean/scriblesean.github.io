@@ -6,5 +6,4 @@ export const ogImage = {
   alt: "Sean Arackal: AI, deep learning, and software engineering. An interactive portfolio built around a GameCube and CRT desktop.",
 };
 
-/** The 3D scene is composed for a 1200px-wide layout; other pages use the device width. */
 export const sceneViewport = { width: 1200, initialScale: undefined };

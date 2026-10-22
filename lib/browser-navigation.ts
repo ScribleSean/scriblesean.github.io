@@ -11,7 +11,6 @@ export function resolveBrowserAddress(input: string): string {
   try {
     url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
   } catch {
-    // For example "https://" alone, which new URL rejects with a raw TypeError.
     throw new Error("Enter a complete website address, like example.com.");
   }
   if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error("Use an HTTP or HTTPS website.");

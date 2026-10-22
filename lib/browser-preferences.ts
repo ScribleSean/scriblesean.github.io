@@ -5,7 +5,6 @@ let sessionPreference: boolean | undefined;
 
 export function subscribeMotion(callback: () => void) {
   const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-  // Another tab changed the setting: drop this tab's copy so the new value wins.
   const onStorage = (event: StorageEvent) => {
     if (event.key === null || event.key === MOTION_KEY) sessionPreference = undefined;
     callback();

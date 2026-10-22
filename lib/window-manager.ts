@@ -90,8 +90,6 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
   switch (action.type) {
     case "open": {
       const active = state[action.app];
-      // A window minimized while maximized comes back maximized, keeping its
-      // remembered size for Restore.
       if (active.mounted && active.restoreFrame) {
         return update(action.app, { ...active, ...maximizedFrame(action.viewport), mounted: true, status: "maximized", z: nextZ(state) });
       }
@@ -111,7 +109,6 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
     }
     case "close": {
       const active = state[action.app];
-      // Closing a maximized window returns it to its normal size for next time.
       return update(action.app, { ...active, ...active.restoreFrame, status: "closed", restoreFrame: undefined });
     }
     case "move": {

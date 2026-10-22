@@ -6,7 +6,6 @@ import { ogImage } from "@/lib/site";
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
 
-// Pages that show the 3D scene override this with sceneViewport (lib/site.ts).
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export const metadata: Metadata = {
@@ -42,9 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Browser extensions add attributes to <html> and <body> before React
-    // hydrates. suppressHydrationWarning covers only these two elements' own
-    // attributes, not their children, so real mismatches still surface.
+    // Browser extensions add attributes to <html> and <body> before React hydrates.
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         {children}

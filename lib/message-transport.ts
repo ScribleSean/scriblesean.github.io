@@ -153,8 +153,6 @@ export function createMessageTransport(
       new MessageDeliveryError(
         `Your conversation timed out after ${timeoutSeconds} ${timeoutSeconds === 1 ? "second" : "seconds"}. Please try again.`,
       );
-    // The timer covers the whole exchange, including reading the body, so a
-    // response that sends headers and then stalls cannot hang the UI.
     try {
       let response: FetchResponse;
       try {
@@ -186,7 +184,6 @@ export function createMessageTransport(
       try {
         data = await untilAborted(response.json(), abortController.signal);
       } catch {
-        // The service answered but its reply stalled, so it may have the message.
         if (abortController.signal.aborted) {
           throw new MessageDeliveryError(
             "The delivery service stopped responding. Your conversation may already have been sent, so check before sending it again.",

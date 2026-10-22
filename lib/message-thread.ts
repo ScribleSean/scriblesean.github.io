@@ -4,14 +4,11 @@ import {
   type Message,
 } from "./message-transport";
 
-// State for the Messages app. It lives outside the component so a remount
-// (for example when the 3D scene falls back to the flat desktop) keeps drafts.
 
 export type SubmissionState = "draft" | "sending" | "sent" | "error";
 
 export type ThreadState = {
   messages: Message[];
-  /** Ids of messages the delivery service has accepted. */
   sentIds: string[];
   composerText: string;
   editingMessageId: string | null;
@@ -47,7 +44,6 @@ export function isSent(state: ThreadState, id: string): boolean {
   return state.sentIds.includes(id);
 }
 
-/** Messages that have not been delivered yet, with the composer text applied. */
 export function getPendingMessages(state: ThreadState): Message[] {
   const unsent = state.messages.filter((message) => !isSent(state, message.id));
   if (!state.composerText.trim()) return unsent;
@@ -73,7 +69,6 @@ export function getThreadView(state: ThreadState) {
     conversationLength: getMessageTextLength(pending),
     composerEmpty,
     canCommit: !composerEmpty && !limitError && !sending,
-    // Send stays available while anything is unsent, not only while typing.
     canSend: pending.length > 0 && !limitError && !sending,
     showSend: pending.length > 0 || sending,
   };
@@ -84,7 +79,6 @@ const clearStatus = (state: ThreadState): ThreadState =>
     ? state
     : { ...state, submission: "draft", statusMessage: "", showEmailFallback: false };
 
-/** Moves the composer text into the thread: saves an edit or adds a new bubble. */
 function commitComposer(state: ThreadState, draft: Message): ThreadState {
   const text = state.composerText;
   if (!text.trim()) return { ...state, composerText: "", editingMessageId: null };
@@ -111,8 +105,6 @@ export function threadReducer(state: ThreadState, action: ThreadAction): ThreadS
     case "compose": {
       if (sending) return state;
       const next = { ...state, composerText: action.text };
-      // Clearing the box while editing cancels the edit, so the next message
-      // is added as a new bubble instead of overwriting the old one.
       if (state.editingMessageId && !action.text.trim()) next.editingMessageId = null;
       return clearStatus(next);
     }
@@ -125,7 +117,6 @@ export function threadReducer(state: ThreadState, action: ThreadAction): ThreadS
       const target = state.messages.find((message) => message.id === action.id);
       if (!target) return state;
       let next = state;
-      // Keep the current draft (or the edit in progress) instead of discarding it.
       if (state.composerText.trim()) {
         if (getThreadView(state).limitError) return state;
         next = commitComposer(state, action.draft);
@@ -151,7 +142,6 @@ export function threadReducer(state: ThreadState, action: ThreadAction): ThreadS
     }
     case "submit-start": {
       if (sending) return state;
-      // The composer bubble becomes a real message with its own id.
       const committed = commitComposer(state, action.draft);
       return {
         ...committed,
@@ -208,10 +198,6 @@ export function createThreadStore(initial: ThreadState = initialThreadState): Th
 // Outlook and Windows cut mailto links off at about 2,000 characters.
 export const MAILTO_BODY_LIMIT = 1_800;
 
-/**
- * Builds the email fallback link. It never throws, whatever the thread holds,
- * so it is safe to call during render.
- */
 export function makeMailtoHref(email: string, messages: Message[]): string {
   const subject = "Portfolio conversation";
   const lines = ["Conversation from Sean Arackal's portfolio", ""];
@@ -226,8 +212,7 @@ export function makeMailtoHref(email: string, messages: Message[]): string {
 }
 
 export function createMessageId(): string {
-  // randomUUID only exists on secure origins (HTTPS or localhost). Testing
-  // over a LAN IP is not secure, so fall back to a random string there.
+  // randomUUID only exists on secure origins (HTTPS or localhost).
   const cryptoApi = globalThis.crypto;
   if (typeof cryptoApi?.randomUUID === "function") return cryptoApi.randomUUID();
   return `m-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
