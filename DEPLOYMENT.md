@@ -1,6 +1,6 @@
 # Preview and deployment
 
-The repository exports to GitHub Pages using the existing workflow. Pushing to main deploys the `out/` directory. The public site is https://scriblesean.github.io/.
+The repository exports to GitHub Pages using the existing workflow. Pushing to main deploys the `out/` directory. In the repo: Settings → Pages → Build and deployment → Source: GitHub Actions. The public site is https://scriblesean.github.io/.
 
 ## Verification
 

@@ -20,7 +20,6 @@ try {
     const page = await context.newPage();
     let youtubeRequests = 0;
     page.on('request', r => { if (r.url().includes('youtube.com/iframe_api')) youtubeRequests++; });
-    // Playback is tested separately. This isolates rendering from the iframe.
     await context.route(/youtube|ytimg|googlevideo/, route => route.abort());
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
@@ -73,7 +72,6 @@ try {
     await page.getByRole('button', { name: 'Portfolio in Chrome', exact: true }).click();
     await page.getByRole('heading', { name: 'Hi, I’m Sean.' }).waitFor();
     if (device.name === 'desktop') {
-      // Find the actual portfolio ancestor with native scrolling.
       const selector = await page.getByRole('heading', { name: 'Hi, I’m Sean.' }).evaluate(el => {
         let p = el.parentElement;
         while (p && !(p.scrollHeight > p.clientHeight && /auto|scroll/.test(getComputedStyle(p).overflowY))) p = p.parentElement;

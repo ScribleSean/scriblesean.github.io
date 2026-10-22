@@ -6,7 +6,6 @@ try {
   await page.route(/youtube|ytimg|googlevideo/, route => route.abort());
   await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
   await page.locator('[data-ready="true"]').waitFor();
-  // Simulate a stale tab requesting desktop chunks removed by a deployment.
   const chunks = '**/_next/static/chunks/*.js';
   await page.route(chunks, route => route.abort());
   await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom', exact: true }).click();

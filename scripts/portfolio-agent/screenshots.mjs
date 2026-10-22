@@ -28,9 +28,7 @@ const chromePath = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/C
 const data = JSON.parse(readFileSync(path.join(root, "data/featured-projects.json"), "utf8"));
 const phones = args.includes("--phones");
 const both = ["light", "dark"];
-// selector: crop to one element. waitFor: wait until it exists (the 3D scene).
 const pages = [
-  // The 3D home page is one screen by design, so it is captured at viewport size.
   { name: "home", path: "/", schemes: both, phone: true, waitFor: '[data-ready="true"]', viewportOnly: true },
   { name: "portfolio", path: "/portfolio/", schemes: both },
   { name: "portfolio-projects-section", path: "/portfolio/", schemes: both, selector: "#work" },
@@ -108,7 +106,6 @@ async function main() {
   }
 }
 
-/** A minimal DevTools protocol client over Node's built-in WebSocket. */
 async function connect(url) {
   const socket = new WebSocket(url);
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });

@@ -6,8 +6,6 @@ import test from "node:test";
 import { featured, featuredProjects, projectPages } from "../data/featured-projects";
 import { scrub } from "../scripts/portfolio-agent/gather.mjs";
 
-// Guards for drafts written by the update-portfolio agent. These run in CI, so
-// a draft that leaks private details or breaks a page fails before deploy.
 
 const root = path.resolve(__dirname, "..");
 const config = JSON.parse(readFileSync(path.join(root, "portfolio-agent.config.json"), "utf8"));
@@ -78,7 +76,6 @@ test("the public config names no private list and teasers have no repo", () => {
   for (const teaser of config.projects.filter((p: { teaser?: boolean }) => p.teaser)) assert.equal(teaser.repo, undefined);
 });
 
-// The private list is gitignored, so these checks run on Sean's machines only.
 const privatePath = path.join(root, "portfolio-agent.private.json");
 const privateList = existsSync(privatePath) ? JSON.parse(readFileSync(privatePath, "utf8")) : null;
 

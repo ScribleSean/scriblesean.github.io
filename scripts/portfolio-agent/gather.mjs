@@ -17,8 +17,6 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const config = JSON.parse(readFileSync(path.join(root, "portfolio-agent.config.json"), "utf8"));
-// The private list is local only (gitignored), so the public repo never names
-// what it protects. Without it the agent would not know what to refuse.
 const privatePath = path.join(root, "portfolio-agent.private.json");
 
 const args = process.argv.slice(2);
@@ -39,14 +37,11 @@ const isBlocked = (p) => {
   return blocked.some((b) => target === b || target.startsWith(`${b}${path.sep}`));
 };
 
-// Files that may hold agent instructions or private notes are never read.
 const SKIP_FILE = /(^|\/)(AGENTS|CLAUDE)\.md$|(^|\/)\.env|secret|credential|private|personal/i;
 
-/** Removes private details. Exported for tests. */
 export function scrub(text) {
   return text
     .split("\n")
-    // Drop any line that points at the private context or message archive.
     .filter((line) => !/agent-context|imessage/i.test(line))
     .join("\n")
     .replace(/\/(Users|home)\/[^/\s)]+/g, "~")
@@ -71,8 +66,6 @@ function readAtRef(repo, ref, file) {
   }
 }
 
-// Copies the listed images out of the repo at the ref. App icons (.icns) are
-// converted to PNG with macOS sips so they can be reviewed and used on the web.
 function exportImages(project, repo, ref, outDir) {
   const exported = [];
   for (const file of project.images ?? []) {

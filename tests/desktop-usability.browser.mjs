@@ -6,7 +6,6 @@ const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH 
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await context.route(/youtube|ytimg|googlevideo/, route => route.abort());
-  // Inspect outside navigation without loading a second live site.
   await context.route('https://example.com/**', route => route.fulfill({ body: '<p>Outside page</p>', contentType: 'text/html' }));
   const page = await context.newPage();
   const errors = [];

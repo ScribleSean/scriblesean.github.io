@@ -49,7 +49,6 @@ try {
       await page.waitForTimeout(700);
       assert.equal(await page.locator('main[data-camera]').getAttribute('data-camera'), 'desk');
       assert((await page.evaluate(() => window.__drawTimes.length)) > 0, 'Hovering must move the camera');
-      // Visible GameCube body at this fixed desktop camera/viewport.
       await page.mouse.click(1060, 450);
       assert.equal(await page.locator('main[data-camera]').getAttribute('data-camera'), 'desk', 'Batched models must still receive clicks');
     }
