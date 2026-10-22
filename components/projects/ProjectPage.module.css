@@ -106,8 +106,7 @@
 }
 @media (max-width: 640px) {
   .wrap { width: calc(100% - 36px); }
-  .bar nav { gap: 16px; }
-  .bar nav a:last-child { display: none; }
+  .bar nav { gap: 14px; }
   .introInner { padding: 44px 0 96px; }
   .title { gap: 14px; }
   .title img, .title > span { width: 56px !important; height: 56px !important; }
