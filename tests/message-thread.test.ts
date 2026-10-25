@@ -8,7 +8,7 @@ import {
   getPendingMessages,
   getThreadView,
   initialThreadState,
-  MAILTO_BODY_LIMIT,
+  MAILTO_HREF_LIMIT,
   makeMailtoHref,
   threadReducer,
   type ThreadAction,
@@ -125,9 +125,18 @@ test("the email fallback link stays short enough for Outlook (finding 29)", () =
   const messages = Array.from({ length: 10 }, (_, i) => ({ ...draft(), text: `${i}`.repeat(1_500) }));
   const href = makeMailtoHref("sean@example.com", messages);
   const body = decodeURIComponent(href.split("&body=")[1]);
-  assert.ok(body.length < MAILTO_BODY_LIMIT + 100);
+  assert.ok(href.length <= MAILTO_HREF_LIMIT);
   assert.match(body, /Trimmed/);
   assert.ok(href.startsWith("mailto:sean@example.com?subject="));
+});
+
+test("the email fallback limit counts encoded characters, not raw ones", () => {
+  const messages = [{ ...draft(), text: "雪 ❄️ & ".repeat(400) }];
+  const href = makeMailtoHref("sean@example.com", messages);
+  assert.ok(href.length <= MAILTO_HREF_LIMIT);
+  assert.match(decodeURIComponent(href.split("&body=")[1]), /Trimmed/);
+  const short = makeMailtoHref("sean@example.com", [{ ...draft(), text: "hello" }]);
+  assert.doesNotMatch(decodeURIComponent(short), /Trimmed/);
 });
 
 test("message ids work without crypto.randomUUID (finding 31)", () => {
