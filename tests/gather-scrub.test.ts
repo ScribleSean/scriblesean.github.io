@@ -49,11 +49,10 @@ test("scrubbing mixed private details twice does not change the result", () => {
   assert.equal(scrub(expected), expected);
 });
 
-// Keep regressions visible while production fixes remain outside this test-only job.
-test("unformatted phone numbers are redacted", { todo: "bug: scrub leaks standalone ten-digit phone numbers" }, () => {
+test("unformatted phone numbers are redacted", () => {
   assert.equal(scrub("Call 7745550123."), "Call [number].");
 });
 
-test("tokens ending in a hyphen are completely redacted", { todo: "bug: scrub leaves a trailing hyphen from a secret token" }, () => {
+test("tokens ending in a hyphen are completely redacted", () => {
   assert.equal(scrub(`token: ghp_${"aB09_-".repeat(3)}.`), "token: [secret].");
 });

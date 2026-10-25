@@ -46,9 +46,9 @@ export function scrub(text) {
     .join("\n")
     .replace(/\/(Users|home)\/[^/\s)]+/g, "~")
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")
-    .replace(/(?<![\w-])(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]?\d{3}[ .-]\d{4}(?![\w-])/g, "[number]")
+    .replace(/(?<![\w-])(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]?\d{3}[ .-]?\d{4}(?![\w-])/g, "[number]")
     .replace(/\b100\.(?:\d{1,3}\.){2}\d{1,3}\b/g, "[address]")
-    .replace(/\b(?:sk|ghp|gho|xox[abp])[-_][A-Za-z0-9_-]{16,}\b/g, "[secret]")
+    .replace(/\b(?:sk|ghp|gho|xox[abp])[-_][A-Za-z0-9_-]{16,}(?![\w-])/g, "[secret]")
     .replace(/\b[A-Fa-f0-9]{40,}\b/g, "[hash]");
 }
 
