@@ -47,6 +47,7 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
   const targetPosition = useRef(new THREE.Vector3());
   const targetLook = useRef(new THREE.Vector3());
 
+  // eslint-disable-next-line react-hooks/immutability -- Three.js camera and fog are mutable.
   useEffect(() => {
     targetPosition.current.set(...cameraPositions[view]);
     targetLook.current.set(...lookTargets[view]);
