@@ -39,8 +39,22 @@ const isBlocked = (p) => {
 
 const SKIP_FILE = /(^|\/)(AGENTS|CLAUDE)\.md$|(^|\/)\.env|secret|credential|private|personal/i;
 
-export function scrub(text) {
-  return text
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Private names come from portfolio-agent.private.json (loaded in main), so they
+// are redacted even when the project-level check is skipped.
+function scrubNames(text, names) {
+  let out = text;
+  for (const name of names) {
+    const words = String(name).trim().split(/\s+/).filter(Boolean).map(escapeRegExp);
+    if (!words.length) continue;
+    out = out.replace(new RegExp(`(?<!\\p{L})${words.join("[\\s_-]+")}(?!\\p{L})`, "giu"), "[private]");
+  }
+  return out;
+}
+
+export function scrub(text, names = privateNames) {
+  return scrubNames(text, names)
     .split("\n")
     .filter((line) => !/agent-context|imessage/i.test(line))
     .join("\n")
