@@ -68,6 +68,7 @@ test("posts URL-encoded plain text and accepts explicit boolean or string succes
 
   const parsed = new URLSearchParams(postedBody);
   assert.equal(parsed.get("_subject"), "New portfolio conversation");
+  assert.equal(parsed.get("_honey"), "");
   assert.match(postedBody, /%3Cstrong%3E/);
   assert.doesNotMatch(postedBody, /<strong>/);
   assert.match(
