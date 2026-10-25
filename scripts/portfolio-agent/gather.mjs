@@ -117,6 +117,7 @@ function gatherProject(project, outDir) {
   if (!existsSync(repo)) throw new Error(`${project.slug}: ${project.repo} does not exist`);
 
   const ref = project.ref ?? "HEAD";
+  if (typeof ref !== "string" || !ref || ref.startsWith("-")) throw new Error(`${project.slug}: ref "${ref}" is not a valid git ref`);
   const head = git(repo, "log", "-1", "--format=%h %ad", "--date=short", ref).trim();
   const commits = git(repo, "log", ref, "-n", String(commitCount), "--no-merges", "--format=%ad  %s", "--date=short").trim();
   const topLevel = git(repo, "ls-tree", "--name-only", ref).trim().split("\n").join(", ");
