@@ -50,6 +50,42 @@
       ]
     },
     {
+      "slug": "career-bridge",
+      "name": "Career Bridge",
+      "repo": "~/Developer/career-bridge",
+      "ref": "main",
+      "docs": [],
+      "public": true,
+      "links": {
+        "source": "https://github.com/ScribleSean/career-bridge",
+        "demo": "https://scriblesean.github.io/career-bridge/"
+      },
+      "notes": "A team hackathon project that won 3rd place at Human Edge Studio. Say it was a team effort and never name teammates. All survey results in the demo are sample data, and it is not affiliated with MassHire, Lightcast or the Commonwealth of Massachusetts.",
+      "images": [
+        "docs/img/tour-survey.png",
+        "docs/img/tour-results.png",
+        "docs/img/tour-job.png"
+      ]
+    },
+    {
+      "slug": "cube-type",
+      "name": "cube·type",
+      "repo": "~/Developer/cube-type",
+      "ref": "main",
+      "docs": [
+        "docs/how-to-play.md",
+        "docs/word-picker.md",
+        "docs/finesse.md"
+      ],
+      "public": true,
+      "links": {
+        "source": "https://github.com/ScribleSean/cube-type",
+        "demo": "https://scriblesean.github.io/cube-type/"
+      },
+      "notes": "A browser game: solve a Rubik's cube by typing words. MIT licensed.",
+      "images": []
+    },
+    {
       "slug": "next",
       "name": "Something new",
       "teaser": true,

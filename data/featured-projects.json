@@ -1,7 +1,7 @@
 {
-  "checkedThrough": "2026-10-21",
-  "heading": "Small tools for my Mac",
-  "intro": "I’m building a few small apps that each do one job well and stay out of the way. Beeline does things for me, Observatory keeps watch, and one more is on the way.",
+  "checkedThrough": "2026-10-27",
+  "heading": "Small things I'm building",
+  "intro": "Each one does one job well. Beeline does things on my Mac, Observatory keeps watch, Career Bridge asks people how they use AI at work, cube·type turns a Rubik’s cube into a typing game, and one more is on the way.",
   "projects": [
     {
       "slug": "beeline",
@@ -164,6 +164,167 @@
         {
           "label": "Source code",
           "href": "https://github.com/ScribleSean/observatory"
+        }
+      ]
+    },
+    {
+      "slug": "career-bridge",
+      "name": "Career Bridge",
+      "verb": "Ask",
+      "kind": "Web app · Hackathon project",
+      "status": "Prototype",
+      "tagline": "A short survey that asks Massachusetts workers and employers how AI shows up in their jobs.",
+      "summary": "My team built it at the Human Edge Studio hackathon, where it won 3rd place. Job ads show what employers ask for, not what people in the job do with AI, so Career Bridge asks them and publishes only totals.",
+      "icon": "/projects/career-bridge/icon.png",
+      "iconFullBleed": true,
+      "hero": {
+        "light": "/projects/career-bridge/results.jpg",
+        "width": 1100,
+        "height": 700,
+        "alt": "The Career Bridge home page asking how people in these jobs actually use AI, above a What we found section"
+      },
+      "sections": [
+        {
+          "title": "The gap",
+          "body": [
+            "About 526,000 Massachusetts workers are in jobs where AI overlaps with much of the work, yet under 1% of job ads for those jobs mention AI skills. That comes from the Lightcast AI Exposure Index, 2025 job ads and BLS worker counts.",
+            "Ads can’t tell the difference between a job that doesn’t need AI and one where people already use it and nobody is asking. Asking people can."
+          ]
+        },
+        {
+          "title": "The survey",
+          "body": [
+            "Workers take five minutes to mark which work activities they do in a typical week and whether AI helps with each. Employers take three to say what the role needs and what is becoming more important.",
+            "The activities come from O*NET, so answers line up with federal data, plus three AI activities O*NET doesn’t track yet. It starts with three jobs: administrative assistants, customer service representatives and retail salespeople."
+          ]
+        },
+        {
+          "title": "Results and job pages",
+          "body": [
+            "Results show only totals by job and region, and any group with fewer than 10 responses is hidden. The page points out where workers and employers differ, which shows who could use AI training.",
+            "Career counselors can look up any job for pay, growth, training, how much AI is already used on the work, and nearby jobs with similar skills. Every number names its source."
+          ]
+        },
+        {
+          "title": "My part",
+          "body": [
+            "TODO for Sean: what I built on the team."
+          ]
+        },
+        {
+          "title": "Status",
+          "body": [
+            "A working prototype. All survey results in the demo are sample data. It’s an independent student project, not affiliated with MassHire, Lightcast or the Commonwealth of Massachusetts."
+          ]
+        }
+      ],
+      "gallery": [
+        {
+          "src": "/projects/career-bridge/survey.jpg",
+          "width": 1100,
+          "height": 700,
+          "alt": "The survey start page with three jobs, each with I do this job and I hire for this job buttons",
+          "caption": "Workers and employers pick a job to start."
+        },
+        {
+          "src": "/projects/career-bridge/job.jpg",
+          "width": 1100,
+          "height": 700,
+          "alt": "A job page for administrative assistants with workers, median pay, yearly change, training and a 0 to 100 AI use scale",
+          "caption": "A job page for career counselors, with a source on every number."
+        }
+      ],
+      "highlights": [
+        "3rd place at Human Edge Studio by SG+I, October 2026",
+        "Built on O*NET work activities, so answers match federal data",
+        "Totals only, with groups under 10 responses hidden",
+        "Public data from BLS OEWS, O*NET 31.0 and the Anthropic Economic Index"
+      ],
+      "stack": [
+        "Python",
+        "JavaScript",
+        "O*NET",
+        "BLS OEWS"
+      ],
+      "links": [
+        {
+          "label": "Try the demo",
+          "href": "https://scriblesean.github.io/career-bridge/"
+        },
+        {
+          "label": "Source code",
+          "href": "https://github.com/ScribleSean/career-bridge"
+        }
+      ]
+    },
+    {
+      "slug": "cube-type",
+      "name": "cube·type",
+      "verb": "Play",
+      "kind": "Browser game",
+      "status": "Open source",
+      "tagline": "Solve a Rubik’s cube by typing words.",
+      "summary": "Every turn of the cube has a word: type rush and the right face turns, type recoil and it turns back. It plays in the browser and keeps stats like a typing test.",
+      "icon": "/projects/cube-type/icon.png",
+      "iconFullBleed": true,
+      "hero": {
+        "light": "/projects/cube-type/game.jpg",
+        "width": 1440,
+        "height": 900,
+        "alt": "The cube·type game: a scrambled 3D cube in the middle, with a word beside each face, such as rover for R and relax for R prime"
+      },
+      "sections": [
+        {
+          "title": "How it plays",
+          "body": [
+            "The first letter of a word is its face, words about going forward turn clockwise, and words about going back turn counter-clockwise. Enter repeats the last turn, so a word then Enter is a double. Swiping or the arrow keys rotate the whole cube.",
+            "The bar at the top tracks each stage of a CFOP solve. Once the first two layers are done, the last-layer algorithm shows up as a line of words to type, like a Monkeytype test."
+          ]
+        },
+        {
+          "title": "Three modes",
+          "body": [
+            "Drill shows one move at a time and asks for its word. Sprint is one timed solve with splits. Zen is untimed, and new cubes keep coming.",
+            "Typing is never corrected. Wrong letters stay in red until I delete them, and a turn happens only when the word is exact."
+          ]
+        },
+        {
+          "title": "Choosing the words",
+          "body": [
+            "Each move has a pool of words, and a picker chooses which one shows. Like Monkeytype it is mostly random, but it leans toward short words that switch hands and avoid using the same finger twice in a row.",
+            "It also counts finesse, borrowed from Tetris: turns that cancel out, like R then R prime, are wasted, and the game flags them."
+          ]
+        }
+      ],
+      "gallery": [
+        {
+          "src": "/projects/cube-type/drill.jpg",
+          "width": 1440,
+          "height": 900,
+          "alt": "Drill mode showing R prime in large letters above the cube, with its word relax highlighted on the right",
+          "caption": "Drill asks for one move at a time."
+        }
+      ],
+      "highlights": [
+        "Drill, sprint and zen modes",
+        "Stats for best time, average of 5 and 12, splits and finesse, saved in the browser",
+        "Eight camera views, and words move to sit beside their faces",
+        "Four themes, including the classic Monkeytype look"
+      ],
+      "stack": [
+        "JavaScript",
+        "three.js",
+        "HTML",
+        "CSS"
+      ],
+      "links": [
+        {
+          "label": "Play it",
+          "href": "https://scriblesean.github.io/cube-type/"
+        },
+        {
+          "label": "Source code",
+          "href": "https://github.com/ScribleSean/cube-type"
         }
       ]
     },
