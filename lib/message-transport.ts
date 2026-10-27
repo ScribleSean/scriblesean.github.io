@@ -142,6 +142,8 @@ export function createMessageTransport(
     const conversation = formatConversation(submission);
     const formBody = new URLSearchParams({
       _subject: "New portfolio conversation",
+      // FormSubmit's honeypot: it drops any submission where this is filled in.
+      _honey: "",
       conversation,
       submitted_at: submission.submittedAt,
     });

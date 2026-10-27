@@ -195,8 +195,10 @@ export function createThreadStore(initial: ThreadState = initialThreadState): Th
   };
 }
 
-// Outlook and Windows cut mailto links off at about 2,000 characters.
-export const MAILTO_BODY_LIMIT = 1_800;
+// Outlook and Windows cut mailto links off at about 2,000 characters, so the
+// limit applies to the whole encoded link, not the raw body.
+export const MAILTO_HREF_LIMIT = 2_000;
+const MAILTO_TRIM_NOTE = "\n\n[Trimmed to fit an email link. Paste the rest here.]";
 
 export function makeMailtoHref(email: string, messages: Message[]): string {
   const subject = "Portfolio conversation";
@@ -204,11 +206,24 @@ export function makeMailtoHref(email: string, messages: Message[]): string {
   for (const message of messages) {
     if (message.text.trim()) lines.push(message.text, "");
   }
-  let body = lines.join("\n");
-  if (body.length > MAILTO_BODY_LIMIT) {
-    body = `${body.slice(0, MAILTO_BODY_LIMIT).trimEnd()}\n\n[Trimmed to fit an email link. Paste the rest here.]`;
+  const prefix = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=`;
+  const body = lines.join("\n");
+  const full = prefix + encodeURIComponent(body);
+  if (full.length <= MAILTO_HREF_LIMIT) return full;
+
+  // Find the longest start of the body (in whole code points, so no lone
+  // surrogates reach encodeURIComponent) that fits with the trim note.
+  const chars = Array.from(body);
+  const fits = (count: number) =>
+    prefix.length + encodeURIComponent(`${chars.slice(0, count).join("").trimEnd()}${MAILTO_TRIM_NOTE}`).length <= MAILTO_HREF_LIMIT;
+  let low = 0;
+  let high = chars.length;
+  while (low < high) {
+    const mid = Math.ceil((low + high) / 2);
+    if (fits(mid)) low = mid;
+    else high = mid - 1;
   }
-  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return prefix + encodeURIComponent(`${chars.slice(0, low).join("").trimEnd()}${MAILTO_TRIM_NOTE}`);
 }
 
 export function createMessageId(): string {

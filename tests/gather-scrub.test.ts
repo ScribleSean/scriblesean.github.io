@@ -56,3 +56,11 @@ test("unformatted phone numbers are redacted", () => {
 test("tokens ending in a hyphen are completely redacted", () => {
   assert.equal(scrub(`token: ghp_${"aB09_-".repeat(3)}.`), "token: [secret].");
 });
+
+test("private names are redacted in any case and across spaces, hyphens or underscores", () => {
+  const names = ["jane doe", "secretproj"];
+  assert.equal(scrub("Ask Jane  Doe about jane_doe and SecretProj.", names),
+    "Ask [private] about [private] and [private].");
+  assert.equal(scrub("secretprojects stays, so does Janet", names), "secretprojects stays, so does Janet");
+  assert.equal(scrub("no names here", []), "no names here");
+});
