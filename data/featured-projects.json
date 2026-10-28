@@ -171,10 +171,10 @@
       "slug": "career-bridge",
       "name": "Career Bridge",
       "verb": "Ask",
-      "kind": "Web app · Hackathon project",
+      "kind": "Web app · Datathon project",
       "status": "Prototype",
       "tagline": "A short survey that asks Massachusetts workers and employers how AI shows up in their jobs.",
-      "summary": "My team built it at the Human Edge Studio hackathon, where it won 3rd place. Job ads show what employers ask for, not what people in the job do with AI, so Career Bridge asks them and publishes only totals.",
+      "summary": "Built for the Human Edge Studio datathon by SG+I, where it won 3rd place. Job ads show what employers ask for, not what people in the job do with AI, so Career Bridge asks them and publishes only totals.",
       "icon": "/projects/career-bridge/icon.png",
       "iconFullBleed": true,
       "hero": {
@@ -203,12 +203,6 @@
           "body": [
             "Results show only totals by job and region, and any group with fewer than 10 responses is hidden. The page points out where workers and employers differ, which shows who could use AI training.",
             "Career counselors can look up any job for pay, growth, training, how much AI is already used on the work, and nearby jobs with similar skills. Every number names its source."
-          ]
-        },
-        {
-          "title": "My part",
-          "body": [
-            "TODO for Sean: what I built on the team."
           ]
         },
         {
