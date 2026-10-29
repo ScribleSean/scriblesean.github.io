@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { scrub } from "../scripts/portfolio-agent/gather.mjs";
+import { prepareGatheredFile, scrub } from "../scripts/portfolio-agent/gather.mjs";
 
 test("scrubbing preserves empty input, whitespace and ordinary Unicode text", () => {
   for (const text of ["", "\n", "  \n\n", "Résumé: 雪 ❄️\nfix #272 on 2026-10-21\n"]) {
@@ -63,4 +63,41 @@ test("private names are redacted in any case and across spaces, hyphens or under
     "Ask [private] about [private] and [private].");
   assert.equal(scrub("secretprojects stays, so does Janet", names), "secretprojects stays, so does Janet");
   assert.equal(scrub("no names here", []), "no names here");
+});
+
+const fakeSecrets: [string, string][] = [
+  ["GitHub fine-grained token", `github_pat_${"FAKE_".repeat(8)}`],
+  ["AWS access key", `AKIA${"FAKE".repeat(4)}`],
+  ["AWS access key", `ASIA${"FAKE".repeat(4)}`],
+  ["xAI key", `xai-${"fake_".repeat(8)}`],
+  ["Anthropic key", `sk-ant-${"fake_".repeat(8)}`],
+  ["OpenAI project key", `sk-proj-${"fake_".repeat(8)}`],
+  ["JWT", "eyJmYWtlIjp0cnVlfQ.eyJmYWtlIjp0cnVlfQ.ZmFrZQ"],
+  ...["sk-", "ghp_", "gho_", "xoxa-", "xoxb-", "xoxp-", "xoxs-"].map((prefix): [string, string] => ["API token", `${prefix}${"fake_".repeat(8)}`]),
+];
+
+for (const [index, [type, token]] of fakeSecrets.entries()) {
+  test(`scrubs and rejects synthetic ${type} (case ${index + 1}) without logging its value`, () => {
+    assert.equal(scrub(`before ${token} after`), "before [secret] after");
+    assert.equal(scrub(`Token: ${token}.`), "Token: [secret].");
+    const logs: string[] = [];
+    // Even secrets past the trim limit or on a removed line reject the whole file.
+    for (const text of [`before ${token} after`, `${"x".repeat(12_001)}\n${token}`, `agent-context ${token}`]) {
+      assert.equal(prepareGatheredFile("docs/example.md", text, (message: string) => logs.push(message)), null);
+    }
+    assert.equal(logs.length, 3);
+    for (const message of logs) {
+      assert.ok(message.includes("docs/example.md"));
+      assert.ok(message.includes(type));
+      assert.ok(!message.includes(token));
+    }
+  });
+}
+
+test("safe gathered files pass and are trimmed only after inspection", () => {
+  assert.equal(prepareGatheredFile("README.md", "safe text"), "safe text");
+  assert.equal(prepareGatheredFile("README.md", "x".repeat(12_001)), `${"x".repeat(12_000)}\n\n[… trimmed]`);
+  for (const token of [`AKIA${"A".repeat(15)}`, `AKIA${"A".repeat(17)}`, "eyJfake.onlytwo", "github_pat_short", "xai-short"]) {
+    assert.equal(prepareGatheredFile("README.md", token), token);
+  }
 });

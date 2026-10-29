@@ -74,6 +74,13 @@ function nextZ(state: WindowState) {
   return Math.max(...Object.values(state).map((frame) => frame.z), 0) + 1;
 }
 
+// The highest visible z-order is also the most recently focused window.
+export function topVisibleWindow(state: WindowState): DesktopAppId | undefined {
+  return (Object.keys(state) as DesktopAppId[])
+    .filter((app) => state[app].status === "open" || state[app].status === "maximized")
+    .sort((a, b) => state[b].z - state[a].z)[0];
+}
+
 export type WindowAction =
   | { type: "open"; app: DesktopAppId; viewport: Viewport }
   | { type: "focus"; app: DesktopAppId }
@@ -99,7 +106,7 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
     }
     case "focus": {
       const active = state[action.app];
-      return active.status === "open" || active.status === "maximized"
+      return (active.status === "open" || active.status === "maximized") && topVisibleWindow(state) !== action.app
         ? update(action.app, { ...active, z: nextZ(state) })
         : state;
     }

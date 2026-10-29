@@ -4,6 +4,7 @@ import path from "node:path";
 import test from "node:test";
 
 import { featured, featuredProjects, projectPages } from "../data/featured-projects";
+import { validateProjectSections } from "../lib/project-validation";
 import { scrub } from "../scripts/portfolio-agent/gather.mjs";
 
 
@@ -19,6 +20,7 @@ test("the draft follows the config's projects and order", () => {
 
 test("every project page has its content and every image exists", () => {
   for (const project of projectPages) {
+    validateProjectSections(project);
     for (const field of ["name", "verb", "kind", "status", "tagline", "summary"] as const) {
       assert.ok(project[field]?.trim(), `${project.slug}: missing ${field}`);
     }

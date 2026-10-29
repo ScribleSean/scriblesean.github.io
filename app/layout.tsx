@@ -45,10 +45,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         {children}
+        {/* No SRI: Cloudflare serves changing content at this unversioned URL. */}
         <Script
           id="cloudflare-web-analytics"
           src="https://static.cloudflareinsights.com/beacon.min.js"
-          type="module"
+          defer
           strategy="afterInteractive"
           data-cf-beacon='{"token":"bc8d067690ec47479fb0315fc62d3b8c"}'
         />

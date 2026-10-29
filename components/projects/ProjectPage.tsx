@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { validateProjectSections } from "@/lib/project-validation";
 import { featured, featuredProjects, getProject, projectHref, projectPages, type FeaturedProject, type ProjectImage } from "@/data/featured-projects";
 import ProjectMark from "./ProjectMark";
 import styles from "./ProjectPage.module.css";
@@ -37,6 +38,7 @@ export function ProjectsShell({ children }: { children: React.ReactNode }) {
 }
 
 export default function ProjectPage({ project }: { project: FeaturedProject }) {
+  validateProjectSections(project);
   const index = projectPages.findIndex((item) => item.slug === project.slug);
   const previous = projectPages[(index - 1 + projectPages.length) % projectPages.length];
   const next = projectPages[(index + 1) % projectPages.length];

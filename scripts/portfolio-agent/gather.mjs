@@ -53,8 +53,36 @@ function scrubNames(text, names) {
   return out;
 }
 
+const SECRET_PATTERNS = [
+  ["GitHub fine-grained token", /\bgithub_pat_[A-Za-z0-9_]{16,}(?![\w-])/g],
+  ["AWS access key", /\b(?:AKIA|ASIA)[A-Z0-9]{16}(?![\w-])/g],
+  ["xAI key", /\bxai-[A-Za-z0-9_-]{16,}(?![\w-])/g],
+  ["Anthropic key", /\bsk-ant-[A-Za-z0-9_-]{16,}(?![\w-])/g],
+  ["OpenAI project key", /\bsk-proj-[A-Za-z0-9_-]{16,}(?![\w-])/g],
+  ["API token", /\b(?:sk|ghp|gho|xox[a-z])[-_][A-Za-z0-9_-]{16,}(?![\w-])/g],
+  ["JWT", /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+(?![\w-])/g],
+];
+
+export function secretTypes(text) {
+  return SECRET_PATTERNS.filter(([, pattern]) => {
+    pattern.lastIndex = 0;
+    return pattern.test(text);
+  }).map(([type]) => type);
+}
+
+// Inspect the entire file before trimming or removing private-context lines.
+export function prepareGatheredFile(file, text, log = console.warn) {
+  const types = secretTypes(text);
+  if (types.length) {
+    log(`Skipped ${scrub(file)}: ${types.join(", ")}`);
+    return null;
+  }
+  return text.length > MAX_FILE_CHARS ? `${text.slice(0, MAX_FILE_CHARS)}\n\n[… trimmed]` : text;
+}
+
 export function scrub(text, names = privateNames) {
-  return scrubNames(text, names)
+  const redacted = SECRET_PATTERNS.reduce((value, [, pattern]) => value.replace(pattern, "[secret]"), text);
+  return scrubNames(redacted, names)
     .split("\n")
     .filter((line) => !/agent-context|imessage/i.test(line))
     .join("\n")
@@ -62,7 +90,6 @@ export function scrub(text, names = privateNames) {
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")
     .replace(/(?<![\w-])(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]?\d{3}[ .-]?\d{4}(?![\w-])/g, "[number]")
     .replace(/\b100\.(?:\d{1,3}\.){2}\d{1,3}\b/g, "[address]")
-    .replace(/\b(?:sk|ghp|gho|xox[abp])[-_][A-Za-z0-9_-]{16,}(?![\w-])/g, "[secret]")
     .replace(/\b[A-Fa-f0-9]{40,}\b/g, "[hash]");
 }
 
@@ -74,7 +101,7 @@ function readAtRef(repo, ref, file) {
   if (SKIP_FILE.test(file)) return null;
   try {
     const text = git(repo, "show", `${ref}:${file}`);
-    return text.length > MAX_FILE_CHARS ? `${text.slice(0, MAX_FILE_CHARS)}\n\n[… trimmed]` : text;
+    return prepareGatheredFile(file, text);
   } catch {
     return null;
   }
@@ -90,6 +117,7 @@ function exportImages(project, repo, ref, outDir) {
     } catch {
       continue;
     }
+    if (prepareGatheredFile(file, data.toString("latin1")) === null) continue;
     const dir = path.join(outDir, "images", project.slug);
     mkdirSync(dir, { recursive: true });
     let target = path.join(dir, path.basename(file));

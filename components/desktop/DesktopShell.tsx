@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { type DesktopAppId, type Viewport, createWindowState, getViewportScale, windowReducer } from "@/lib/window-manager";
+import { type DesktopAppId, type Viewport, createWindowState, getViewportScale, topVisibleWindow, windowReducer } from "@/lib/window-manager";
 import BrowserApp from "@/components/browser/BrowserApp";
 import styles from "./DesktopShell.module.css";
 
@@ -60,6 +60,26 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
   const [viewport, setViewport] = useState<Viewport>({ width: 1000, height: 720 });
   const lastRequestId = useRef<number | null>(null);
   const clock = useClock();
+  const pendingFocus = useRef<DesktopAppId | "previous" | null>(null);
+  const focusedElements = useRef<Partial<Record<DesktopAppId, HTMLElement>>>({});
+  const onAction = (action: Parameters<typeof windowReducer>[1]) => {
+    if (action.type === "open") pendingFocus.current = action.app;
+    if (action.type === "close" || action.type === "minimize") pendingFocus.current = "previous";
+    dispatch(action);
+  };
+
+  useEffect(() => {
+    const request = pendingFocus.current;
+    if (!request) return;
+    pendingFocus.current = null;
+    const app = request === "previous" ? topVisibleWindow(windows) : request;
+    const article = app ? rootRef.current?.querySelector<HTMLElement>(`[data-desktop-window="${app}"]`) : null;
+    const previous = app ? focusedElements.current[app] : null;
+    const target = previous?.isConnected && article?.contains(previous) ? previous : article;
+    (target ?? rootRef.current)?.focus({ preventScroll: true });
+    // A remembered control may have become hidden or disabled inside the app.
+    if (article && !article.contains(document.activeElement)) article.focus({ preventScroll: true });
+  }, [windows]);
 
   useEffect(() => {
     const measure = () => {
@@ -75,12 +95,13 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
 
   useEffect(() => {
     if (openRequest && lastRequestId.current !== openRequest.id) {
+      pendingFocus.current = openRequest.app;
       dispatch({ type: "open", app: openRequest.app, viewport });
     }
     lastRequestId.current = openRequest?.id ?? null;
   }, [openRequest, viewport]);
 
-  const openApp = (app: DesktopAppId) => dispatch({ type: "open", app, viewport });
+  const openApp = (app: DesktopAppId) => onAction({ type: "open", app, viewport });
   const windowContent = useMemo(() => ({
     chrome: <BrowserApp portfolio={portfolio} />,
     files: <div data-desktop-scroll className={styles.appContent}>{files}</div>,
@@ -89,7 +110,11 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
     settings: <div className={styles.settingsContent}><h2>Settings</h2><p>Accessibility</p><label className={styles.motionControl}><span><strong>Reduce motion</strong><small>Keep desktop movement minimal</small></span><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} aria-label="Reduce motion"/><span className={styles.switch} aria-hidden="true"/></label></div>,
   }), [files, messages, photos, onReducedMotionChange, portfolio, reducedMotion]);
 
-  return <section ref={rootRef} data-desktop-root className={styles.desktop} style={{ backgroundImage: `linear-gradient(180deg, rgba(12, 13, 31, .22), rgba(8, 7, 26, .1)), url("${wallpaperUrl}")` }} aria-label="Sean's desktop">
+  return <section ref={rootRef} tabIndex={-1} onFocusCapture={(event) => {
+    const target = event.target;
+    const app = target.closest<HTMLElement>("[data-desktop-window]")?.dataset.desktopWindow as DesktopAppId | undefined;
+    if (app) focusedElements.current[app] = target;
+  }} data-desktop-root className={styles.desktop} style={{ backgroundImage: `linear-gradient(180deg, rgba(12, 13, 31, .22), rgba(8, 7, 26, .1)), url("${wallpaperUrl}")` }} aria-label="Sean's desktop">
     <header className={styles.topBar}><div className={styles.activities}>Activities</div><div className={styles.clock}>{clock}</div><div className={styles.status} aria-label="System status"><span aria-hidden="true">◔</span><span aria-hidden="true">⌁</span><span aria-hidden="true">▰</span><button type="button" aria-label="Back to the desk" onClick={onBackToDesk}>×</button></div></header>
     <aside className={styles.dock} aria-label="Desktop applications">
       {(["chrome", "files", ...(photos ? ["photos"] : []), "messages", "settings"] as DesktopAppId[]).map((app) => <button type="button" className={styles.dockButton} key={app} onClick={() => openApp(app)} aria-label={appLabels[app]} title={appLabels[app]}><Icon app={app}/><span>{app === "chrome" ? "Chrome" : app === "messages" ? "Messages" : app[0].toUpperCase() + app.slice(1)}</span></button>)}
@@ -100,7 +125,7 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
     {(Object.keys(windows) as DesktopAppId[]).map((app) => {
       const frame = windows[app];
       if (!frame.mounted) return null;
-      return <DesktopWindow key={app} app={app} title={app === "chrome" ? "Sean Arackal • Google Chrome" : app === "messages" ? "Message Sean" : app[0].toUpperCase() + app.slice(1)} frame={frame} viewport={viewport} onAction={dispatch}>{windowContent[app]}</DesktopWindow>;
+      return <DesktopWindow key={app} app={app} title={app === "chrome" ? "Sean Arackal • Google Chrome" : app === "messages" ? "Message Sean" : app[0].toUpperCase() + app.slice(1)} frame={frame} viewport={viewport} onAction={onAction}>{windowContent[app]}</DesktopWindow>;
     })}
   </section>;
 }
@@ -165,7 +190,9 @@ function DesktopWindow({ app, title, frame, viewport, onAction, children }: { ap
     const scale = resize.scale;
     onAction({ type: "resize", app, width: resize.width + (event.clientX - resize.pointerX) * scale.x, height: resize.height + (event.clientY - resize.pointerY) * scale.y, viewport });
   };
-  return <article className={styles.window} style={style} onPointerDown={() => onAction({ type: "focus", app })} aria-label={title}>
+  return <article data-desktop-window={app} tabIndex={-1} className={styles.window} style={style} onFocus={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onAction({ type: "focus", app });
+  }} onPointerDown={() => onAction({ type: "focus", app })} aria-label={title}>
     <div className={styles.titleBar} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={() => { dragRef.current = null; }} onPointerCancel={() => { dragRef.current = null; }}>
       <span className={styles.windowTitle}>{title}</span><div className={styles.windowControls} onPointerDown={stop}>
         <button type="button" onClick={() => onAction({ type: "minimize", app })} aria-label={`Minimize ${title}`}>−</button>

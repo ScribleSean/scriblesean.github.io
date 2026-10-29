@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createWindowState, getViewportScale, windowReducer } from "../lib/window-manager";
+import { createWindowState, getViewportScale, topVisibleWindow, windowReducer } from "../lib/window-manager";
 
 const viewport = { width: 1000, height: 720 };
 
@@ -91,4 +91,28 @@ test("closing a maximized window reopens it at its normal size", () => {
   state = windowReducer(state, { type: "open", app: "files", viewport });
   assert.equal(state.files.status, "open");
   assert.equal(state.files.width, open.files.width);
+});
+
+
+test("focus raises visible windows and close restores the previous visible z-order", () => {
+  let state = createWindowState();
+  assert.equal(topVisibleWindow(state), undefined);
+  for (const app of ["chrome", "files", "messages"] as const) {
+    state = windowReducer(state, { type: "open", app, viewport });
+  }
+  state = windowReducer(state, { type: "focus", app: "chrome" });
+  assert.equal(topVisibleWindow(state), "chrome");
+  assert.ok(state.chrome.z > state.files.z && state.chrome.z > state.messages.z);
+  // Focus moving among children of the front window must not keep raising it.
+  assert.equal(windowReducer(state, { type: "focus", app: "chrome" }), state);
+  state = windowReducer(state, { type: "close", app: "chrome" });
+  assert.equal(topVisibleWindow(state), "messages");
+  assert.equal(windowReducer(state, { type: "focus", app: "chrome" }), state);
+  state = windowReducer(state, { type: "minimize", app: "messages" });
+  assert.equal(topVisibleWindow(state), "files");
+  assert.equal(windowReducer(state, { type: "focus", app: "messages" }), state);
+  state = windowReducer(state, { type: "toggle-maximize", app: "files", viewport });
+  assert.equal(topVisibleWindow(state), "files");
+  state = windowReducer(state, { type: "close", app: "files" });
+  assert.equal(topVisibleWindow(state), undefined);
 });
