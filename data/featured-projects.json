@@ -92,6 +92,7 @@
       "tagline": "A calm menu bar companion that watches my AI limits, agents, time and cost.",
       "summary": "One glance tells me how much of my Claude Code and Codex limits is left, which agents are waiting on me, where my screen time went, and what the day cost. It runs on my own computer and never touches any of them.",
       "mark": "telescope",
+      "intro": "observatory",
       "hero": {
         "light": "/projects/observatory/dashboard-light.jpg",
         "dark": "/projects/observatory/dashboard-dark.jpg",
