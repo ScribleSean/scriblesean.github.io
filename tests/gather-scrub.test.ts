@@ -8,10 +8,13 @@ test("scrubbing preserves empty input, whitespace and ordinary Unicode text", ()
   }
 });
 
+const dropWords = ["private-notes", "chat-archive"];
+
 test("private context lines are removed case-insensitively without losing neighbors", () => {
-  assert.equal(scrub("before\nAGENT-CONTEXT/private\nmiddle\niMessage archive\nafter\n"),
+  assert.equal(scrub("before\nPRIVATE-NOTES/x\nmiddle\nChat-Archive export\nafter\n", [], dropWords),
     "before\nmiddle\nafter\n");
-  assert.equal(scrub("agent-context\nimessage"), "");
+  assert.equal(scrub("private-notes\nchat-archive", [], dropWords), "");
+  assert.equal(scrub("private-notes stays without a drop list", [], []), "private-notes stays without a drop list");
 });
 
 test("home paths and multiple email addresses are scrubbed within surrounding prose", () => {
@@ -43,10 +46,10 @@ test("token and hash length boundaries preserve short references", () => {
 });
 
 test("scrubbing mixed private details twice does not change the result", () => {
-  const text = "Résumé /home/alice/project: me@example.com 774-555-0123 100.64.0.1\nagent-context/private\n";
+  const text = "Résumé /home/alice/project: me@example.com 774-555-0123 100.64.0.1\nprivate-notes/x\n";
   const expected = "Résumé ~/project: [email] [number] [address]\n";
-  assert.equal(scrub(text), expected);
-  assert.equal(scrub(expected), expected);
+  assert.equal(scrub(text, [], dropWords), expected);
+  assert.equal(scrub(expected, [], dropWords), expected);
 });
 
 test("unformatted phone numbers are redacted", () => {
@@ -82,7 +85,7 @@ for (const [index, [type, token]] of fakeSecrets.entries()) {
     assert.equal(scrub(`Token: ${token}.`), "Token: [secret].");
     const logs: string[] = [];
     // Even secrets past the trim limit or on a removed line reject the whole file.
-    for (const text of [`before ${token} after`, `${"x".repeat(12_001)}\n${token}`, `agent-context ${token}`]) {
+    for (const text of [`before ${token} after`, `${"x".repeat(12_001)}\n${token}`, `private-notes ${token}`]) {
       assert.equal(prepareGatheredFile("docs/example.md", text, (message: string) => logs.push(message)), null);
     }
     assert.equal(logs.length, 3);

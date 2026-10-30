@@ -132,5 +132,13 @@ dist
 # macOS Finder metadata
 .DS_Store
 
-# Local list of private projects and folders the portfolio agent must never publish
+# Local agent setup (kept out of the public repo)
 portfolio-agent.private.json
+portfolio-agent.config.json
+.claude/
+.codex/
+CLAUDE.md
+AGENTS.md
+HANDOFF*
+*.local.md
+.worktrees/

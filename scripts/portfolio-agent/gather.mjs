@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Collects source material for the update-portfolio skill.
+// Collects source material for drafting the project pages.
 //
-// For each project in portfolio-agent.config.json it reads the README, the
+// For each project in portfolio-agent.config.json (local, gitignored) it reads the README, the
 // listed docs and recent commit subjects from the configured git ref, using
 // `git show` and `git log` only. Repos are never checked out or changed.
 // Output: one Markdown file per project in tmp/portfolio-agent/<date>/, which
@@ -16,7 +16,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const config = JSON.parse(readFileSync(path.join(root, "portfolio-agent.config.json"), "utf8"));
+const configPath = path.join(root, "portfolio-agent.config.json");
 const privatePath = path.join(root, "portfolio-agent.private.json");
 
 const args = process.argv.slice(2);
@@ -32,6 +32,7 @@ const expand = (p) => path.resolve(p.replace(/^~(?=$|\/)/, homedir()));
 const real = (p) => (existsSync(p) ? realpathSync(p) : p);
 let blocked = [];
 let privateNames = [];
+let dropLineWords = [];
 const isBlocked = (p) => {
   const target = real(p).toLowerCase();
   return blocked.some((b) => target === b || target.startsWith(`${b}${path.sep}`));
@@ -80,11 +81,14 @@ export function prepareGatheredFile(file, text, log = console.warn) {
   return text.length > MAX_FILE_CHARS ? `${text.slice(0, MAX_FILE_CHARS)}\n\n[… trimmed]` : text;
 }
 
-export function scrub(text, names = privateNames) {
+// Lines that mention any of `dropWords` are removed whole. The words come from
+// the local private list (its blockedPaths folder names plus dropLinesWith).
+export function scrub(text, names = privateNames, dropWords = dropLineWords) {
   const redacted = SECRET_PATTERNS.reduce((value, [, pattern]) => value.replace(pattern, "[secret]"), text);
+  const words = dropWords.map((w) => String(w).trim().toLowerCase()).filter(Boolean);
   return scrubNames(redacted, names)
     .split("\n")
-    .filter((line) => !/agent-context|imessage/i.test(line))
+    .filter((line) => !words.some((w) => line.toLowerCase().includes(w)))
     .join("\n")
     .replace(/\/(Users|home)\/[^/\s)]+/g, "~")
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")
@@ -167,13 +171,14 @@ function gatherProject(project, outDir) {
   return scrub(sections.filter(Boolean).join("\n\n"));
 }
 
-function loadPrivateList() {
+function loadPrivateList(config) {
   if (!existsSync(privatePath)) {
     throw new Error("portfolio-agent.private.json is missing. It lists the folders and private projects the agent must never read or publish. Copy it from the main checkout before gathering.");
   }
   const list = JSON.parse(readFileSync(privatePath, "utf8"));
   blocked = (list.blockedPaths ?? []).map((p) => real(expand(p)).toLowerCase());
   privateNames = (list.privateNames ?? []).map((n) => n.toLowerCase());
+  dropLineWords = [...(list.dropLinesWith ?? []), ...(list.blockedPaths ?? []).map((p) => path.basename(String(p).replace(/\/+$/, "")))];
   for (const project of config.projects) {
     const text = `${project.slug} ${project.name} ${project.repo ?? ""}`.toLowerCase();
     const name = privateNames.find((n) => text.includes(n.toLowerCase().replace(/\s+/g, " ")));
@@ -182,7 +187,8 @@ function loadPrivateList() {
 }
 
 function main() {
-  loadPrivateList();
+  const config = JSON.parse(readFileSync(configPath, "utf8"));
+  loadPrivateList(config);
   const date = new Date().toISOString().slice(0, 10);
   const outDir = path.join(root, config.outputDir, date);
   mkdirSync(outDir, { recursive: true });

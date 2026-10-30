@@ -47,7 +47,7 @@ def entry_title(title, date):
 story=[]
 c=data['contact']; e=data['education']
 story.append(para(c['name'],'name'))
-story.append(Paragraph(' | '.join([clean(c['location']),link('mailto:'+c['email'],c['email']),clean(c['phone'])]),styles['contact']))
+story.append(Paragraph(' | '.join([clean(c['location']),link('mailto:'+c['email'],c['email'])]),styles['contact']))
 story.append(Paragraph(' | '.join([link(c['portfolio'],'scriblesean.github.io/portfolio'),link(c['github'],'github.com/ScribleSean'),link(c['linkedin'],'linkedin.com/in/seanarackal')]),styles['contact']))
 story += section('Education')
 story.append(entry_title(e['institution'],'May 2026'))
