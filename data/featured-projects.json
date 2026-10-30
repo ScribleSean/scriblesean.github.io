@@ -1,7 +1,7 @@
 {
   "checkedThrough": "2026-10-27",
   "heading": "Small things I'm building",
-  "intro": "Each one does one job well. Beeline does things on my Mac, Observatory keeps watch, Career Bridge asks people how they use AI at work, cube·type turns a Rubik’s cube into a typing game, and one more is on the way.",
+  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory tracks my AI limits, screen time and cost. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
   "projects": [
     {
       "slug": "beeline",
@@ -31,13 +31,13 @@
           "title": "The bee",
           "body": [
             "Before Beeline presses something, a small drawn bee flies from the bar to the button, menu or window, a ring settles on the target, and a label says what is about to happen. My real pointer never moves.",
-            "Escape stops a run from any app, and clicking or typing myself takes over. Anything that can’t be undone, like emptying the Trash, pressing Send or a dialog’s OK, needs Return twice, and the card says exactly what it will touch."
+            "Escape stops a run from any app, and clicking or typing myself takes over. Anything that can’t be undone, like emptying the Trash, pressing Send or a dialog’s OK, needs Return twice, and the card says what it will touch."
           ]
         },
         {
           "title": "Where it came from",
           "body": [
-            "Voice control started as a separate prototype. I folded it into Beeline so there is one bar for typing and talking, and kept only the parts that held up: the on-screen cursor idea and a safe way to stop."
+            "Voice control started as a separate prototype. I merged it into Beeline so one bar handles typing and talking, and kept two of its ideas: the on-screen cursor and a safe way to stop a run."
           ]
         }
       ],
@@ -54,14 +54,14 @@
           "width": 1440,
           "height": 658,
           "alt": "A currency conversion shown as a large answer in the Beeline bar",
-          "caption": "Quick answers appear right in the bar."
+          "caption": "Quick answers appear in the bar."
         }
       ],
       "highlights": [
         "On-device speech while ⌘Space is held",
         "Uses Apple’s on-device model for loose requests, and learns what I pick",
-        "Watches Escape to stop a run without ever swallowing the key",
-        "Runs on the Mac; goes online only for currency rates and requests I send to Claude"
+        "Stops a run on Escape and still passes the key to the app in front",
+        "Runs on the Mac and goes online only for currency rates and requests I send to Claude"
       ],
       "connects": [
         {
@@ -89,8 +89,8 @@
       "verb": "Watch",
       "kind": "Menu bar app · Mac and Windows",
       "status": "Open source",
-      "tagline": "A calm menu bar companion that watches my AI limits, screen time and cost.",
-      "summary": "One glance tells me how much of my Claude Code and Codex limits is left, where my screen time went, and what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
+      "tagline": "A menu bar app that tracks my AI limits, screen time and cost.",
+      "summary": "It shows how much is left of my Claude Code and Codex limits, where my screen time went, and an estimate of what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
       "mark": "telescope",
       "intro": "observatory",
       "hero": {
@@ -104,7 +104,7 @@
         {
           "title": "Three questions",
           "body": [
-            "Observatory answers three things at a glance: am I near my limits, where did my time go, and what did it cost. The menu bar panel lists every limit window, scarcest first.",
+            "Observatory answers three questions: am I near my limits, where did my time go, and what did it cost? The menu bar panel lists every limit window, with the least left first.",
             "The dashboard opens in my browser and breaks each answer down: limit windows with reset times and pace, screen time by app and category, and tokens priced at public API rates."
           ]
         },
@@ -112,13 +112,13 @@
           "title": "Monitor only",
           "body": [
             "It doesn't start, stop or answer an agent, and it doesn't change the tools it reads. It sends nothing to any server and has no telemetry. Saved data holds totals, not prompts, messages or window titles.",
-            "Unknown is shown as Unknown, not zero, and dollar figures are labeled as estimates, not bills."
+            "It shows missing data as Unknown, not zero, and labels dollar figures as estimates, not bills."
           ]
         },
         {
           "title": "One computer first",
           "body": [
-            "Setup is one command. It builds the dashboard and a small menu bar app on my own computer and starts them at login, with no account and no installer. A Mac and a Windows PC can optionally share one view over SSH, with combined sums clearly labeled."
+            "Setup is one command. It builds the dashboard and a small menu bar app on my own computer and starts them at login, with no account and no installer. A Mac and a Windows PC can share one view over SSH, and the dashboard labels combined sums as not deduplicated."
           ]
         }
       ],
@@ -141,7 +141,7 @@
       "connects": [
         {
           "slug": "beeline",
-          "text": "Keeps an eye on the limits behind Beeline’s plans."
+          "text": "Tracks the Claude limits that Beeline’s plans use."
         }
       ],
       "stack": [
@@ -168,7 +168,7 @@
       "verb": "Ask",
       "kind": "Web app · Datathon project",
       "status": "Prototype",
-      "tagline": "A short survey that asks Massachusetts workers and employers how AI shows up in their jobs.",
+      "tagline": "A survey that asks Massachusetts workers how they use AI at work and asks employers what the job needs.",
       "summary": "Built for the Human Edge Studio datathon by SG+I, where it won 3rd place. Job ads show what employers ask for, not what people in the job do with AI, so Career Bridge asks them and publishes only totals.",
       "icon": "/projects/career-bridge/icon.png",
       "iconFullBleed": true,
@@ -182,7 +182,7 @@
         {
           "title": "The gap",
           "body": [
-            "About 526,000 Massachusetts workers are in jobs where AI overlaps with much of the work, yet under 1% of job ads for those jobs mention AI skills. That comes from the Lightcast AI Exposure Index, 2025 job ads and BLS worker counts.",
+            "About 526,000 Massachusetts workers are in jobs where AI overlaps with much of the work, yet under 1% of job ads for those jobs mention AI skills. These figures come from the Lightcast AI Exposure Index, 2025 job ads and BLS worker counts.",
             "Ads can’t tell the difference between a job that doesn’t need AI and one where people already use it and nobody is asking. Asking people can."
           ]
         },
@@ -196,14 +196,14 @@
         {
           "title": "Results and job pages",
           "body": [
-            "Results show only totals by job and region, and any group with fewer than 10 responses is hidden. The page points out where workers and employers differ, which shows who could use AI training.",
+            "Results show only totals by job and region, and hide any group with fewer than 10 responses. The page points out where workers and employers differ, which shows who could use AI training.",
             "Career counselors can look up any job for pay, growth, training, how much AI is already used on the work, and nearby jobs with similar skills. Every number names its source."
           ]
         },
         {
           "title": "Status",
           "body": [
-            "A working prototype. All survey results in the demo are sample data. It’s an independent student project, not affiliated with MassHire, Lightcast or the Commonwealth of Massachusetts."
+            "Career Bridge is a working prototype, and all survey results in the demo are sample data. It’s an independent student project, not affiliated with MassHire, Lightcast or the Commonwealth of Massachusetts."
           ]
         }
       ],

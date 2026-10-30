@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { FormEvent, KeyboardEvent, useLayoutEffect, useRef, useSyncExternalStore } from "react";
 
 import { contact } from "@/data/resume";
 import {
@@ -9,11 +9,9 @@ import {
   MAX_MESSAGE_COUNT,
   MAX_MESSAGE_LENGTH,
   MessageDeliveryUnavailableError,
-  MessageTransport,
 } from "@/lib/message-transport";
 import {
   createMessage,
-  createThreadStore,
   getPendingMessages,
   getThreadView,
   isSent,
@@ -24,19 +22,9 @@ import {
 import styles from "./MessagesApp.module.css";
 
 const welcomeMessage =
-  "Thank you for visiting my website! If you find this cool or want to talk about anything with me, I’d be happy to reach out! Just send me a way to contact you, and you’ll hear back from me!";
+  "Thanks for visiting! If you want to talk about anything, send me a message with a way to reach you, and I’ll get back to you.";
 
-export type MessagesAppProps = {
-  transport?: MessageTransport;
-  store?: ThreadStore;
-};
-
-export default function MessagesApp({
-  transport = defaultMessageTransport,
-  store: externalStore,
-}: MessagesAppProps) {
-  const [ownStore] = useState(() => externalStore ?? createThreadStore());
-  const store = externalStore ?? ownStore;
+export default function MessagesApp({ store }: { store: ThreadStore }) {
   const state = useSyncExternalStore(store.subscribe, store.getState, store.getState);
   const { dispatch } = store;
   const threadRef = useRef<HTMLDivElement>(null);
@@ -74,7 +62,7 @@ export default function MessagesApp({
     const messagesToSubmit = getPendingMessages(store.getState());
 
     try {
-      await transport({ messages: messagesToSubmit, submittedAt: new Date().toISOString() });
+      await defaultMessageTransport({ messages: messagesToSubmit, submittedAt: new Date().toISOString() });
       dispatch({ type: "submit-success", ids: messagesToSubmit.map((message) => message.id) });
     } catch (error) {
       dispatch({

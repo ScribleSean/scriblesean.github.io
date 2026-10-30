@@ -42,8 +42,6 @@ const SKIP_FILE = /(^|\/)(AGENTS|CLAUDE)\.md$|(^|\/)\.env|secret|credential|priv
 
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// Private names come from portfolio-agent.private.json (loaded in main), so they
-// are redacted even when the project-level check is skipped.
 function scrubNames(text, names) {
   let out = text;
   for (const name of names) {
@@ -71,7 +69,6 @@ export function secretTypes(text) {
   }).map(([type]) => type);
 }
 
-// Inspect the entire file before trimming or removing private-context lines.
 export function prepareGatheredFile(file, text, log = console.warn) {
   const types = secretTypes(text);
   if (types.length) {
@@ -81,8 +78,6 @@ export function prepareGatheredFile(file, text, log = console.warn) {
   return text.length > MAX_FILE_CHARS ? `${text.slice(0, MAX_FILE_CHARS)}\n\n[… trimmed]` : text;
 }
 
-// Lines that mention any of `dropWords` are removed whole. The words come from
-// the local private list (its blockedPaths folder names plus dropLinesWith).
 export function scrub(text, names = privateNames, dropWords = dropLineWords) {
   const redacted = SECRET_PATTERNS.reduce((value, [, pattern]) => value.replace(pattern, "[secret]"), text);
   const words = dropWords.map((w) => String(w).trim().toLowerCase()).filter(Boolean);

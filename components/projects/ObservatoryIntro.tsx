@@ -11,15 +11,20 @@ import styles from "./ObservatoryIntro.module.css";
 const interTight = localFont({ src: "./fonts/InterTight.woff2", weight: "400 650", display: "swap", preload: false });
 // preload is off so only pages that draw the intro fetch the font, not every project page.
 
-// Logical canvas sizes from the storyboard: 1920 by 1080, or 1080 by 1350 on narrow screens.
 const FORMATS = {
   wide: { w: 1920, h: 1080, band: 200 },
   tall: { w: 1080, h: 1350, band: 250 },
 } as const;
 type Format = keyof typeof FORMATS;
 
-// Reduced motion shows one still frame: the whole dashboard in light mode.
-const STILL = 20.25;
+const REDUCED_MOTION_T = 20.25;
+// Cap each step so a tab that was hidden resumes where it left off.
+const MAX_FRAME_STEP_S = 0.1;
+
+const isInView = (entry: IntersectionObserverEntry) => {
+  const fillsViewport = entry.rootBounds ? entry.intersectionRect.height >= 0.6 * entry.rootBounds.height : false;
+  return entry.isIntersecting && (entry.intersectionRatio >= 0.5 || fillsViewport);
+};
 
 const fade = (t: number, start: number, dur = 0.6, rise = 8): CSSProperties => {
   const p = ease(t, start, dur);
@@ -180,7 +185,6 @@ function EndCard({ t }: { t: number }) {
   );
 }
 
-// poster is the still shown before the frame is measured, which is also what shows without JavaScript.
 export default function ObservatoryIntro({ full = false, poster }: { full?: boolean; poster?: ProjectImage }) {
   const [t, setT] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -192,7 +196,6 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
 
   const seek = useCallback((value: number) => { time.current = value; setT(value); }, []);
 
-  // Size, format and first frame.
   useEffect(() => {
     const el = outer.current;
     if (!el) return;
@@ -204,39 +207,33 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
     const linked = parseTime(new URLSearchParams(window.location.search).get("t"));
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (linked !== null || motion.matches) {
-      seek(linked ?? STILL);
+      seek(linked ?? REDUCED_MOTION_T);
       fromStill.current = linked === null;
       userPaused.current = true;
     }
 
-    // Reduced motion turned on mid-play: stop on the still frame.
     const onMotion = (e: MediaQueryListEvent) => {
       if (!e.matches) return;
       userPaused.current = true;
       fromStill.current = true;
       setPlaying(false);
-      seek(STILL);
+      seek(REDUCED_MOTION_T);
     };
     motion.addEventListener("change", onMotion);
 
-    // In view means half visible, or filling most of a short viewport.
     const io = new IntersectionObserver(([entry]) => {
-      const fills = entry.rootBounds ? entry.intersectionRect.height >= 0.6 * entry.rootBounds.height : false;
-      const seen = entry.isIntersecting && (entry.intersectionRatio >= 0.5 || fills);
-      if (!seen) setPlaying(false);
+      if (!isInView(entry)) setPlaying(false);
       else if (!userPaused.current && time.current < TOTAL) setPlaying(true);
     }, { threshold: Array.from({ length: 21 }, (_, i) => i / 20) });
     io.observe(el);
     return () => { ro.disconnect(); io.disconnect(); motion.removeEventListener("change", onMotion); };
   }, [seek]);
 
-  // Frame loop.
   useEffect(() => {
     if (!playing) return;
     let last = performance.now();
     let id = requestAnimationFrame(function frame(now) {
-      // Cap each step so a tab that was hidden resumes where it left off.
-      const next = Math.min(TOTAL, time.current + Math.min(0.1, (now - last) / 1000));
+      const next = Math.min(TOTAL, time.current + Math.min(MAX_FRAME_STEP_S, (now - last) / 1000));
       last = now;
       seek(next);
       if (next >= TOTAL) setPlaying(false);
@@ -253,7 +250,6 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
     setPlaying(true);
   };
 
-  // The frame's shape comes from CSS (a container query), so follow the measured box.
   const format: Format = box && box.h > box.w ? "tall" : "wide";
   const { w, h, band } = FORMATS[format];
   const scale = box ? Math.min(box.w / w, full ? box.h / h : Infinity) : 0;
@@ -275,7 +271,7 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
           <img src={poster.src} alt="" width={poster.width} height={poster.height} decoding="async" />
         </picture>
       )}
-      <div className={styles.stage} style={{ width: w, height: h, transform: `translate(-50%, -50%) scale(${scale})`, opacity: box ? 1 : 0, "--inv": scale ? 1 / scale : 1 } as CSSProperties} aria-hidden="true">
+      <div className={styles.stage} style={{ width: w, height: h, transform: `translate(-50%, -50%) scale(${scale})`, opacity: box ? 1 : 0, "--inverse-stage-scale": scale ? 1 / scale : 1 } as CSSProperties} aria-hidden="true">
         <div className={styles.band} style={{ height: band }}><Caption t={t} /></div>
         <div className={styles.view} style={{ top: band, height: h - band }}>
           {t < 7 && <MenuBar t={t} />}
@@ -283,7 +279,7 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
           {t >= 24 && <EndCard t={t} />}
         </div>
       </div>
-      <ol className={styles.srOnly}>{BEATS.map((b) => <li key={b.start}>{b.caption} {b.says}</li>)}</ol>
+      <ol className={styles.srOnly}>{BEATS.map((b) => <li key={b.start}>{b.caption} {b.textAlternative}</li>)}</ol>
       <span className={styles.progress} style={{ width: `${clamp(t / TOTAL) * 100}%` }} />
       <button type="button" className={styles.control} onClick={toggle} aria-label={playing ? "Pause" : done ? "Replay" : "Play"}>
         {playing
@@ -294,6 +290,5 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
       </button>
     </figure>
   );
-  // The frame is a size container so CSS picks 16:9 or 4:5 before any script runs.
   return full ? figure : <div className={styles.frame}>{figure}</div>;
 }

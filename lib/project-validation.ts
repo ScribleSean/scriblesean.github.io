@@ -6,7 +6,7 @@ export function validateProjectSections(project: unknown): asserts project is Pr
     throw new Error("Project must be an object");
   }
   const { sections } = project as { sections?: unknown };
-  if (sections === undefined) return; // Teasers have no sections.
+  if (sections === undefined) return;
   if (!Array.isArray(sections)) throw new Error("Project sections must be an array");
   sections.forEach((section, index) => {
     if (!section || typeof section !== "object" || Array.isArray(section) ||

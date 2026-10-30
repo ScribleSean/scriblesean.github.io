@@ -4,13 +4,9 @@ import { projects } from "@/data/resume";
 import { useState } from "react";
 import styles from "./FilesApp.module.css";
 
-type FilesAppProps = {
-  resumeUrl?: string;
-};
-
 type Location = "home" | "projects" | "resume";
 
-export default function FilesApp({ resumeUrl = "/resume/sean-arackal-resume.pdf" }: FilesAppProps) {
+export default function FilesApp() {
   const [location, setLocation] = useState<Location>("projects");
   const [selectedProjectName, setSelectedProjectName] = useState(projects[0]?.name ?? "");
   const selectedProject = projects.find((project) => project.name === selectedProjectName) ?? projects[0];
@@ -27,11 +23,7 @@ export default function FilesApp({ resumeUrl = "/resume/sean-arackal-resume.pdf"
           <p className={styles.appName}>Files</p>
           <p className={styles.path}>Home / {location === "home" ? "Portfolio" : location === "projects" ? "Portfolio / Projects" : "Portfolio / Resume"}</p>
         </div>
-        {resumeUrl ? (
-          <a className={styles.action} href={resumeUrl} download>Download resume</a>
-        ) : (
-          <a className={styles.action} href="/resume" target="_blank" rel="noreferrer">Print resume</a>
-        )}
+        <a className={styles.action} href="/resume/sean-arackal-resume.pdf" download>Download resume</a>
       </header>
 
       <div className={styles.workspace}>
@@ -68,7 +60,7 @@ function HomeView({ onOpen }: { onOpen: (location: Location) => void }) {
       <div className={styles.overviewRows}>
         <button type="button" onClick={() => onOpen("projects")}>
           <span className={styles.folderIcon} aria-hidden="true">▰</span>
-          <span><strong>Projects</strong><small>{projects.length} project folders with available links</small></span>
+          <span><strong>Projects</strong><small>{projects.length} project folders</small></span>
           <span aria-hidden="true">›</span>
         </button>
         <button type="button" onClick={() => onOpen("resume")}>
@@ -139,7 +131,7 @@ export function ResumeContent() {
         <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Open resume PDF to read, search, or print ↗</a>
       </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/resume/sean-arackal-resume.png" alt="Sean Arackal resume, 2026–2027. Open the PDF above for accessible text." style={{ display: "block", width: "100%", height: "auto" }} />
+      <img src="/resume/sean-arackal-resume.png" alt="Sean Arackal resume. Open the PDF above for accessible text." style={{ display: "block", width: "100%", height: "auto" }} />
     </article>
   );
 }

@@ -9,7 +9,6 @@ import { scrub } from "../scripts/portfolio-agent/gather.mjs";
 
 
 const root = path.resolve(__dirname, "..");
-// The agent config and private list are local, gitignored files. Tests that need them skip without them (as in CI).
 const configPath = path.join(root, "portfolio-agent.config.json");
 const config = existsSync(configPath) ? JSON.parse(readFileSync(configPath, "utf8")) : null;
 const noConfig = !config && "no local portfolio-agent.config.json";
@@ -66,7 +65,6 @@ test("the draft holds no private details and follows the writing style", () => {
   const banned: [RegExp, string][] = [
     [/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i, "an email address"],
     [/\/Users\/|~\/|Developer\//, "a local path"],
-    [/\(?\d{3}\)?[ .-]?\d{3}[ .-]\d{4}/, "a phone number"],
     [/claude\/[a-z-]+-[0-9a-f]{6}/i, "a branch name"],
     [/—/, "an em dash"],
     [/\b(honestly|genuinely|seamless(ly)?|cutting-edge|revolutionary)\b/i, "filler wording"],

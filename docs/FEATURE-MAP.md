@@ -1,6 +1,6 @@
 # Feature map
 
-What a visitor can do, and what checks it today. `npm test` runs in CI before every deploy. The `tests/*.browser.mjs` scripts need Playwright, which is not installed, and nothing runs them.
+This table lists what a visitor can do and which test checks it. `npm test` runs in CI before every deploy. The `tests/*.browser.mjs` scripts need Playwright, which is not a project dependency, so nothing runs them.
 
 | Feature | How a visitor reaches it | Checked by |
 | --- | --- | --- |

@@ -1,5 +1,3 @@
-// Run against a served production export. PLAYWRIGHT_MODULE can point to an
-// existing Playwright installation; this check adds no runtime dependency.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);

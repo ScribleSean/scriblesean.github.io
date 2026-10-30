@@ -1,20 +1,22 @@
 # Scene baseline and verification
 
-The current interaction baseline is commit `3639ce6`, deployed September 9 and still live September 11. Sean requested returning to that behavior after the September 12 tuning changed the feel of the site.
+The interaction baseline is commit `3639ce6`, deployed September 9 and still live September 11. The September 12 tuning changed how the site felt, so Sean asked to return to that baseline.
 
-Restored from that baseline: camera easing, orbit damping, hover focus, desk geometry, original Fox, and muted video autoplay on initial load. The 600 ms fixed transitions, static batching, delayed video initialization and transition-specific playback gate were removed. The newer portfolio content, mobile scaling, loading treatment and browser usability fixes remain.
+The restore brought back the baseline's camera easing, orbit damping, hover focus, desk geometry, original Fox, and muted video autoplay on first load. It removed the 600 ms fixed transitions, static batching, delayed video start, and the playback gate tied to transitions. It kept the newer portfolio content, mobile scaling, loading screen, and browser usability fixes.
 
-The camera's distance/polar limits, clipping and fog still accommodate the scaled mobile viewport, preventing unreachable targets. Canvas resolution respects the physical mobile viewport, with the baseline 1.5 maximum pixel ratio. Graphics-context recovery remains available.
+The camera's distance and polar-angle limits, clipping, and fog still fit the scaled mobile viewport, so every target stays reachable. The canvas resolution follows the physical mobile viewport, capped at the baseline's maximum pixel ratio of 1.5. The scene still recovers from a lost graphics context.
 
-Build the static export with `npm run build` (the same Turbopack build CI deploys), then serve `out/`. Browser checks accept `PLAYWRIGHT_MODULE`, `CHROME_PATH` and `TEST_URL` for an existing Playwright/Chrome installation and local or deployed URL:
+Build the static export with `npm run build`, the same Turbopack build that CI deploys, then serve `out/`. The browser checks read three environment variables. `PLAYWRIGHT_MODULE` and `CHROME_PATH` point to an existing Playwright and Chrome install, and `TEST_URL` sets the local or deployed URL to test.
 
-- `tests/camera-motion.browser.mjs`: original easing settles, hover approaches/withdraws, initial autoplay is requested, and desk model clicks work. Its player is mocked to isolate camera behavior.
-- `tests/scene-performance.browser.mjs`: viewport fitting, settled idle rendering, video initialization, and desktop interactions. `TEST_DEVICE` selects a scenario. Geometry counts are observations, not acceptance targets for the restored baseline.
-- `tests/desktop-usability.browser.mjs`: window controls, browser navigation and graphics-loss recovery.
-- `tests/video-autoplay.browser.mjs`: actual muted YouTube playback advances before any user interaction; requires network access.
+- `tests/camera-motion.browser.mjs` checks that the original easing settles, that hover moves the camera in and back out, that the page requests autoplay on first load, and that clicks on desk models work. It mocks the video player to test only the camera.
+- `tests/scene-performance.browser.mjs` checks viewport fitting, that rendering stops when idle, video start, and desktop interactions. `TEST_DEVICE` picks a scenario. Its geometry counts are for reference, not targets the restored baseline must meet.
+- `tests/desktop-usability.browser.mjs` checks window controls, browser navigation, and recovery after the graphics context is lost.
+- `tests/video-autoplay.browser.mjs` checks that muted YouTube playback advances before any user interaction. It needs network access.
 
-Restoration checks passed on desktop and phone emulation. Real Chrome playback advanced from 17.1 to 18.6 seconds while the camera stayed in the room. The return camera move follows the original approximately 1.8-second easing. These are local observations, not guarantees of frame rate or autoplay policy on every device. Future changes should be small, compared against this baseline and reviewed for interaction feel before accumulating more tuning.
+The restore passed these checks on desktop and in phone emulation. In real Chrome, playback advanced from 17.1 to 18.6 seconds while the camera stayed in the room. The camera's return move uses the original easing of about 1.8 seconds. These results come from local runs and say nothing about frame rate or autoplay behavior on other devices. Keep future changes small, compare each one against this baseline, and check how the interaction feels before adding more tuning.
 
-Screen-alignment follow-up: the interactive screen now belongs to the normal DOM tree and is projected from the camera onto the CRT's 2.56 x 1.92 opening. It uses a single perspective transform during motion and a flat 2D transform when facing the desktop. Camera updates precede screen projection in each frame, and easing ends at the exact target to avoid a residual angle. Camera easing, damping, hover behavior and video playback remain as in the restored baseline.
+## Screen alignment
 
-`tests/screen-alignment.browser.mjs` checks centering and visible button hit targets at 877 x 837, 1440 x 900, and 390 x 844, including desktop resizes and a coordinate-based app launch. `tests/desktop-load-recovery.browser.mjs` simulates a missing desktop chunk and verifies the reload action. A stale CSS chunk error was observed in the existing in-app browser tab; reloading resolved that missing-asset failure. The new desktop boundary shows an explicit reload option instead of leaving its screen blank.
+The interactive screen is part of the normal DOM tree. The page projects it from the camera onto the CRT's 2.56 x 1.92 opening, with one perspective transform while the camera moves and a flat 2D transform when the camera faces the desktop. Each frame updates the camera before it projects the screen, and easing ends on the exact target so no leftover angle remains. Camera easing, damping, hover behavior, and video playback stay as in the restored baseline.
+
+`tests/screen-alignment.browser.mjs` checks that the screen stays centered and that visible buttons receive clicks at 877 x 837, 1440 x 900, and 390 x 844, including after desktop resizes and for an app launched by coordinates. `tests/desktop-load-recovery.browser.mjs` simulates a missing desktop chunk and checks the reload action. A stale CSS chunk once broke the desktop in an already open in-app browser tab, and reloading fixed it. The desktop error boundary now shows a reload button instead of a blank screen.
