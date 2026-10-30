@@ -22,6 +22,8 @@ export type FeaturedProject = {
   icon?: string;
   iconFullBleed?: boolean;
   mark?: "telescope";
+  /** A coded motion intro shown in the hero slot; the hero still moves to the gallery. */
+  intro?: "observatory";
   heroPlaceholder?: string;
   hero?: { light: string; dark?: string; width: number; height: number; alt: string };
   sections?: { title: string; body: string[] }[];
