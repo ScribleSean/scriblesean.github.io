@@ -20,7 +20,7 @@ What a visitor can do, and what checks it today. `npm test` runs in CI before ev
 | Project pages, light and dark | `/projects/`, `/projects/<slug>/` | `featured-projects.test.ts` (content, images, links, privacy) |
 | Resume page and PDF | `/resume/`, Files | none |
 | Share image, sitemap, robots | `/og.png`, `/sitemap.xml`, `/robots.txt` | none (built by `npm run build`) |
-| Update-portfolio agent scrubbing | `npm run portfolio:gather` | `featured-projects.test.ts` (scrub) |
+| Project source scrubbing | `npm run portfolio:gather` | `gather-scrub.test.ts`, `featured-projects.test.ts` |
 | Phone layout | any page under 640 px | `screen-alignment.browser.mjs` (CRT only, not run) |
 
 ## Human-owned
