@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { validateProjectSections } from "@/lib/project-validation";
 import { featured, featuredProjects, getProject, projectHref, projectPages, type FeaturedProject, type ProjectImage } from "@/data/featured-projects";
+import ObservatoryIntro from "./ObservatoryIntro";
 import ProjectMark from "./ProjectMark";
 import styles from "./ProjectPage.module.css";
 
@@ -43,6 +44,8 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
   const previous = projectPages[(index - 1 + projectPages.length) % projectPages.length];
   const next = projectPages[(index + 1) % projectPages.length];
   const teaser = featuredProjects.find((item) => item.teaser);
+  const heroImage: ProjectImage | undefined = project.hero && { src: project.hero.light, darkSrc: project.hero.dark, width: project.hero.width, height: project.hero.height, alt: project.hero.alt };
+  const gallery = project.intro && heroImage ? [heroImage, ...(project.gallery ?? [])] : project.gallery;
 
   return (
     <ProjectsShell>
@@ -72,9 +75,9 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           </div>
         </section>
 
-        {project.hero && (
+        {heroImage && (
           <div className={`${styles.wrap} ${styles.heroShot}`}>
-            <Shot priority image={{ src: project.hero.light, darkSrc: project.hero.dark, width: project.hero.width, height: project.hero.height, alt: project.hero.alt }} />
+            {project.intro === "observatory" ? <ObservatoryIntro /> : <Shot priority image={heroImage} />}
           </div>
         )}
 
@@ -114,9 +117,9 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           </aside>
         </div>
 
-        {project.gallery && project.gallery.length > 0 && (
+        {gallery && gallery.length > 0 && (
           <div className={`${styles.wrap} ${styles.gallery}`}>
-            {project.gallery.map((image) => (
+            {gallery.map((image) => (
               <figure key={image.src}>
                 <Shot image={image} />
                 {image.caption && <figcaption>{image.caption}</figcaption>}
