@@ -86,11 +86,14 @@ i.codex, .track .codex { background: var(--codex); }
 .code {
   margin: 0; padding: 28px 40px; border-radius: 16px; background: var(--surface); color: var(--text);
   font: 26px/1.6 "SFMono-Regular", Consolas, "Liberation Mono", monospace; box-shadow: 0 0 0 1px var(--track);
+  /* Never below 11.5px on screen (--inv is 1 / stage scale); on small frames it grows and wraps. */
+  font-size: max(26px, 11.5px * var(--inv));
+  box-sizing: border-box; max-width: calc(100% - 64px); white-space: pre-wrap;
 }
 
 /* Portrait (1080 by 1350): smaller caption, end card code wraps less */
 .tall .caption { font-size: 54px; }
-.tall .code { font-size: 23px; padding: 24px 28px; }
+.tall .code { font-size: max(23px, 11.5px * var(--inv)); padding: 24px 28px; }
 
 .progress { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--accent); opacity: 0.7; }
 .control {

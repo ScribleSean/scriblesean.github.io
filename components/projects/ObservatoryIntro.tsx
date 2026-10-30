@@ -174,7 +174,7 @@ function EndCard({ t }: { t: number }) {
     <div className={styles.end}>
       <p className={styles.endName} style={fade(t, 24.2)}><Telescope size={96} />Observatory</p>
       <pre className={styles.code} style={fade(t, 24.5)}>
-        <code>git clone https://github.com/ScribleSean/observatory.git{"\n"}cd observatory && npm run setup</code>
+        <code>git clone https://github.com/<wbr />ScribleSean/<wbr />observatory.git{"\n"}cd observatory && npm run setup</code>
       </pre>
     </div>
   );
@@ -275,7 +275,7 @@ export default function ObservatoryIntro({ full = false, poster }: { full?: bool
           <img src={poster.src} alt="" width={poster.width} height={poster.height} decoding="async" />
         </picture>
       )}
-      <div className={styles.stage} style={{ width: w, height: h, transform: `translate(-50%, -50%) scale(${scale})`, opacity: box ? 1 : 0 }} aria-hidden="true">
+      <div className={styles.stage} style={{ width: w, height: h, transform: `translate(-50%, -50%) scale(${scale})`, opacity: box ? 1 : 0, "--inv": scale ? 1 / scale : 1 } as CSSProperties} aria-hidden="true">
         <div className={styles.band} style={{ height: band }}><Caption t={t} /></div>
         <div className={styles.view} style={{ top: band, height: h - band }}>
           {t < 7 && <MenuBar t={t} />}
