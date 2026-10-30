@@ -19,7 +19,7 @@ export const BEATS: Beat[] = [
   { start: 15.5, length: 4, caption: "What did it cost?",
     says: "Cost today: $60.70, an API-equivalent estimate, not a bill. Claude Code $43.78, Codex $16.92." },
   { start: 19.5, length: 4.5, caption: "One computer, or two.",
-    says: "The dashboard turns dark and a second computer, Test PC, joins. Screen time and cost show each computer and their sum, labeled not deduplicated. Limits are never added together." },
+    says: "The dashboard turns dark and a second computer, Test PC, joins. Screen time: Studio Mac 3h 53m, Test PC 2h 30m, 6h 23m together. Cost: Studio Mac $60.70, Test PC $26.25, $86.95 together. Both sums are labeled not deduplicated. Limits are never added together." },
   { start: 24, length: 3, caption: "Local only. Open source.",
     says: "End card: git clone https://github.com/ScribleSean/observatory.git, then cd observatory and npm run setup." },
 ];

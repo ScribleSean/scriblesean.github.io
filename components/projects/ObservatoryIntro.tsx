@@ -7,7 +7,8 @@ import {
 } from "@/lib/observatory-intro";
 import styles from "./ObservatoryIntro.module.css";
 
-const interTight = localFont({ src: "./fonts/InterTight.ttf", weight: "100 900", display: "swap" });
+const interTight = localFont({ src: "./fonts/InterTight.ttf", weight: "100 900", display: "swap", preload: false });
+// preload is off so only pages that draw the intro fetch the font, not every project page.
 
 // Logical canvas sizes from the storyboard: 1920 by 1080, or 1080 by 1350 on narrow screens.
 const FORMATS = {
@@ -222,7 +223,7 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
       const seen = entry.isIntersecting && (entry.intersectionRatio >= 0.5 || fills);
       if (!seen) setPlaying(false);
       else if (!userPaused.current && time.current < TOTAL) setPlaying(true);
-    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    }, { threshold: Array.from({ length: 21 }, (_, i) => i / 20) });
     io.observe(el);
     return () => { ro.disconnect(); io.disconnect(); motion.removeEventListener("change", onMotion); };
   }, [seek]);
@@ -250,7 +251,8 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
     setPlaying(true);
   };
 
-  const format: Format = box && (full ? box.h > box.w : box.w < 600) ? "tall" : "wide";
+  // The frame's shape comes from CSS (a container query), so follow the measured box.
+  const format: Format = box && box.h > box.w ? "tall" : "wide";
   const { w, h, band } = FORMATS[format];
   const scale = box ? Math.min(box.w / w, full ? box.h / h : Infinity) : 0;
   const palette = paletteAt(t);

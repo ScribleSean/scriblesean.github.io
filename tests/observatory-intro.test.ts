@@ -82,3 +82,11 @@ test("every beat has a text alternative, and the end card names the install step
   assert.match(BEATS.at(-1)!.says, /git clone https:\/\/github\.com\/ScribleSean\/observatory\.git/);
   assert.match(BEATS.at(-1)!.says, /npm run setup/);
 });
+
+test("the two-computer text matches the numbers on screen", () => {
+  const says = BEATS[5].says;
+  for (const value of [formatMinutes(DATA.screen.one), formatMinutes(DATA.screen.two - DATA.screen.one), formatMinutes(DATA.screen.two),
+    formatDollars(DATA.cost.one), formatDollars(DATA.cost.two - DATA.cost.one), formatDollars(DATA.cost.two)]) {
+    assert.ok(says.includes(value), `beat 6 text includes ${value}`);
+  }
+});
