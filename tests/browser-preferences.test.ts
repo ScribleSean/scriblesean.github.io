@@ -29,7 +29,6 @@ function browser(t: TestContext) {
   const storage = (key: string | null) => {
     window.dispatchEvent(Object.assign(new Event("storage"), { key }));
   };
-  // Reset the module's session cache through its public cross-tab interface.
   const reset = () => {
     const unsubscribe = subscribeMotion(() => {});
     storage(null);

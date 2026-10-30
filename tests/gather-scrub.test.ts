@@ -84,7 +84,6 @@ for (const [index, [type, token]] of fakeSecrets.entries()) {
     assert.equal(scrub(`before ${token} after`), "before [secret] after");
     assert.equal(scrub(`Token: ${token}.`), "Token: [secret].");
     const logs: string[] = [];
-    // Even secrets past the trim limit or on a removed line reject the whole file.
     for (const text of [`before ${token} after`, `${"x".repeat(12_001)}\n${token}`, `private-notes ${token}`]) {
       assert.equal(prepareGatheredFile("docs/example.md", text, (message: string) => logs.push(message)), null);
     }

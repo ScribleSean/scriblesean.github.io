@@ -50,19 +50,12 @@
 .projectDetail { min-width: 0; padding: clamp(18px, 3cqw, 32px); }
 .projectDetail h2 { margin: 0; font-size: clamp(1.6rem, 3.7cqw, 2.8rem); letter-spacing: -.045em; line-height: 1.02; }
 .summary { margin: 17px 0; font-size: 15px; line-height: 1.5; }
-.projectDetail h3, .resumeSection h2 { margin: 25px 0 9px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.projectDetail h3 { margin: 25px 0 9px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
 .projectDetail ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.52; }
 .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 21px; }
 .tags span { border: 1px solid #b8b7b0; border-radius: 99px; padding: 4px 7px; color: #5a5954; font-size: 10px; letter-spacing: .02em; }
 .openLink { display: inline-block; margin-top: 23px; border-bottom: 1px solid currentColor; color: #383361; font-size: 13px; font-weight: 700; text-decoration: none; text-underline-offset: 4px; }
 .resume { max-width: 800px; }
-.resumeHeading { margin-bottom: 15px; }
-.contactLine { margin: 5px 0; color: #575751; font-size: 13px; line-height: 1.4; }
-.contactLine a { color: inherit; text-underline-offset: 3px; }
-.resumeSection { margin-top: 28px; border-top: 1px solid #bbbcb5; }
-.resumeEntry { margin: 15px 0; font-size: 13px; line-height: 1.45; }
-.resumeEntry p { margin: 3px 0; }
-.resumeEntry ul { margin: 6px 0; padding-left: 18px; }
 
 @container (max-width: 680px) {
   .workspace { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
@@ -89,5 +82,4 @@
   .workspace { display: block; height: auto; }
   .mainPanel { overflow: visible; padding: 0; }
   .resume { max-width: none; }
-  .resumeSection { break-inside: avoid; }
 }

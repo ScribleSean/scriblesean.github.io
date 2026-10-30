@@ -74,7 +74,6 @@ function nextZ(state: WindowState) {
   return Math.max(...Object.values(state).map((frame) => frame.z), 0) + 1;
 }
 
-// The highest visible z-order is also the most recently focused window.
 export function topVisibleWindow(state: WindowState): DesktopAppId | undefined {
   return (Object.keys(state) as DesktopAppId[])
     .filter((app) => state[app].status === "open" || state[app].status === "maximized")

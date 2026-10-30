@@ -78,13 +78,13 @@ test("parseTime accepts a number on the timeline and rejects junk", () => {
 });
 
 test("every beat has a text alternative, and the end card names the install steps", () => {
-  for (const beat of BEATS) assert.ok(beat.says.length > beat.caption.length, `says more than the caption: ${beat.caption}`);
-  assert.match(BEATS.at(-1)!.says, /git clone https:\/\/github\.com\/ScribleSean\/observatory\.git/);
-  assert.match(BEATS.at(-1)!.says, /npm run setup/);
+  for (const beat of BEATS) assert.ok(beat.textAlternative.length > beat.caption.length, `text alternative says more than the caption: ${beat.caption}`);
+  assert.match(BEATS.at(-1)!.textAlternative, /git clone https:\/\/github\.com\/ScribleSean\/observatory\.git/);
+  assert.match(BEATS.at(-1)!.textAlternative, /npm run setup/);
 });
 
 test("the two-computer text matches the numbers on screen", () => {
-  const says = BEATS[5].says;
+  const says = BEATS[5].textAlternative;
   for (const value of [formatMinutes(DATA.screen.one), formatMinutes(DATA.screen.two - DATA.screen.one), formatMinutes(DATA.screen.two),
     formatDollars(DATA.cost.one), formatDollars(DATA.cost.two - DATA.cost.one), formatDollars(DATA.cost.two)]) {
     assert.ok(says.includes(value), `beat 6 text includes ${value}`);

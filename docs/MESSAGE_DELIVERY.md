@@ -2,43 +2,42 @@
 
 `MessagesApp` sends only the visitor's chat bubbles that have not been sent yet,
 plus any text still in the box. It does not send deleted bubbles or the welcome
-copy. Unsent bubbles are labeled "Not sent yet" and the Send button stays
-visible until they go out. "Delivered" appears only after the endpoint confirms
-success, and delivered bubbles can no longer be edited or deleted. Thread logic
-lives in `lib/message-thread.ts`.
+message. Unsent bubbles show "Not sent yet", and the Send button stays visible
+until they go out. "Delivered" appears only after the endpoint confirms success,
+and delivered bubbles can no longer be edited or deleted. The thread logic is in
+`lib/message-thread.ts`.
 
-## Recommended zero-cost activation
+## Activate the free FormSubmit endpoint
 
-Use FormSubmit's free AJAX endpoint. It does not require account registration:
-the first submission to an address triggers an activation email, and confirming
-that email activates delivery. FormSubmit also documents a random endpoint
-string that can replace the email address after activation, which avoids
-publishing the destination address in the deployed client.
+Use FormSubmit's free AJAX endpoint. It needs no account. The first submission
+to an address sends an activation email, and confirming that email turns on
+delivery. After activation, FormSubmit also offers a random endpoint string to
+use in place of the email address, so the deployed site does not publish the
+address.
 
-1. The owner points one deliberate activation request at
-   `https://formsubmit.co/ajax/sean.arackal@gmail.com` and confirms the
-   activation email that arrives in that inbox. Do not use a visitor's message
-   as this activation request.
+1. Send one activation request to
+   `https://formsubmit.co/ajax/sean.arackal@gmail.com` and confirm the
+   activation email in that inbox. Do not use a visitor's message as the
+   activation request.
 2. Use the random endpoint string FormSubmit provides after confirmation.
 3. Set `NEXT_PUBLIC_CONTACT_ENDPOINT` in the deployment environment to
    `https://formsubmit.co/ajax/<random-endpoint-string>`. For local work, set
-   it in `.env.local`; do not commit that file.
-4. Submit one intentional test conversation after activation and verify it
-   reaches the target inbox.
+   it in `.env.local`, and do not commit that file.
+4. Send one test conversation and check that it reaches the inbox.
 
-The endpoint is intentionally a public environment value because browser form
-submission requires it. No provider secret is stored in the client or this repo.
-FormSubmit documents AJAX submission as cross-origin, matching the browser-side
-transport used by this component. The transport parses the JSON response and
-only reports Sent when its `success` value is `true`; an HTTP 200 response with
-`success: false` remains an error in the UI.
+The endpoint is a public environment variable on purpose, because the browser
+submits the form. Neither the client nor this repo stores a provider secret.
+FormSubmit accepts cross-origin AJAX submissions, which is how this component
+sends. The transport parses the JSON response and reports Sent only when
+`success` is `true`. An HTTP 200 response with `success: false` still shows as
+an error.
 
 ## Status
 
 The deploy workflow passes the repository variable `NEXT_PUBLIC_CONTACT_ENDPOINT`
-to the build, and the variable is set. A build without it reports the
-configuration state honestly and exposes an email fallback that opens a
-pre-filled message to `sean.arackal@gmail.com`.
+to the build, and the variable is set. A build without it says that delivery is
+not configured and shows an email link that opens a pre-filled message to
+`sean.arackal@gmail.com`.
 
 ## Sources
 

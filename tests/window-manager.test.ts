@@ -103,7 +103,6 @@ test("focus raises visible windows and close restores the previous visible z-ord
   state = windowReducer(state, { type: "focus", app: "chrome" });
   assert.equal(topVisibleWindow(state), "chrome");
   assert.ok(state.chrome.z > state.files.z && state.chrome.z > state.messages.z);
-  // Focus moving among children of the front window must not keep raising it.
   assert.equal(windowReducer(state, { type: "focus", app: "chrome" }), state);
   state = windowReducer(state, { type: "close", app: "chrome" });
   assert.equal(topVisibleWindow(state), "messages");

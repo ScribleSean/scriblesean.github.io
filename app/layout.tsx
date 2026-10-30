@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     template: "%s · Sean Arackal",
   },
   description:
-    "Sean Arackal - WPI computer science graduate building AI systems, research tools, and accessible software.",
+    "Sean Arackal studied computer science at WPI and builds Mac apps, web tools, and AI research software.",
   openGraph: {
     title: "Sean Arackal",
     description:
-      "Software, AI, and programming education. Explore my projects and interactive portfolio.",
+      "Projects, work history, and a 3D interactive portfolio by a WPI computer science graduate.",
     url: siteUrl,
     siteName: "Sean Arackal",
     locale: "en_US",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sean Arackal",
     description:
-      "Software, AI, and programming education. Explore my projects and interactive portfolio.",
+      "Projects, work history, and a 3D interactive portfolio by a WPI computer science graduate.",
     images: [ogImage],
   },
 };

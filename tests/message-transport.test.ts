@@ -32,7 +32,7 @@ test("formats and preserves only explicit visitor messages as plain conversation
 
   assert.match(conversation, /  Could we talk about your <strong>work<\/strong>\?  /);
   assert.match(conversation, /example@example\.com/);
-  assert.doesNotMatch(conversation, /Thank you for visiting/);
+  assert.doesNotMatch(conversation, /Thanks for visiting/);
 });
 
 test("rejects an empty conversation before attempting delivery", async () => {
