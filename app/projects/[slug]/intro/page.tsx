@@ -19,5 +19,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
   const project = getProject((await params).slug);
   if (project?.intro !== "observatory") notFound();
-  return <ObservatoryIntro full />;
+  const { hero } = project;
+  return <ObservatoryIntro full poster={hero && { src: hero.light, darkSrc: hero.dark, width: hero.width, height: hero.height, alt: hero.alt }} />;
 }

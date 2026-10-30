@@ -77,7 +77,7 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
 
         {heroImage && (
           <div className={`${styles.wrap} ${styles.heroShot}`}>
-            {project.intro === "observatory" ? <ObservatoryIntro /> : <Shot priority image={heroImage} />}
+            {project.intro === "observatory" ? <ObservatoryIntro poster={heroImage} /> : <Shot priority image={heroImage} />}
           </div>
         )}
 

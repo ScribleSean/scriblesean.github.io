@@ -10,6 +10,7 @@
 @container (max-width: 599.98px) { .outer { aspect-ratio: 4 / 5; } }
 .full { aspect-ratio: auto; position: fixed; inset: 0; border-radius: 0; box-shadow: none; }
 
+.poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left top; }
 .stage { position: absolute; left: 50%; top: 50%; transform-origin: center; overflow: hidden; }
 .stage p { margin: 0; }
 

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from "re
 import {
   BEATS, DATA, TILES, TOTAL, beatAt, cameraAt, clamp, countUp, ease, formatDollars, formatMinutes, paletteAt, parseTime,
 } from "@/lib/observatory-intro";
+import type { ProjectImage } from "@/data/featured-projects";
 import styles from "./ObservatoryIntro.module.css";
 
 const interTight = localFont({ src: "./fonts/InterTight.woff2", weight: "400 650", display: "swap", preload: false });
@@ -179,7 +180,8 @@ function EndCard({ t }: { t: number }) {
   );
 }
 
-export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
+// poster is the still shown before the frame is measured, which is also what shows without JavaScript.
+export default function ObservatoryIntro({ full = false, poster }: { full?: boolean; poster?: ProjectImage }) {
   const [t, setT] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [box, setBox] = useState<{ w: number; h: number } | null>(null);
@@ -267,6 +269,12 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
       style={vars}
       aria-label="Observatory intro, 27 seconds, with fictional data"
     >
+      {!box && poster && (
+        <picture className={styles.poster}>
+          {poster.darkSrc && <source media="(prefers-color-scheme: dark)" srcSet={poster.darkSrc} />}
+          <img src={poster.src} alt="" width={poster.width} height={poster.height} decoding="async" />
+        </picture>
+      )}
       <div className={styles.stage} style={{ width: w, height: h, transform: `translate(-50%, -50%) scale(${scale})`, opacity: box ? 1 : 0 }} aria-hidden="true">
         <div className={styles.band} style={{ height: band }}><Caption t={t} /></div>
         <div className={styles.view} style={{ top: band, height: h - band }}>
