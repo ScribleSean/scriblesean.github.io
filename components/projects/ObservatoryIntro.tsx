@@ -7,7 +7,7 @@ import {
 } from "@/lib/observatory-intro";
 import styles from "./ObservatoryIntro.module.css";
 
-const interTight = localFont({ src: "./fonts/InterTight.ttf", weight: "100 900", display: "swap", preload: false });
+const interTight = localFont({ src: "./fonts/InterTight.woff2", weight: "400 650", display: "swap", preload: false });
 // preload is off so only pages that draw the intro fetch the font, not every project page.
 
 // Logical canvas sizes from the storyboard: 1920 by 1080, or 1080 by 1350 on narrow screens.
