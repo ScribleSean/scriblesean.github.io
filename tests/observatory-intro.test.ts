@@ -76,3 +76,9 @@ test("parseTime accepts a number on the timeline and rejects junk", () => {
   assert.equal(parseTime("-3"), 0);
   assert.equal(parseTime("400"), TOTAL);
 });
+
+test("every beat has a text alternative, and the end card names the install steps", () => {
+  for (const beat of BEATS) assert.ok(beat.says.length > beat.caption.length, `says more than the caption: ${beat.caption}`);
+  assert.match(BEATS.at(-1)!.says, /git clone https:\/\/github\.com\/ScribleSean\/observatory\.git/);
+  assert.match(BEATS.at(-1)!.says, /npm run setup/);
+});

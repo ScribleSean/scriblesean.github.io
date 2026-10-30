@@ -5,7 +5,10 @@
   border-radius: 14px; box-shadow: 0 24px 60px rgb(32 39 35 / 16%), 0 2px 6px rgb(32 39 35 / 8%);
   font-feature-settings: "tnum" 1;
 }
-.full { position: fixed; inset: 0; border-radius: 0; box-shadow: none; }
+.frame { container-type: inline-size; }
+.outer { aspect-ratio: 16 / 9; }
+@container (max-width: 599.98px) { .outer { aspect-ratio: 4 / 5; } }
+.full { aspect-ratio: auto; position: fixed; inset: 0; border-radius: 0; box-shadow: none; }
 
 .stage { position: absolute; left: 50%; top: 50%; transform-origin: center; overflow: hidden; }
 .stage p { margin: 0; }

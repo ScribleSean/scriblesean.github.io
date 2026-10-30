@@ -7,7 +7,7 @@ import {
 } from "@/lib/observatory-intro";
 import styles from "./ObservatoryIntro.module.css";
 
-const interTight = localFont({ src: "./fonts/InterTight.ttf", weight: "100 900", display: "swap", preload: false });
+const interTight = localFont({ src: "./fonts/InterTight.ttf", weight: "100 900", display: "swap" });
 
 // Logical canvas sizes from the storyboard: 1920 by 1080, or 1080 by 1350 on narrow screens.
 const FORMATS = {
@@ -184,7 +184,6 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
   const [box, setBox] = useState<{ w: number; h: number } | null>(null);
   const outer = useRef<HTMLDivElement>(null);
   const userPaused = useRef(false);
-  const visible = useRef(false);
   const fromStill = useRef(false);
   const time = useRef(0);
 
@@ -200,20 +199,32 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
     ro.observe(el);
 
     const linked = parseTime(new URLSearchParams(window.location.search).get("t"));
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (linked !== null || reduced) {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (linked !== null || motion.matches) {
       seek(linked ?? STILL);
       fromStill.current = linked === null;
       userPaused.current = true;
     }
 
+    // Reduced motion turned on mid-play: stop on the still frame.
+    const onMotion = (e: MediaQueryListEvent) => {
+      if (!e.matches) return;
+      userPaused.current = true;
+      fromStill.current = true;
+      setPlaying(false);
+      seek(STILL);
+    };
+    motion.addEventListener("change", onMotion);
+
+    // In view means half visible, or filling most of a short viewport.
     const io = new IntersectionObserver(([entry]) => {
-      visible.current = entry.isIntersecting;
-      if (!entry.isIntersecting) setPlaying(false);
+      const fills = entry.rootBounds ? entry.intersectionRect.height >= 0.6 * entry.rootBounds.height : false;
+      const seen = entry.isIntersecting && (entry.intersectionRatio >= 0.5 || fills);
+      if (!seen) setPlaying(false);
       else if (!userPaused.current && time.current < TOTAL) setPlaying(true);
-    }, { threshold: 0.5 });
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
     io.observe(el);
-    return () => { ro.disconnect(); io.disconnect(); };
+    return () => { ro.disconnect(); io.disconnect(); motion.removeEventListener("change", onMotion); };
   }, [seek]);
 
   // Frame loop.
@@ -221,7 +232,8 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
     if (!playing) return;
     let last = performance.now();
     let id = requestAnimationFrame(function frame(now) {
-      const next = Math.min(TOTAL, time.current + (now - last) / 1000);
+      // Cap each step so a tab that was hidden resumes where it left off.
+      const next = Math.min(TOTAL, time.current + Math.min(0.1, (now - last) / 1000));
       last = now;
       seek(next);
       if (next >= TOTAL) setPlaying(false);
@@ -246,11 +258,11 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
   const done = t >= TOTAL;
   const sceneFade = 1 - ease(t, 24, 0.4);
 
-  return (
+  const figure = (
     <figure
       ref={outer}
       className={`${styles.outer} ${full ? styles.full : ""} ${format === "tall" ? styles.tall : ""} ${interTight.className}`}
-      style={{ ...vars, aspectRatio: full ? undefined : `${w} / ${h}` }}
+      style={vars}
       aria-label="Observatory intro, 27 seconds, with fictional data"
     >
       <div className={styles.stage} style={{ width: w, height: h, transform: `translate(-50%, -50%) scale(${scale})`, opacity: box ? 1 : 0 }} aria-hidden="true">
@@ -261,7 +273,7 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
           {t >= 24 && <EndCard t={t} />}
         </div>
       </div>
-      <ol className={styles.srOnly}>{BEATS.map((b) => <li key={b.start}>{b.caption}</li>)}</ol>
+      <ol className={styles.srOnly}>{BEATS.map((b) => <li key={b.start}>{b.caption} {b.says}</li>)}</ol>
       <span className={styles.progress} style={{ width: `${clamp(t / TOTAL) * 100}%` }} />
       <button type="button" className={styles.control} onClick={toggle} aria-label={playing ? "Pause" : done ? "Replay" : "Play"}>
         {playing
@@ -272,4 +284,6 @@ export default function ObservatoryIntro({ full = false }: { full?: boolean }) {
       </button>
     </figure>
   );
+  // The frame is a size container so CSS picks 16:9 or 4:5 before any script runs.
+  return full ? figure : <div className={styles.frame}>{figure}</div>;
 }

@@ -4,16 +4,24 @@
 
 export const TOTAL = 27;
 
-export type Beat = { start: number; length: number; caption: string };
+/** `says` is the text alternative: the caption plus what the frames show. */
+export type Beat = { start: number; length: number; caption: string; says: string };
 
 export const BEATS: Beat[] = [
-  { start: 0, length: 3, caption: "Your limits, at a glance." },
-  { start: 3, length: 4, caption: "Observatory lives in your menu bar." },
-  { start: 7, length: 4.5, caption: "Am I near my limits?" },
-  { start: 11.5, length: 4, caption: "Where did my time go?" },
-  { start: 15.5, length: 4, caption: "What did it cost?" },
-  { start: 19.5, length: 4.5, caption: "One computer, or two." },
-  { start: 24, length: 3, caption: "Local only. Open source." },
+  { start: 0, length: 3, caption: "Your limits, at a glance.",
+    says: "A telescope icon appears in the Mac menu bar with 47%, the lowest limit left." },
+  { start: 3, length: 4, caption: "Observatory lives in your menu bar.",
+    says: "Its menu lists each Claude Code and Codex limit with reset times, and today's screen time, tokens and API-equivalent cost." },
+  { start: 7, length: 4.5, caption: "Am I near my limits?",
+    says: "The dashboard's Limits tile: 47% left on the Claude Code 5-hour window, 78% weekly, Codex 64% and 88%." },
+  { start: 11.5, length: 4, caption: "Where did my time go?",
+    says: "Screen time today: 3h 53m, mostly editors (2h 20m) and the browser (1h 33m)." },
+  { start: 15.5, length: 4, caption: "What did it cost?",
+    says: "Cost today: $60.70, an API-equivalent estimate, not a bill. Claude Code $43.78, Codex $16.92." },
+  { start: 19.5, length: 4.5, caption: "One computer, or two.",
+    says: "The dashboard turns dark and a second computer, Test PC, joins. Screen time and cost show each computer and their sum, labeled not deduplicated. Limits are never added together." },
+  { start: 24, length: 3, caption: "Local only. Open source.",
+    says: "End card: git clone https://github.com/ScribleSean/observatory.git, then cd observatory and npm run setup." },
 ];
 
 export const clamp = (v: number, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
