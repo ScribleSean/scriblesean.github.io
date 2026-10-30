@@ -89,36 +89,30 @@
       "verb": "Watch",
       "kind": "Menu bar app · Mac and Windows",
       "status": "Open source",
-      "tagline": "A calm menu bar companion that watches my AI limits, agents, time and cost.",
-      "summary": "One glance tells me how much of my Claude Code and Codex limits is left, which agents are waiting on me, where my screen time went, and what the day cost. It runs on my own computer and never touches any of them.",
+      "tagline": "A calm menu bar companion that watches my AI limits, screen time and cost.",
+      "summary": "One glance tells me how much of my Claude Code and Codex limits is left, where my screen time went, and what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
       "mark": "telescope",
       "intro": "observatory",
       "hero": {
         "light": "/projects/observatory/dashboard-light.jpg",
         "dark": "/projects/observatory/dashboard-dark.jpg",
         "width": 1600,
-        "height": 1375,
-        "alt": "The Observatory dashboard with fictional data: tiles for limits, agents, screen time and cost, then the Limits page"
+        "height": 1550,
+        "alt": "The Observatory dashboard with fictional data: tiles for limits, screen time and cost, then the Limits page"
       },
       "sections": [
         {
-          "title": "Four questions",
+          "title": "Three questions",
           "body": [
-            "Observatory answers four things at a glance: am I near my limits, what are my agents doing, where did my time go, and what did it cost. The menu bar shows one number, the lowest limit left, with an amber dot when an agent is waiting on me.",
+            "Observatory answers three things at a glance: am I near my limits, where did my time go, and what did it cost. The menu bar panel lists every limit window, scarcest first.",
             "The dashboard opens in my browser and breaks each answer down: limit windows with reset times and pace, screen time by app and category, and tokens priced at public API rates."
-          ]
-        },
-        {
-          "title": "An agents panel",
-          "body": [
-            "The Agents page lists every Claude Code session as working, waiting on me, idle or done, with recent Codex jobs beside them. It reads only the small status files those tools already keep, never transcripts or job output."
           ]
         },
         {
           "title": "Monitor only",
           "body": [
-            "It never starts, stops or answers an agent, and it never changes the tools it reads. It sends nothing to any server and has no telemetry. Saved data holds totals and status, never prompts, messages or window titles.",
-            "Unknown is never shown as zero, and dollar figures are labeled as estimates, not bills."
+            "It doesn't start, stop or answer an agent, and it doesn't change the tools it reads. It sends nothing to any server and has no telemetry. Saved data holds totals, not prompts, messages or window titles.",
+            "Unknown is shown as Unknown, not zero, and dollar figures are labeled as estimates, not bills."
           ]
         },
         {
@@ -130,12 +124,12 @@
       ],
       "gallery": [
         {
-          "src": "/projects/observatory/agents-light.jpg",
-          "darkSrc": "/projects/observatory/agents-dark.jpg",
+          "src": "/projects/observatory/activity-light.jpg",
+          "darkSrc": "/projects/observatory/activity-dark.jpg",
           "width": 1600,
-          "height": 1375,
-          "alt": "The Observatory Agents page with fictional data: sessions on two computers labeled Waiting on you, Working, Idle and Done",
-          "caption": "The Agents panel across two computers, with fictional data."
+          "height": 1500,
+          "alt": "The Observatory Activity page with fictional data: screen time by day and by hour across two computers",
+          "caption": "Screen time across two computers, with fictional data."
         }
       ],
       "highlights": [
@@ -147,7 +141,7 @@
       "connects": [
         {
           "slug": "beeline",
-          "text": "Keeps an eye on the agents and limits behind Beeline’s plans."
+          "text": "Keeps an eye on the limits behind Beeline’s plans."
         }
       ],
       "stack": [

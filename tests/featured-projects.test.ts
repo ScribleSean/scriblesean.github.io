@@ -9,10 +9,13 @@ import { scrub } from "../scripts/portfolio-agent/gather.mjs";
 
 
 const root = path.resolve(__dirname, "..");
-const config = JSON.parse(readFileSync(path.join(root, "portfolio-agent.config.json"), "utf8"));
+// The agent config and private list are local, gitignored files. Tests that need them skip without them (as in CI).
+const configPath = path.join(root, "portfolio-agent.config.json");
+const config = existsSync(configPath) ? JSON.parse(readFileSync(configPath, "utf8")) : null;
+const noConfig = !config && "no local portfolio-agent.config.json";
 const rawDraft = readFileSync(path.join(root, "data/featured-projects.json"), "utf8");
 
-test("the draft follows the config's projects and order", () => {
+test("the draft follows the config's projects and order", { skip: noConfig }, () => {
   assert.deepEqual(featuredProjects.map((p) => p.slug), config.projects.map((p: { slug: string }) => p.slug));
   assert.equal(new Set(featuredProjects.map((p) => p.slug)).size, featuredProjects.length);
   assert.match(featured.checkedThrough, /^\d{4}-\d{2}-\d{2}$/);
@@ -38,7 +41,7 @@ test("every project page has its content and every image exists", () => {
   }
 });
 
-test("links appear only for public repos and match the config", () => {
+test("links appear only for public repos and match the config", { skip: noConfig }, () => {
   for (const project of featuredProjects) {
     const entry = config.projects.find((p: { slug: string }) => p.slug === project.slug);
     const allowed = Object.values(entry.links ?? {});
@@ -63,7 +66,6 @@ test("the draft holds no private details and follows the writing style", () => {
   const banned: [RegExp, string][] = [
     [/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i, "an email address"],
     [/\/Users\/|~\/|Developer\//, "a local path"],
-    [/agent-context|imessage/i, "a blocked folder"],
     [/\(?\d{3}\)?[ .-]?\d{3}[ .-]\d{4}/, "a phone number"],
     [/claude\/[a-z-]+-[0-9a-f]{6}/i, "a branch name"],
     [/—/, "an em dash"],
@@ -73,7 +75,7 @@ test("the draft holds no private details and follows the writing style", () => {
   assert.ok(!featuredProjects.some((p) => /voice\s*control/i.test(p.name)), "VoiceControl is part of Beeline, not its own project");
 });
 
-test("the public config names no private list and teasers have no repo", () => {
+test("the config names no private list and teasers have no repo", { skip: noConfig }, () => {
   assert.equal(config.blockedPaths, undefined, "blocked folders belong in the local private list");
   for (const teaser of config.projects.filter((p: { teaser?: boolean }) => p.teaser)) assert.equal(teaser.repo, undefined);
 });
@@ -81,16 +83,20 @@ test("the public config names no private list and teasers have no repo", () => {
 const privatePath = path.join(root, "portfolio-agent.private.json");
 const privateList = existsSync(privatePath) ? JSON.parse(readFileSync(privatePath, "utf8")) : null;
 
-test("private projects and folders never reach the site", { skip: !privateList && "no local private list" }, () => {
-  const names: string[] = privateList.privateNames;
-  const blocked: string[] = privateList.blockedPaths;
+test("private projects and folders never reach the site", { skip: (!privateList && "no local private list") || noConfig }, () => {
+  const names: string[] = privateList.privateNames ?? [];
+  const blocked: string[] = privateList.blockedPaths ?? [];
+  const folderWords = [...(privateList.dropLinesWith ?? []), ...blocked.map((b) => path.basename(b.replace(/\/+$/, "")))];
   const publicFiles = [
     rawDraft,
-    readFileSync(path.join(root, "portfolio-agent.config.json"), "utf8"),
+    readFileSync(configPath, "utf8"),
     ...readdirSync(path.join(root, "public/projects")),
   ].join("\n");
   for (const name of names) {
     assert.doesNotMatch(publicFiles, new RegExp(name.replace(/\s+/g, "\\s*"), "i"), `"${name}" is private`);
+  }
+  for (const word of folderWords) {
+    assert.ok(!rawDraft.toLowerCase().includes(word.toLowerCase()), "draft names a blocked folder");
   }
   for (const project of config.projects) {
     assert.ok(!blocked.some((b) => project.repo?.startsWith(b)), `${project.slug} points into a blocked folder`);
@@ -98,6 +104,6 @@ test("private projects and folders never reach the site", { skip: !privateList &
 });
 
 test("gathered sources are scrubbed of private details", () => {
-  const text = scrub("Call +1 (774) 555-0123 on 2026-10-21 (#272).\nSee ~/Developer/agent-context/x\nPath /Users/someone/Developer/app, mail me@example.com, key ghp_abcdefghijklmnopqrstuv");
+  const text = scrub("Call +1 (774) 555-0123 on 2026-10-21 (#272).\nSee ~/Developer/private-notes/x\nPath /Users/someone/Developer/app, mail me@example.com, key ghp_abcdefghijklmnopqrstuv", [], ["private-notes"]);
   assert.equal(text, "Call [number] on 2026-10-21 (#272).\nPath ~/Developer/app, mail [email], key [secret]");
 });
