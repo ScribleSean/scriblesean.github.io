@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  BEATS, DATA, TILES, TOTAL, WORLD, beatAt, cameraAt, countUp, darkness, fit, formatDollars, formatMinutes, mixHex, paletteAt, parseTime,
+  BEATS, DATA, SAGE, TILES, TWO_COMPUTERS, TOTAL, WORLD, beatAt, cameraAt, countUp, deskZoom, fit, formatDollars, formatMinutes, historySegments, palette, parseTime,
 } from "../lib/observatory-intro";
 
 test("beats follow the storyboard: seven, back to back, 27 seconds", () => {
@@ -56,16 +56,35 @@ test("camera pushes in on Limits, pans to Screen time and Cost, then pulls back"
   assert.ok(same(cameraAt(14, vw, vh), fit(TILES[1], vw, vh)));
   assert.ok(same(cameraAt(18, vw, vh), fit(TILES[2], vw, vh)));
   assert.ok(same(cameraAt(21, vw, vh), fit(WORLD, vw, vh, 24)));
+  assert.ok(same(cameraAt(21, 1080, 1100), fit(TWO_COMPUTERS, 1080, 1100)), "portrait pulls back only to the Cost tile and the computer chips");
   const mid = cameraAt(11.8, vw, vh);
   assert.ok(mid.x < fit(TILES[0], vw, vh).x && mid.x > fit(TILES[1], vw, vh).x, "mid-pan sits between tiles");
 });
 
-test("light until beat 6, then dark", () => {
-  assert.equal(darkness(19.5), 0);
-  assert.equal(darkness(21), 1);
-  assert.equal(paletteAt(0).background, "#edeae5");
-  assert.equal(paletteAt(22).background, "#1c1d1b");
-  assert.equal(mixHex("#000000", "#ffffff", 0.5), "#808080");
+test("the palette is the Sage skin in the page's appearance, light or dark", () => {
+  assert.equal(palette(false).background, SAGE.background[0]);
+  assert.equal(palette(true).background, SAGE.background[1]);
+  for (const key of Object.keys(SAGE) as (keyof typeof SAGE)[]) assert.equal(palette(true)[key], SAGE[key][1]);
+});
+
+test("the opening is close on the menu bar item, and pulls back before the panel settles", () => {
+  assert.ok(deskZoom(0) > 2.5);
+  assert.equal(deskZoom(2.4), deskZoom(0));
+  assert.equal(deskZoom(3.4), 1);
+  assert.equal(deskZoom(6), 1);
+});
+
+test("limit history: each window falls from near 100%, windows never overlap, and every render is identical", () => {
+  for (const seed of [7, 31]) {
+    const segments = historySegments(seed);
+    assert.deepEqual(segments, historySegments(seed));
+    assert.ok(segments.length >= 7, "at least one window a day");
+    for (const [x1, y1, x2, y2] of segments) {
+      assert.ok(x1 >= 0 && x2 <= 800 && x2 > x1, "inside the plot");
+      assert.ok(y1 <= 4 && y2 > y1 && y2 <= 196, "falls from near 100% and stays above 0%");
+    }
+    for (let i = 1; i < segments.length; i++) assert.ok(segments[i][0] > segments[i - 1][2], "a gap at each reset");
+  }
 });
 
 test("parseTime accepts a number on the timeline and rejects junk", () => {
