@@ -53,6 +53,12 @@
 .heroShot { margin-top: -96px; }
 .shot { display: block; }
 .shot img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: var(--shadow); background: var(--fp-surface); }
+.film { position: relative; }
+.film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 14px; box-shadow: var(--shadow); background: var(--band); }
+.film video:focus-visible, .filmPlay:focus-visible { outline: 2px solid var(--fp-accent-strong); outline-offset: 4px; }
+.filmPlay { position: absolute; left: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border: 0; border-radius: 3px; background: var(--accent); color: #202723; font: inherit; font-size: 13px; cursor: pointer; box-shadow: 0 6px 18px rgb(0 0 0 / 28%); }
+.filmPlay span { font-size: 10px; }
+.filmPlay:hover { background: #d3e4b6; }
 
 .body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 72px; padding: 84px 0 40px; }
 .bodyNoHero { padding-top: 64px; }
@@ -107,7 +113,8 @@
   .title { gap: 14px; }
   .title img, .title > span { width: 56px !important; height: 56px !important; }
   .heroShot { margin-top: -64px; }
-  .shot img { border-radius: 10px; }
+  .shot img, .film video { border-radius: 10px; }
+  .filmPlay { left: 10px; bottom: 10px; padding: 9px 12px; font-size: 12px; }
   .sections section { grid-template-columns: 1fr; }
   .sectionIndex { grid-row: auto; margin: 0 0 8px; }
   .pager { grid-template-columns: 1fr 1fr; }

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { validateProjectSections } from "@/lib/project-validation";
+import { validateProjectFilm, validateProjectSections } from "@/lib/project-validation";
 import { featured, featuredProjects, getProject, projectHref, projectPages, type FeaturedProject, type ProjectImage } from "@/data/featured-projects";
-import ObservatoryIntro from "./ObservatoryIntro";
+import ProjectFilm from "./ProjectFilm";
 import ProjectMark from "./ProjectMark";
 import styles from "./ProjectPage.module.css";
 
@@ -40,17 +40,18 @@ export function ProjectsShell({ children }: { children: React.ReactNode }) {
 
 export default function ProjectPage({ project }: { project: FeaturedProject }) {
   validateProjectSections(project);
+  validateProjectFilm(project);
   const index = projectPages.findIndex((item) => item.slug === project.slug);
   const previous = projectPages[(index - 1 + projectPages.length) % projectPages.length];
   const next = projectPages[(index + 1) % projectPages.length];
   const teaser = featuredProjects.find((item) => item.teaser);
   const heroImage: ProjectImage | undefined = project.hero && { src: project.hero.light, darkSrc: project.hero.dark, width: project.hero.width, height: project.hero.height, alt: project.hero.alt };
-  const gallery = project.intro && heroImage ? [heroImage, ...(project.gallery ?? [])] : project.gallery;
+  const hasHero = Boolean(project.film || project.hero || project.heroPlaceholder);
 
   return (
     <ProjectsShell>
       <main>
-        <section className={`${styles.intro} ${project.hero || project.heroPlaceholder ? "" : styles.introNoHero}`}>
+        <section className={`${styles.intro} ${hasHero ? "" : styles.introNoHero}`}>
           <div className={`${styles.wrap} ${styles.introInner}`}>
             <p className={styles.eyebrow}>
               <span className={styles.indicator} />
@@ -75,13 +76,19 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           </div>
         </section>
 
-        {heroImage && (
+        {project.film && (
           <div className={`${styles.wrap} ${styles.heroShot}`}>
-            {project.intro === "observatory" ? <ObservatoryIntro poster={heroImage} /> : <Shot priority image={heroImage} />}
+            <ProjectFilm film={project.film} name={project.name} />
           </div>
         )}
 
-        {!project.hero && project.heroPlaceholder && (
+        {heroImage && (
+          <div className={`${styles.wrap} ${styles.heroShot}`}>
+            <Shot priority image={heroImage} />
+          </div>
+        )}
+
+        {!project.film && !project.hero && project.heroPlaceholder && (
           <div className={`${styles.wrap} ${styles.heroShot}`}>
             <div className={styles.placeholder}>
               <ProjectMark project={project} size={64} />
@@ -90,7 +97,7 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           </div>
         )}
 
-        <div className={`${styles.wrap} ${styles.body} ${project.hero || project.heroPlaceholder ? "" : styles.bodyNoHero}`}>
+        <div className={`${styles.wrap} ${styles.body} ${hasHero ? "" : styles.bodyNoHero}`}>
           <div className={styles.sections}>
             {project.sections?.map((section, i) => (
               <section key={section.title}>
@@ -117,9 +124,9 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           </aside>
         </div>
 
-        {gallery && gallery.length > 0 && (
+        {project.gallery && project.gallery.length > 0 && (
           <div className={`${styles.wrap} ${styles.gallery}`}>
-            {gallery.map((image) => (
+            {project.gallery.map((image) => (
               <figure key={image.src}>
                 <Shot image={image} />
                 {image.caption && <figcaption>{image.caption}</figcaption>}

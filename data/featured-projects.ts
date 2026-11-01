@@ -10,6 +10,16 @@ export type ProjectImage = {
   caption?: string;
 };
 
+export type ProjectFilm = {
+  src: string;
+  loop: string;
+  poster: string;
+  width: number;
+  height: number;
+  label: string;
+  sound: boolean;
+};
+
 export type FeaturedProject = {
   slug: string;
   name: string;
@@ -22,8 +32,8 @@ export type FeaturedProject = {
   icon?: string;
   iconFullBleed?: boolean;
   mark?: "telescope";
-  intro?: "observatory";
   heroPlaceholder?: string;
+  film?: ProjectFilm;
   hero?: { light: string; dark?: string; width: number; height: number; alt: string };
   sections?: { title: string; body: string[] }[];
   gallery?: ProjectImage[];

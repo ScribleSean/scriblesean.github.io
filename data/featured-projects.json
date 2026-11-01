@@ -12,12 +12,14 @@
       "tagline": "Type or talk to your Mac, and a small bee shows where it acts.",
       "summary": "A Mac assistant I open with ⌘Space. I type, or hold the keys and talk, and it opens things, changes settings, presses buttons and runs short plans.",
       "icon": "/projects/beeline/icon.png",
-      "hero": {
-        "light": "/projects/beeline/bar-light.jpg",
-        "dark": "/projects/beeline/bar-dark.jpg",
-        "width": 1440,
-        "height": 786,
-        "alt": "The Beeline bar searching for wifi, with Open Wi-Fi as the top hit and actions to turn Wi-Fi off or on"
+      "film": {
+        "src": "/projects/beeline/beeline.mp4",
+        "loop": "/projects/beeline/beeline-loop.mp4",
+        "poster": "/projects/beeline/beeline.jpg",
+        "width": 1920,
+        "height": 1080,
+        "label": "Beeline on a Mac: a request is typed into the Beeline bar, then a bee flies to a TextEdit toolbar button and presses it",
+        "sound": true
       },
       "sections": [
         {
@@ -39,22 +41,6 @@
           "body": [
             "Voice control started as a separate prototype. I merged it into Beeline so one bar handles typing and talking, and kept two of its ideas: the on-screen cursor and a safe way to stop a run."
           ]
-        }
-      ],
-      "gallery": [
-        {
-          "src": "/projects/beeline/plan.jpg",
-          "width": 1440,
-          "height": 846,
-          "alt": "A three-step plan in the Beeline bar: put Notes on the left, turn Wi-Fi off, keep the Mac awake, with Cancel and Run buttons",
-          "caption": "Bigger requests become a plan I approve first."
-        },
-        {
-          "src": "/projects/beeline/answer.jpg",
-          "width": 1440,
-          "height": 658,
-          "alt": "A currency conversion shown as a large answer in the Beeline bar",
-          "caption": "Quick answers appear in the bar."
         }
       ],
       "highlights": [
@@ -92,13 +78,14 @@
       "tagline": "A menu bar app that tracks my AI limits, screen time and cost.",
       "summary": "It shows how much is left of my Claude Code and Codex limits, where my screen time went, and an estimate of what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
       "mark": "telescope",
-      "intro": "observatory",
-      "hero": {
-        "light": "/projects/observatory/dashboard-light.jpg",
-        "dark": "/projects/observatory/dashboard-dark.jpg",
-        "width": 1600,
-        "height": 1550,
-        "alt": "The Observatory dashboard with fictional data: tiles for limits, screen time and cost, then the Limits page"
+      "film": {
+        "src": "/projects/observatory/observatory.mp4",
+        "loop": "/projects/observatory/observatory-loop.mp4",
+        "poster": "/projects/observatory/observatory.jpg",
+        "width": 1920,
+        "height": 1080,
+        "label": "Observatory with fictional data: the panel opens the dashboard, which shows limits left, screen time and cost, then switches its limit charts to 30 days",
+        "sound": false
       },
       "sections": [
         {
@@ -120,16 +107,6 @@
           "body": [
             "Setup is one command. It builds the dashboard and a small menu bar app on my own computer and starts them at login, with no account and no installer. A Mac and a Windows PC can share one view over SSH, and the dashboard labels combined sums as not deduplicated."
           ]
-        }
-      ],
-      "gallery": [
-        {
-          "src": "/projects/observatory/activity-light.jpg",
-          "darkSrc": "/projects/observatory/activity-dark.jpg",
-          "width": 1600,
-          "height": 1500,
-          "alt": "The Observatory Activity page with fictional data: screen time by day and by hour across two computers",
-          "caption": "Screen time across two computers, with fictional data."
         }
       ],
       "highlights": [
@@ -256,11 +233,14 @@
       "summary": "Every turn of the cube has a word: type rush and the right face turns, type recoil and it turns back. It plays in the browser and keeps stats like a typing test.",
       "icon": "/projects/cube-type/icon.png",
       "iconFullBleed": true,
-      "hero": {
-        "light": "/projects/cube-type/game.jpg",
-        "width": 1440,
-        "height": 900,
-        "alt": "The cube·type game: a scrambled 3D cube in the middle, with a word beside each face, such as rover for R and relax for R prime"
+      "film": {
+        "src": "/projects/cube-type/cube-type.mp4",
+        "loop": "/projects/cube-type/cube-type-loop.mp4",
+        "poster": "/projects/cube-type/cube-type.jpg",
+        "width": 1920,
+        "height": 1080,
+        "label": "A demo run of cube·type: each typed word turns a layer of the 3D cube, move after move, until it is solved",
+        "sound": true
       },
       "sections": [
         {
@@ -283,15 +263,6 @@
             "Each move has a pool of words, and a picker chooses which one shows. Like Monkeytype it is mostly random, but it leans toward short words that switch hands and avoid using the same finger twice in a row.",
             "It also counts finesse, borrowed from Tetris: turns that cancel out, like R then R prime, are wasted, and the game flags them."
           ]
-        }
-      ],
-      "gallery": [
-        {
-          "src": "/projects/cube-type/drill.jpg",
-          "width": 1440,
-          "height": 900,
-          "alt": "Drill mode showing R prime in large letters above the cube, with its word relax highlighted on the right",
-          "caption": "Drill asks for one move at a time."
         }
       ],
       "highlights": [

@@ -4,7 +4,7 @@ import path from "node:path";
 import test from "node:test";
 
 import { featured, featuredProjects, projectPages } from "../data/featured-projects";
-import { validateProjectSections } from "../lib/project-validation";
+import { validateProjectFilm, validateProjectSections } from "../lib/project-validation";
 import { scrub } from "../scripts/portfolio-agent/gather.mjs";
 
 
@@ -28,7 +28,10 @@ test("every project page has its content and every image exists", () => {
     }
     assert.ok(project.sections?.length, `${project.slug}: needs at least one section`);
     assert.ok(project.icon || project.mark, `${project.slug}: needs an icon or mark`);
-    const images = [project.icon, project.hero?.light, project.hero?.dark, ...(project.gallery ?? []).flatMap((g) => [g.src, g.darkSrc])];
+    validateProjectFilm(project);
+    assert.ok(project.film || project.hero || project.heroPlaceholder, `${project.slug}: needs a film, a hero image or a placeholder`);
+    const film = project.film && [project.film.src, project.film.loop, project.film.poster];
+    const images = [project.icon, project.hero?.light, project.hero?.dark, ...(film ?? []), ...(project.gallery ?? []).flatMap((g) => [g.src, g.darkSrc])];
     for (const src of images.filter(Boolean) as string[]) {
       assert.ok(src.startsWith(`/projects/${project.slug}/`), `${project.slug}: ${src} should live in public/projects/${project.slug}/`);
       assert.ok(existsSync(path.join(root, "public", src)), `${project.slug}: ${src} is missing`);
@@ -53,7 +56,7 @@ test("links appear only for public repos and match the config", { skip: noConfig
 
 test("the teaser says nothing about the private project", () => {
   for (const teaser of featuredProjects.filter((p) => p.teaser)) {
-    for (const field of ["icon", "hero", "sections", "gallery", "highlights", "connects", "stack", "links", "tagline", "kind"] as const) {
+    for (const field of ["icon", "film", "hero", "sections", "gallery", "highlights", "connects", "stack", "links", "tagline", "kind"] as const) {
       assert.equal(teaser[field], undefined, `teaser must not have ${field}`);
     }
     assert.ok(teaser.summary.length < 120);
