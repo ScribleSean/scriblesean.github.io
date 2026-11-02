@@ -60,6 +60,7 @@
 .navigation { flex-wrap: wrap; justify-content: flex-end; gap: 18px; }
 .wordmark { flex: none; font-size: 14px; }
 .currentTimeline { position: relative; border-left: 1px solid var(--line); padding-left: 28px; }
+.currentTimeline::before { content: ""; position: absolute; left: -4px; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: #84966e; }
 .job::before { content: ""; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #84966e; }
 
 
