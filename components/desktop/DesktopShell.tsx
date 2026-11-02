@@ -107,7 +107,7 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
     files: <div data-desktop-scroll className={styles.appContent}>{files}</div>,
     photos: <div data-desktop-scroll className={styles.appContent}>{photos}</div>,
     messages: <div className={styles.messageContent}>{messages}</div>,
-    settings: <div className={styles.settingsContent}><h2>Settings</h2><p>Accessibility</p><label className={styles.motionControl}><span><strong>Reduce motion</strong><small>Keep desktop movement minimal</small></span><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} aria-label="Reduce motion"/><span className={styles.switch} aria-hidden="true"/></label></div>,
+    settings: <div className={styles.settingsContent}><h2>Settings</h2><p>Accessibility</p><label className={styles.motionControl}><strong>Reduce motion</strong><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} aria-label="Reduce motion"/><span className={styles.switch} aria-hidden="true"/></label></div>,
   }), [files, messages, photos, onReducedMotionChange, portfolio, reducedMotion]);
 
   return <section ref={rootRef} tabIndex={-1} onFocusCapture={(event) => {

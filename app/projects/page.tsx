@@ -14,7 +14,6 @@ export default function ProjectsPage() {
           <div className={`${styles.wrap} ${styles.introInner}`}>
             <p className={styles.eyebrow}><span className={styles.indicator} />Projects · Now</p>
             <div className={styles.title}><h1>{featured.heading}</h1></div>
-            <p className={styles.tagline}>{featured.intro}</p>
           </div>
         </section>
         <div className={`${styles.wrap} ${styles.overviewGrid}`}>

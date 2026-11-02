@@ -5,7 +5,6 @@ import Link from "next/link";
 import { contact, experience, projects } from "@/data/resume";
 import OpenSourceContributions from "@/components/contributions/OpenSourceContributions";
 import FeaturedGrid from "@/components/projects/FeaturedGrid";
-import { featured } from "@/data/featured-projects";
 import styles from "./PortfolioContent.module.css";
 
 type PortfolioContentProps = { onContact?: () => void; embedded?: boolean };
@@ -47,13 +46,12 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
           <p>I build software, work with AI, and teach programming. Here’s what I’m working on now, projects I’ve built, and the places I’ve worked.</p>
           <div className={styles.heroActions}><a className={styles.primaryLink} href="#work">See what I’m working on <span>↓</span></a><a className={styles.quietLink} href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">View résumé ↗</a></div>
         </div>
-        <div className={styles.heroFoot}><span>BASED IN WORCESTER, MA</span><span>PROJECTS & EXPERIENCE</span></div>
       </section>
     </div>
 
     <section className={`${styles.section} ${styles.wrap}`} id="work">
-      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div><p>Projects I’m still building<br />and improving.</p></div>
-      <div className={styles.currentTimeline}><p className={styles.featuredIntro}>{featured.intro}</p>
+      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>01 / NOW</p><h2>Currently working on</h2></div></div>
+      <div className={styles.currentTimeline}>
       <FeaturedGrid newTab={embedded} />
       <p className={styles.featuredMore}><Link href="/projects/" {...(embedded ? { target: "_blank", rel: "noreferrer" } : {})}>See every project page ↗</Link></p>
       <article className={styles.freelanceNote}>
@@ -67,7 +65,7 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
     </section>
 
     <section className={`${styles.section} ${styles.wrap}`} id="research">
-      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>02 / PREVIOUS PROJECTS</p><h2>Past projects</h2></div><p>Projects I’ve worked on,<br />with dates and my contribution.</p></div>
+      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>02 / PREVIOUS PROJECTS</p><h2>Past projects</h2></div></div>
       <div className={styles.researchList}>{projects.map((project) => <article className={styles.researchProject} key={project.name}>
         <span className={styles.projectIndex}>{project.period}</span>
         <div className={styles.researchMain}><p className={styles.meta}>{project.role}</p><h3>{project.name}</h3><p className={styles.projectSummary}>{project.portfolioSummary}</p>
