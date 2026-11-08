@@ -1,5 +1,5 @@
 {
-  "checkedThrough": "2026-10-27",
+  "checkedThrough": "2026-11-08",
   "heading": "Small things I'm building",
   "intro": "Beeline controls my Mac from typed or spoken requests. Observatory tracks my AI limits, screen time and cost. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
   "projects": [
@@ -92,7 +92,7 @@
           "title": "Three questions",
           "body": [
             "Observatory answers three questions: am I near my limits, where did my time go, and what did it cost? The menu bar panel lists every limit window, with the least left first.",
-            "The dashboard opens in my browser and breaks each answer down: limit windows with reset times and pace, screen time by app and category, and tokens priced at public API rates."
+            "The dashboard opens in my browser and breaks each answer down: limit windows with reset times and pace, screen time by app and category, and tokens priced at public API rates. Token counts are saved per day, so history stays after Claude Code deletes its old transcripts."
           ]
         },
         {
@@ -100,6 +100,12 @@
           "body": [
             "It doesn't start, stop or answer an agent, and it doesn't change the tools it reads. It sends nothing to any server and has no telemetry. Saved data holds totals, not prompts, messages or window titles.",
             "It shows missing data as Unknown, not zero, and labels dollar figures as estimates, not bills."
+          ]
+        },
+        {
+          "title": "Status for agents",
+          "body": [
+            "One command prints the same limits as JSON for scripts and agents: percent left, reset time, burn rate and pace for each window, and which engine has the most room. It can also wait until an engine that ran out has room again. It reads only the saved snapshot, makes no network calls and writes nothing."
           ]
         },
         {
