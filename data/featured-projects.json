@@ -105,7 +105,7 @@
         {
           "title": "Status for agents",
           "body": [
-            "One command prints the same limits as JSON for scripts and agents: percent left, reset time, burn rate and pace for each window, and which engine has the most room. It can also wait until an engine that ran out has room again. It reads only the saved snapshot, makes no network calls and writes nothing."
+            "One command prints the same limits as JSON for scripts and agents: percent left, reset time, burn rate and pace for each window, and which engine has the most room. It can also wait for an engine that ran out to reach its reset time. It reads only the saved snapshot, makes no network calls and writes nothing."
           ]
         },
         {
