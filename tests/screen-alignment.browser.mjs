@@ -1,3 +1,5 @@
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
@@ -51,7 +53,7 @@ try {
       await check();
     }
     console.log(`PASS: ${device.viewport.width}x${device.viewport.height} alignment, button hits and resize`);
-    await page.screenshot({ path: `/private/tmp/sean-aligned-${device.viewport.width}.png` });
+    await page.screenshot({ path: path.join(tmpdir(), `portfolio-aligned-${device.viewport.width}.png`) });
     await page.close();
   }
 } finally { await browser.close(); }

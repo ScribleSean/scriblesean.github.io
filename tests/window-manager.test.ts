@@ -71,7 +71,7 @@ test("maximized apps stay below the top bar and beside the dock after reflow", (
   }
 });
 
-test("minimizing a maximized window and reopening it from the dock keeps Restore working (finding 13)", () => {
+test("minimizing a maximized window and reopening it from the dock keeps Restore working", () => {
   const open = windowReducer(createWindowState(), { type: "open", app: "files", viewport });
   let state = windowReducer(open, { type: "toggle-maximize", app: "files", viewport });
   state = windowReducer(state, { type: "minimize", app: "files" });

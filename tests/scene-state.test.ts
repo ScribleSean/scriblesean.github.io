@@ -32,7 +32,7 @@ test("back returns to the original wide view and contact enters directly", () =>
   assert.deepEqual(sceneReducer(contact, { type: "back" }), initialSceneState);
 });
 
-test("a paused or reduced-motion visitor never gets the looping video (finding 10)", () => {
+test("a paused or reduced-motion visitor never gets the looping video", () => {
   assert.equal(shouldPlayGame(initialSceneState, true, true), false);
   assert.equal(shouldPlayGame(initialSceneState, true, false), true);
 });

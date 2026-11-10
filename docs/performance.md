@@ -1,6 +1,6 @@
 # Scene baseline and verification
 
-The interaction baseline is commit `3639ce6`, deployed September 9 and still live September 11. The September 12 tuning changed how the site felt, so Sean asked to return to that baseline.
+The camera uses the original easing, orbit damping, and hover focus, and muted video autoplay starts on first load. Changes are compared against baseline commit `3639ce6`.
 
 The restore brought back the baseline's camera easing, orbit damping, hover focus, desk geometry, original Fox, and muted video autoplay on first load. It removed the 600 ms fixed transitions, static batching, delayed video start, and the playback gate tied to transitions. It kept the newer portfolio content, mobile scaling, loading screen, and browser usability fixes.
 

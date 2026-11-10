@@ -43,7 +43,36 @@ test("every project page has its content and every image exists", () => {
   }
 });
 
-test("links appear only for public repos and match the config", { skip: noConfig }, () => {
+const rawPublicRepos = readFileSync(path.join(root, "data/public-repos.json"), "utf8");
+const publicRepos: string[] = JSON.parse(rawPublicRepos);
+
+function repoOf(href: string) {
+  const url = new URL(href);
+  if (url.hostname === "github.com") return url.pathname.match(/^\/ScribleSean\/([^/]+)\/?$/i)?.[1]?.toLowerCase();
+  if (url.hostname === "scriblesean.github.io") return url.pathname.split("/")[1]?.toLowerCase() || undefined;
+  return undefined;
+}
+
+test("links appear only for public repos", () => {
+  for (const project of featuredProjects) {
+    for (const link of project.links ?? []) {
+      const repo = repoOf(link.href);
+      assert.ok(repo, `${project.slug}: ${link.href} is not a GitHub repo or Pages link`);
+      assert.ok(publicRepos.includes(repo), `${project.slug}: ${repo} is not in data/public-repos.json`);
+    }
+  }
+});
+
+test("every listed public repo is public in the config", { skip: noConfig }, () => {
+  for (const name of publicRepos) {
+    const entry = config.projects.find((p: { slug: string; links?: Record<string, string> }) =>
+      p.slug === name || Object.values(p.links ?? {}).some((href) => repoOf(href) === name));
+    assert.ok(entry, `${name} is in data/public-repos.json but not in the config`);
+    assert.equal(entry.public, true, `${name} is in data/public-repos.json but private in the config`);
+  }
+});
+
+test("links match the config", { skip: noConfig }, () => {
   for (const project of featuredProjects) {
     const entry = config.projects.find((p: { slug: string }) => p.slug === project.slug);
     const allowed = Object.values(entry.links ?? {});
@@ -90,6 +119,7 @@ test("private projects and folders never reach the site", { skip: (!privateList 
   const folderWords = [...(privateList.dropLinesWith ?? []), ...blocked.map((b) => path.basename(b.replace(/\/+$/, "")))];
   const publicFiles = [
     rawDraft,
+    rawPublicRepos,
     readFileSync(configPath, "utf8"),
     ...readdirSync(path.join(root, "public/projects")),
   ].join("\n");

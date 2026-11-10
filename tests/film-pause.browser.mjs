@@ -1,0 +1,77 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
+const url = `${process.env.TEST_URL || 'http://127.0.0.1:3124'}/projects/beeline`;
+const buttonSelector = 'button[aria-label="Pause film loop"]';
+const paused = (page, want) => page.waitForFunction(want => document.querySelector('video').paused === want, want);
+try {
+  const errors = [];
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(url);
+  const button = page.locator(buttonSelector);
+  await button.waitFor();
+  await page.waitForFunction(() => { const video = document.querySelector('video'); return video && !video.paused; });
+  assert.equal(await button.getAttribute('aria-pressed'), 'false');
+  await button.click();
+  await paused(page, true);
+  assert.equal(await button.getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.getByRole('status').textContent(), 'Paused');
+  await button.click();
+  await paused(page, false);
+  assert.equal(await page.getByRole('status').textContent(), '');
+  assert.equal(await page.locator('video[controls]').count(), 0, 'the pause button must not open the full film');
+
+  await page.evaluate(() => document.activeElement.blur());
+  for (let i = 0; i < 30 && !(await button.evaluate(el => el === document.activeElement)); i++) await page.keyboard.press('Tab');
+  assert.equal(await button.evaluate(el => el === document.activeElement), true);
+  assert.notEqual(await button.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
+  await page.keyboard.press('Space');
+  await paused(page, true);
+  await page.keyboard.press('Enter');
+  await paused(page, false);
+  await context.close();
+
+  const touchContext = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const touchPage = await touchContext.newPage();
+  touchPage.on('pageerror', error => errors.push(error.message));
+  await touchPage.goto(url);
+  const touchButton = touchPage.locator(buttonSelector);
+  await touchButton.waitFor();
+  const box = await touchButton.boundingBox();
+  const videoBox = await touchPage.locator('video').boundingBox();
+  assert.ok(box.width >= 32 && box.height >= 32);
+  assert.ok(box.x >= videoBox.x && box.y >= videoBox.y && box.x + box.width <= videoBox.x + videoBox.width && box.y + box.height <= videoBox.y + videoBox.height);
+  await touchButton.tap();
+  await paused(touchPage, true);
+  assert.equal(await touchButton.getAttribute('aria-pressed'), 'true');
+  await touchButton.tap();
+  await paused(touchPage, false);
+  await touchContext.close();
+
+  const reducedContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const reducedPage = await reducedContext.newPage();
+  reducedPage.on('pageerror', error => errors.push(error.message));
+  await reducedPage.goto(url);
+  const reducedButton = reducedPage.locator(buttonSelector);
+  await reducedButton.waitFor();
+  await paused(reducedPage, true);
+  assert.equal(await reducedButton.getAttribute('aria-pressed'), 'true');
+  await reducedButton.click();
+  await paused(reducedPage, false);
+  assert.equal(await reducedButton.getAttribute('aria-pressed'), 'false');
+  assert.equal(await reducedPage.getByRole('status').textContent(), '');
+  await reducedButton.click();
+  await paused(reducedPage, true);
+  // Space on the focused loop plays it too, even with reduced motion.
+  await reducedPage.locator('video').focus();
+  await reducedPage.keyboard.press('Space');
+  await paused(reducedPage, false);
+  assert.equal(await reducedButton.getAttribute('aria-pressed'), 'false');
+  assert.deepEqual(errors, []);
+  await reducedContext.close();
+  console.log('film pause browser test passed');
+} finally { await browser.close(); }

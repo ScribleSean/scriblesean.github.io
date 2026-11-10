@@ -21,7 +21,7 @@ const run = (state: ThreadState, ...actions: ThreadAction[]) => actions.reduce(t
 const type = (text: string): ThreadAction => ({ type: "compose", text });
 const commit = (): ThreadAction => ({ type: "commit", draft: draft() });
 
-test("Send stays available after Enter moves the text into a bubble (finding 1)", () => {
+test("Send stays available after Enter moves the text into a bubble", () => {
   const state = run(initialThreadState, type("Reach me at a@b.com"), commit());
   const view = getThreadView(state);
 
@@ -40,7 +40,7 @@ test("Send hides once everything has been delivered", () => {
   assert.equal(state.statusMessage, "Sent to Sean.");
 });
 
-test("reaching the message or character limit reports an error instead of throwing (finding 2)", () => {
+test("reaching the message or character limit reports an error instead of throwing", () => {
   let state = initialThreadState;
   for (let i = 0; i < MAX_MESSAGE_COUNT; i++) state = run(state, type(`message ${i}`), commit());
   assert.equal(state.messages.length, MAX_MESSAGE_COUNT);
@@ -61,7 +61,7 @@ test("reaching the message or character limit reports an error instead of throwi
   assert.doesNotThrow(() => makeMailtoHref("sean@example.com", getThreadView(long).pending));
 });
 
-test("submitting gives the composer text its own id, so later bubbles never share one (finding 3)", () => {
+test("submitting gives the composer text its own id, so later bubbles never share one", () => {
   let state = run(initialThreadState, type("first"), { type: "submit-start", draft: draft() });
   state = run(state, { type: "submit-success", ids: getPendingMessages(state).map((m) => m.id) });
   state = run(state, type("second"), { type: "submit-start", draft: draft() });
@@ -71,7 +71,7 @@ test("submitting gives the composer text its own id, so later bubbles never shar
   assert.ok(!ids.includes(COMPOSER_ID));
 });
 
-test("a second send only includes messages Sean has not received (finding 28)", () => {
+test("a second send only includes messages Sean has not received", () => {
   let state = run(initialThreadState, type("first"), commit(), { type: "submit-start", draft: draft() });
   state = run(state, { type: "submit-success", ids: getPendingMessages(state).map((m) => m.id) });
   state = run(state, type("second"), commit());
@@ -82,7 +82,7 @@ test("a second send only includes messages Sean has not received (finding 28)", 
   assert.equal(run(state, { type: "delete", id: sentId }), state);
 });
 
-test("Edit keeps a half-typed draft instead of overwriting it (finding 15)", () => {
+test("Edit keeps a half-typed draft instead of overwriting it", () => {
   let state = run(initialThreadState, type("earlier"), commit(), type("half-typed"));
   state = run(state, { type: "edit", id: state.messages[0].id, draft: draft() });
 
@@ -91,7 +91,7 @@ test("Edit keeps a half-typed draft instead of overwriting it (finding 15)", () 
   assert.equal(state.editingMessageId, state.messages[0].id);
 });
 
-test("clearing the composer while editing cancels the edit (finding 26)", () => {
+test("clearing the composer while editing cancels the edit", () => {
   let state = run(initialThreadState, type("keep me"), commit());
   state = run(state, { type: "edit", id: state.messages[0].id, draft: draft() }, type(""));
   assert.equal(state.editingMessageId, null);
@@ -121,7 +121,7 @@ test("a failed send keeps every message unsent and offers email", () => {
   assert.equal(state.showEmailFallback, true);
 });
 
-test("the email fallback link stays short enough for Outlook (finding 29)", () => {
+test("the email fallback link stays short enough for Outlook", () => {
   const messages = Array.from({ length: 10 }, (_, i) => ({ ...draft(), text: `${i}`.repeat(1_500) }));
   const href = makeMailtoHref("sean@example.com", messages);
   const body = decodeURIComponent(href.split("&body=")[1]);
@@ -139,7 +139,7 @@ test("the email fallback limit counts encoded characters, not raw ones", () => {
   assert.doesNotMatch(decodeURIComponent(short), /Trimmed/);
 });
 
-test("message ids work without crypto.randomUUID (finding 31)", () => {
+test("message ids work without crypto.randomUUID", () => {
   const original = Object.getOwnPropertyDescriptor(globalThis, "crypto");
   Object.defineProperty(globalThis, "crypto", { value: {}, configurable: true });
   try {

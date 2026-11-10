@@ -11,7 +11,8 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "portfolio:gather": "node scripts/portfolio-agent/gather.mjs",
     "portfolio:screenshots": "node scripts/portfolio-agent/screenshots.mjs",
-    "test:browser": "node tests/desktop-usability.browser.mjs"
+    "test:browser": "node tests/desktop-usability.browser.mjs",
+    "test:film": "node tests/film-pause.browser.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

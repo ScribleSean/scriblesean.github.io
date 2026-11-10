@@ -1,3 +1,5 @@
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -12,10 +14,10 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
   await page.locator('[data-ready="true"]').waitFor();
-  await page.screenshot({ path: '/private/tmp/sean-lighter-scene.png' });
+  await page.screenshot({ path: path.join(tmpdir(), 'portfolio-lighter-scene.png') });
   await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom' }).click();
   await page.waitForTimeout(3500);
-  await page.screenshot({ path: '/private/tmp/sean-lighter-detail.png' });
+  await page.screenshot({ path: path.join(tmpdir(), 'portfolio-lighter-detail.png') });
   await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
   await page.waitForTimeout(3500);
   const launch = page.getByRole('button', { name: 'Portfolio in Chrome', exact: true });
@@ -58,7 +60,7 @@ try {
   await heading.waitFor();
   await page.getByRole('button', { name: 'Reload page', exact: true }).click();
   await heading.waitFor();
-  await page.screenshot({ path: '/private/tmp/sean-chrome-verified.png' });
+  await page.screenshot({ path: path.join(tmpdir(), 'portfolio-chrome-verified.png') });
   await page.evaluate(() => {
     const gl = document.querySelector('canvas').getContext('webgl2');
     const extension = gl.getExtension('WEBGL_lose_context');

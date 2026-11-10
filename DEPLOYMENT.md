@@ -10,7 +10,7 @@ The 3D renderer draws only on demand, and camera damping stops once movement set
 
 ## Email activation
 
-Messages sends the visitor's conversation to a form endpoint and can open the visitor's email app instead. The published site has an endpoint configured, and the mailbox owner confirmed activation. Delivery to the inbox has not been tested end to end. To set up another deployment:
+Messages sends the visitor's conversation to a form endpoint and can open the visitor's email app instead. The published site has an endpoint configured; delivery to the inbox has not been checked end to end. To set up another deployment:
 
 1. Activate an email form endpoint for `sean.arackal@gmail.com`, for example the FormSubmit AJAX endpoint described at https://formsubmit.co/ajax-documentation.
 2. Confirm the activation email from that mailbox, then send a test conversation labeled as a test. Check that it arrives before you treat delivery as working.
@@ -21,7 +21,7 @@ Until an endpoint is set, Messages keeps the visitor's drafts and offers their e
 
 ## Resume
 
-`public/resume/sean-arackal-resume.pdf` is Sean's approved resume from September 15, 2026. Keep its bytes and formatting unchanged. Its SHA-256 is `dcb80a0f9138caa399f9f1bb49e08a62e7fabc80a7a9e9e0c9060ba9b6c7e735`.
+`public/resume/sean-arackal-resume.pdf` is the resume from September 15, 2026. Keep its bytes and formatting unchanged. Its SHA-256 is `dcb80a0f9138caa399f9f1bb49e08a62e7fabc80a7a9e9e0c9060ba9b6c7e735`.
 
 All download links point to `/resume/sean-arackal-resume.pdf`. The `/resume/` page and the Files app show `sean-arackal-resume.png`, rendered from this PDF, with a link to the searchable original. To replace the resume, replace the PDF and render a new PNG in the same change. The portfolio content in `data/resume.json` is separate, so do not generate the resume PDF from it. The legacy script `scripts/build_resume.py` writes only `tmp/legacy-resume-draft.pdf`.
 
