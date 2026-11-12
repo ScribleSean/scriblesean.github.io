@@ -1,6 +1,6 @@
 {
-  "checkedThrough": "2026-11-08",
-  "heading": "Small things I'm building",
+  "checkedThrough": "2026-11-12",
+  "heading": "Things I'm building",
   "intro": "Beeline controls my Mac from typed or spoken requests. Observatory tracks my AI limits, screen time and cost. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
   "projects": [
     {
@@ -9,9 +9,10 @@
       "verb": "Do",
       "kind": "Mac app",
       "status": "In progress",
-      "tagline": "Type or talk to your Mac, and a small bee shows where it acts.",
-      "summary": "A Mac assistant I open with ⌘Space. I type, or hold the keys and talk, and it opens things, changes settings, presses buttons and runs short plans.",
+      "tagline": "A Mac assistant that acts on typed or spoken requests, and a small bee shows each action first.",
+      "summary": "I open it with ⌘Space, then type, or hold the keys and talk. It opens things, changes settings, presses buttons and runs short plans.",
       "icon": "/projects/beeline/icon.png",
+      "card": "/projects/beeline/card.jpg",
       "film": {
         "src": "/projects/beeline/beeline.mp4",
         "loop": "/projects/beeline/beeline-loop.mp4",
@@ -47,6 +48,7 @@
         "On-device speech while ⌘Space is held",
         "Uses Apple’s on-device model for loose requests, and learns what I pick",
         "Stops a run on Escape and still passes the key to the app in front",
+        "Follow-ups like “undo that” and “the other window” work typed or spoken",
         "Runs on the Mac and goes online only for currency rates and requests I send to Claude"
       ],
       "connects": [
@@ -75,9 +77,10 @@
       "verb": "Watch",
       "kind": "Menu bar app · Mac and Windows",
       "status": "Open source",
-      "tagline": "A menu bar app that tracks my AI limits, screen time and cost.",
-      "summary": "It shows how much is left of my Claude Code and Codex limits, where my screen time went, and an estimate of what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
+      "tagline": "A menu bar app that shows how much of my Claude Code and Codex limits is left.",
+      "summary": "It also shows where my screen time went and an estimate of what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
       "mark": "telescope",
+      "card": "/projects/observatory/card.jpg",
       "film": {
         "src": "/projects/observatory/observatory.mp4",
         "loop": "/projects/observatory/observatory-loop.mp4",
@@ -150,10 +153,11 @@
       "name": "Career Bridge",
       "verb": "Ask",
       "kind": "Web app · Datathon project",
-      "status": "Prototype",
-      "tagline": "A survey that asks Massachusetts workers how they use AI at work and asks employers what the job needs.",
-      "summary": "Built for the Human Edge Studio datathon by SG+I, where it won 3rd place. Job ads show what employers ask for, not what people in the job do with AI, so Career Bridge asks them and publishes only totals.",
+      "status": "3rd place",
+      "tagline": "A survey of how Massachusetts workers use AI at work, built with a team at a datathon.",
+      "summary": "It won 3rd place at the Human Edge Studio datathon by SG+I. Job ads show what employers ask for, not what people in the job do with AI, so Career Bridge asks them and publishes only totals.",
       "icon": "/projects/career-bridge/icon.png",
+      "card": "/projects/career-bridge/card.jpg",
       "iconFullBleed": true,
       "hero": {
         "light": "/projects/career-bridge/results.jpg",
@@ -235,7 +239,7 @@
       "verb": "Play",
       "kind": "Browser game",
       "status": "Open source",
-      "tagline": "Solve a Rubik’s cube by typing words.",
+      "tagline": "A typing game where every word turns a Rubik’s cube.",
       "summary": "Every turn of the cube has a word: type rush and the right face turns, type recoil and it turns back. It plays in the browser and keeps stats like a typing test.",
       "icon": "/projects/cube-type/icon.png",
       "iconFullBleed": true,

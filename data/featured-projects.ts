@@ -30,6 +30,7 @@ export type FeaturedProject = {
   kind?: string;
   tagline?: string;
   icon?: string;
+  card?: string;
   iconFullBleed?: boolean;
   mark?: "telescope";
   heroPlaceholder?: string;

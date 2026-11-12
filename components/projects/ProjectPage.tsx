@@ -25,6 +25,7 @@ export function ProjectsShell({ children }: { children: React.ReactNode }) {
           <nav aria-label="Projects navigation">
             <Link href="/projects/">Projects</Link>
             <Link href="/portfolio/">Portfolio</Link>
+            <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Résumé ↗</a>
             <Link href="/">3D site ↗</Link>
           </nav>
         </div>
@@ -55,7 +56,7 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           <div className={`${styles.wrap} ${styles.introInner}`}>
             <p className={styles.eyebrow}>
               <span className={styles.indicator} />
-              {[project.verb, project.kind].filter(Boolean).join(" · ")}
+              {project.kind}
             </p>
             <div className={styles.title}>
               <ProjectMark project={project} size={76} />

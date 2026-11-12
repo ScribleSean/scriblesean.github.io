@@ -31,7 +31,7 @@ test("every project page has its content and every image exists", () => {
     validateProjectFilm(project);
     assert.ok(project.film || project.hero || project.heroPlaceholder, `${project.slug}: needs a film, a hero image or a placeholder`);
     const film = project.film && [project.film.src, project.film.loop, project.film.poster];
-    const images = [project.icon, project.hero?.light, project.hero?.dark, ...(film ?? []), ...(project.gallery ?? []).flatMap((g) => [g.src, g.darkSrc])];
+    const images = [project.icon, project.card, project.hero?.light, project.hero?.dark, ...(film ?? []), ...(project.gallery ?? []).flatMap((g) => [g.src, g.darkSrc])];
     for (const src of images.filter(Boolean) as string[]) {
       assert.ok(src.startsWith(`/projects/${project.slug}/`), `${project.slug}: ${src} should live in public/projects/${project.slug}/`);
       assert.ok(existsSync(path.join(root, "public", src)), `${project.slug}: ${src} is missing`);
