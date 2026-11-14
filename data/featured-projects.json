@@ -1,7 +1,7 @@
 {
-  "checkedThrough": "2026-11-12",
+  "checkedThrough": "2026-11-13",
   "heading": "Things I'm building",
-  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory tracks my AI limits, screen time and cost. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
+  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory says when my AI limits run out. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
   "projects": [
     {
       "slug": "beeline",
@@ -77,8 +77,8 @@
       "verb": "Watch",
       "kind": "Menu bar app · Mac and Windows",
       "status": "Open source",
-      "tagline": "A menu bar app that shows how much of my Claude Code and Codex limits is left.",
-      "summary": "It also shows where my screen time went and an estimate of what the day cost. It runs on my own computer and doesn't change any of the tools it reads.",
+      "tagline": "A menu bar app that tells me when my Claude Code and Codex limits will run out.",
+      "summary": "Each limit says when it runs out at my current pace, or that it has room. Screen time and what the day cost are one click away. It runs on my own computer and doesn't change any of the tools it reads.",
       "mark": "telescope",
       "card": "/projects/observatory/card.jpg",
       "film": {
@@ -92,17 +92,23 @@
       },
       "sections": [
         {
-          "title": "Three questions",
+          "title": "Run out, or room",
           "body": [
-            "Observatory answers three questions: am I near my limits, where did my time go, and what did it cost? The menu bar panel lists every limit window, with the least left first.",
-            "The dashboard opens in my browser and breaks each answer down: limit windows with reset times and pace, screen time by app and category, and tokens priced at public API rates. Token counts are saved per day, so history stays after Claude Code deletes its old transcripts."
+            "The dashboard opens on one tile per engine: percent left, and a sentence like “runs out Thu 4 PM at this pace” or “has room”. The menu bar shows whichever engine has less room.",
+            "The pace comes from each limit’s readings over the last day, or the last two hours for a 5-hour limit, and ignores readings from before a reset. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
+          ]
+        },
+        {
+          "title": "History",
+          "body": [
+            "A History button opens limit charts for a day, 7 days, 30 days or all time, then screen time by app and category, and tokens priced at public API rates. Dollar figures are estimates, not a bill. Token counts are saved per day, so history stays after Claude Code deletes its old transcripts."
           ]
         },
         {
           "title": "Monitor only",
           "body": [
             "It doesn't start, stop or answer an agent, and it doesn't change the tools it reads. It sends nothing to any server and has no telemetry. Saved data holds totals, not prompts, messages or window titles.",
-            "It shows missing data as Unknown, not zero, and labels dollar figures as estimates, not bills."
+            "It shows missing data as Unknown, not zero."
           ]
         },
         {
@@ -119,7 +125,7 @@
         }
       ],
       "highlights": [
-        "Claude Code and Codex get equal weight everywhere",
+        "Claude Code and Codex get equal weight everywhere, and Grok is an optional third tile",
         "Screen time from ActivityWatch, grouped by app and category",
         "Tests plant fake prompts and keys and check none reach saved data",
         "MIT licensed, with a demo that uses fictional data"
@@ -145,6 +151,16 @@
         {
           "label": "Source code",
           "href": "https://github.com/ScribleSean/observatory"
+        }
+      ],
+      "gallery": [
+        {
+          "src": "/projects/observatory/limits-light.jpg",
+          "darkSrc": "/projects/observatory/limits-dark.jpg",
+          "width": 1440,
+          "height": 900,
+          "alt": "The Observatory dashboard with a tile each for Grok, Claude and Codex showing percent left, above History charts of each limit over 7 days",
+          "caption": "One tile per engine, with limit history underneath. Fictional data."
         }
       ]
     },
@@ -295,6 +311,16 @@
         {
           "label": "Source code",
           "href": "https://github.com/ScribleSean/cube-type"
+        }
+      ],
+      "gallery": [
+        {
+          "src": "/projects/cube-type/play-light.jpg",
+          "darkSrc": "/projects/cube-type/play-dark.jpg",
+          "width": 1440,
+          "height": 900,
+          "alt": "cube·type with a 3D cube and the word for each turn placed beside its face",
+          "caption": "Each move’s word sits beside its face. Daylight and the default dark theme."
         }
       ]
     },
