@@ -87,7 +87,7 @@
         "poster": "/projects/observatory/observatory.jpg",
         "width": 1920,
         "height": 1080,
-        "label": "Observatory with fictional data: the panel opens the dashboard, which shows limits left, screen time and cost, then switches its limit charts to 30 days",
+        "label": "Observatory with fictional data: the menu bar panel shows how much of the Grok, Claude and Codex limits is left and opens the dashboard, which shows the same tiles, then switches its limit charts to 30 days",
         "sound": false
       },
       "sections": [
@@ -127,7 +127,7 @@
       "highlights": [
         "Claude Code and Codex get equal weight everywhere, and Grok is an optional third tile",
         "Screen time from ActivityWatch, grouped by app and category",
-        "Tests plant fake prompts and keys and check none reach saved data",
+        "Tests plant fake prompts and keys in session logs and check none come out in Observatory’s data",
         "MIT licensed, with a demo that uses fictional data"
       ],
       "connects": [
