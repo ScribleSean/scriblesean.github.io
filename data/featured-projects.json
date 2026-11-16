@@ -95,7 +95,7 @@
           "title": "Run out, or room",
           "body": [
             "The dashboard opens on one tile per engine: percent left, and a sentence like “runs out Thu 4 PM at this pace” or “has room”. The menu bar shows whichever engine has less room.",
-            "The pace comes from each limit’s readings over the last day, or the last two hours for a 5-hour limit, and ignores readings from before a reset. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
+            "The pace blends the last hour with the average since the limit last reset, so a burst of use fades toward the average over about two hours. Once a few days of readings are stored, it gives a range taken from how far its own earlier forecasts missed, like “may run out Thu 3–6 PM”. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
           ]
         },
         {

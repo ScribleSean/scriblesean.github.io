@@ -21,7 +21,7 @@ try {
   await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
   await page.waitForTimeout(3500);
   const launch = page.getByRole('button', { name: 'Portfolio in Chrome', exact: true });
-  const heading = page.getByRole('heading', { name: 'Hi, I’m Sean.' });
+  const heading = page.getByRole('heading', { name: 'I build AI agents and the tools around them.' });
   const title = 'Sean Arackal • Google Chrome';
   await launch.click();
   await heading.waitFor();

@@ -115,3 +115,11 @@ test("focus raises visible windows and close restores the previous visible z-ord
   state = windowReducer(state, { type: "close", app: "files" });
   assert.equal(topVisibleWindow(state), undefined);
 });
+
+test("on a phone-width desktop a new window fills the room between the top bar and the dock", () => {
+  const phone = { width: 390, height: 844 };
+  const open = windowReducer(createWindowState(), { type: "open", app: "chrome", viewport: phone });
+  assert.deepEqual({ x: open.chrome.x, y: open.chrome.y, width: open.chrome.width, height: open.chrome.height }, { x: 12, y: 46, width: 366, height: 722 });
+  const wide = windowReducer(createWindowState(), { type: "open", app: "chrome", viewport });
+  assert.equal(wide.chrome.width, 760);
+});

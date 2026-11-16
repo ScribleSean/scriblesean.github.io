@@ -11,3 +11,10 @@
 .externalPage p { font-size: 14px; line-height: 1.6; }
 .externalPage a { color: #5040a0; text-decoration: underline; }
 .externalPage button { display: block; margin-top: 24px; padding: 8px 12px; border: 1px solid #d4d3da; border-radius: 5px; background: #f8f8fa; cursor: pointer; }
+@media (pointer: coarse) {
+  @container desktop (max-width: 640px) {
+    .toolbar { flex-basis: 52px; gap: 2px; padding: 8px; }
+    .toolbar button, .external { flex-basis: 36px; height: 36px; border-radius: 8px; }
+    .toolbar input { height: 36px; font-size: 16px; }
+  }
+}

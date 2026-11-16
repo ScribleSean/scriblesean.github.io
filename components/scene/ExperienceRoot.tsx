@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { initialSceneState, sceneReducer, shouldPlayGame } from "@/lib/scene-state";
-import { getMotionPreference, getVisibility, setMotionPreference, subscribeMotion, subscribeVisibility } from "@/lib/browser-preferences";
+import { getMotionPreference, getPhone, getVisibility, setMotionPreference, subscribeMotion, subscribePhone, subscribeVisibility } from "@/lib/browser-preferences";
+import { phoneDesktop } from "@/lib/site";
 import { createThreadStore } from "@/lib/message-thread";
 import type { AppOpenRequest } from "@/components/desktop/DesktopShell";
 import MeleePlayer from "./MeleePlayer";
@@ -81,6 +82,11 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const [degraded, setDegraded] = useState(false);
   const reducedMotion = useSyncExternalStore(subscribeMotion, getMotionPreference, () => true);
   const documentVisible = useSyncExternalStore(subscribeVisibility, getVisibility, () => true);
+  const phone = useSyncExternalStore(subscribePhone, getPhone, () => false);
+  // With the "fullscreen" setting, touch phones open the desktop flat and full size instead of inside the CRT.
+  const phoneFull = phoneDesktop === "fullscreen" && phone;
+  const phoneFullRef = useRef(phoneFull);
+  useEffect(() => { phoneFullRef.current = phoneFull; }, [phoneFull]);
   const [desktopOpened, setDesktopOpened] = useState(false);
   const [openRequest, setOpenRequest] = useState<AppOpenRequest | null>(null);
   const openRequestCount = useRef(0);
@@ -95,6 +101,37 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     setOpenRequest({ app, id: openRequestCount.current });
   }, []);
 
+  // Phones lay this page out 1200px wide and shrink it to fit, so 12px text lands near 4px.
+  // --inv is 1 / that shrink; the footer and hints use it to stay readable on screen.
+  const mainRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const viewport = window.visualViewport;
+    const update = () => {
+      const touch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const shrink = viewport ? viewport.scale : window.screen.width / document.documentElement.clientWidth;
+      mainRef.current?.style.setProperty("--inv", String(touch && shrink > 0 && shrink < 1 ? 1 / shrink : 1));
+    };
+    update();
+    (viewport ?? window).addEventListener("resize", update);
+    return () => (viewport ?? window).removeEventListener("resize", update);
+  }, []);
+
+  // The home page lays out 1200px wide; the full-screen phone desktop needs the device's own width while it is open.
+  const phoneOpen = phoneFull && state.mobileOpen;
+  useLayoutEffect(() => {
+    if (!phoneOpen) return;
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+    if (!meta) return;
+    const previous = meta.content;
+    meta.content = "width=device-width, initial-scale=1";
+    return () => {
+      // iOS keeps the current zoom when the width changes back, so first ask for the zoom that fits the 1200px room.
+      const fit = Math.min(1, document.documentElement.clientWidth / 1200);
+      meta.content = `${previous}, initial-scale=${fit.toFixed(4)}`;
+      requestAnimationFrame(() => { meta.content = previous; });
+    };
+  }, [phoneOpen]);
+
   useEffect(() => {
     const section = window.location.hash.slice(1);
     if (["work", "experience", "education", "skills", "contact", "top"].includes(section)) window.location.replace(`/portfolio/#${section}`);
@@ -105,6 +142,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     }
     const onPop = () => {
       if (window.history.state?.seanMobile) {
+        if (phoneFullRef.current) setSceneReady(false);
         setDesktopOpened(true);
         dispatch({ type: "enter", mobile: true });
       } else dispatch({ type: "back" });
@@ -137,10 +175,12 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   function enter(contact = false) {
     warmDesktop();
-    const useFallback = degraded || !sceneReady;
+    const useFallback = degraded || !sceneReady || phoneFull;
     if (contact) requestApp("messages");
     else setOpenRequest(null);
     setDesktopOpened(true);
+    // The 3D room unmounts behind the full-screen phone desktop; show the loader until it redraws on the way back.
+    if (phoneFull) setSceneReady(false);
     if (useFallback && !state.mobileOpen) window.history.pushState({ seanMobile: true }, "", "?view=portfolio");
     dispatch({ type: contact ? "contact" : "enter", mobile: useFallback });
   }
@@ -164,7 +204,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const photos = useMemo(() => prototype ? <PhotosApp /> : undefined, [prototype]);
   const messages = useMemo(() => <MessagesApp store={messageStore} />, [messageStore]);
 
-  const screen = <div onClick={(event) => event.stopPropagation()} className={`${styles.screen} ${reducedMotion ? styles.reduceMotion : ""}`}>
+  const screen = <div onClick={(event) => event.stopPropagation()} className={`${styles.screen} ${phoneOpen ? styles.phoneScreen : ""} ${reducedMotion ? styles.reduceMotion : ""}`}>
     <div className={styles.desktopLayer} inert={state.screen === "game"}>
       {desktopOpened && <DesktopBoundary><DesktopShell
         portfolio={portfolio}
@@ -190,13 +230,13 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       onFocus={() => dispatch({ type: "hover", over: true })}
       onBlur={() => dispatch({ type: "hover", over: false })}
       onClick={(event) => { event.stopPropagation(); activateScreen(); }}
-    ><span className={styles.screenHint}>{state.camera === "entered" ? "minimize to desktop" : "click to enter"}</span></button>}
+    ><span className={styles.screenHint}>{state.camera === "entered" ? "minimize to desktop" : <><span className={styles.mouseOnly}>click to enter</span><span className={styles.touchOnly}>tap to enter</span></>}</span></button>}
     <div className={styles.glass} />
   </div>;
 
   const screenSlot = screenHost ? <ScreenSlot host={screenHost} onSlotChange={onSlotChange} /> : null;
 
-  return <main data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
+  return <main ref={mainRef} data-phone-desktop={phoneDesktop} data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
     <h1 className={styles.srOnly}>Sean Arackal</h1>
     {degraded || state.mobileOpen ? fallback : <SceneBoundary fallback={fallback} onFailure={recoverDesktop}>
       {!sceneReady && fallback}
@@ -215,9 +255,9 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       <a href={prototype ? "/prototype/" : "/portfolio/"}>skip to portfolio</a><span aria-hidden="true">·</span>
       <button type="button" onClick={() => setVideoPaused(!gamePaused)}>{gamePaused ? "play video" : "pause video"}</button>
     </footer>}
-    {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>click to approach · drag to rotate · scroll to zoom</button>}
-    {!degraded && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
-    {state.mobileOpen && <div className={styles.fallbackDesktop}>{screenSlot}</div>}
+    {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}><span className={styles.mouseOnly}>click to approach · drag to rotate · scroll to zoom</span><span className={styles.touchOnly}>tap to approach · drag to rotate</span></button>}
+    {!degraded && !phoneOpen && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
+    {state.mobileOpen && <div className={`${styles.fallbackDesktop} ${phoneOpen ? styles.phoneDesktop : ""}`}>{screenSlot}</div>}
     {screenHost && slot.count > 0 && createPortal(<DesktopBoundary>{screen}</DesktopBoundary>, screenHost)}
   </main>;
 }

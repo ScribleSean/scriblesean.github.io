@@ -99,7 +99,9 @@ export function windowReducer(state: WindowState, action: WindowAction): WindowS
       if (active.mounted && active.restoreFrame) {
         return update(action.app, { ...active, ...maximizedFrame(action.viewport), mounted: true, status: "maximized", z: nextZ(state) });
       }
-      const base = !active.mounted ? { ...defaults[action.app], z: nextZ(state) } : active;
+      // On a phone-width desktop, a new window takes all the room between the top bar and the dock.
+      const fresh = action.viewport.width <= 640 ? { x: 0, y: 0, width: action.viewport.width, height: action.viewport.height } : {};
+      const base = !active.mounted ? { ...defaults[action.app], ...fresh, z: nextZ(state) } : active;
       const frame = clampFrame(base, action.viewport);
       return update(action.app, { ...base, ...frame, mounted: true, status: "open", z: nextZ(state) });
     }

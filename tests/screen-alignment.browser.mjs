@@ -14,11 +14,17 @@ try {
     await page.route(/youtube|ytimg|googlevideo/, route => route.abort());
     await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
     await page.locator('[data-ready="true"]').waitFor();
-    await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom', exact: true }).click();
+    if (device.isMobile && await page.locator('main').getAttribute('data-phone-desktop') === 'fullscreen') {
+      console.log('SKIP: phone opens the full-screen desktop in this build; phone-desktop.browser.mjs covers it');
+      await page.close();
+      continue;
+    }
+    await page.getByRole('button', { name: /^(click to approach · drag to rotate · scroll to zoom|tap to approach · drag to rotate)$/ }).click();
     await page.waitForTimeout(1800);
     await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
     await page.waitForTimeout(2200);
     const check = async () => {
+      await page.waitForFunction(() => document.querySelector('[data-crt-surface]')?.style.transform.startsWith('matrix('), null, { timeout: 30000 });
       const result = await page.evaluate(() => {
         const screen = document.querySelector('[data-crt-surface]');
         const rect = screen.getBoundingClientRect();
@@ -45,7 +51,7 @@ try {
     const chrome = page.getByRole('button', { name: 'Portfolio in Chrome', exact: true });
     const rect = await chrome.boundingBox();
     await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
-    await page.getByRole('heading', { name: 'Hi, I’m Sean.' }).waitFor();
+    await page.getByRole('heading', { name: 'I build AI agents and the tools around them.' }).waitFor();
     await check();
     if (!device.isMobile) {
       await page.setViewportSize({ width: device.viewport.width - 117, height: device.viewport.height - 63 });

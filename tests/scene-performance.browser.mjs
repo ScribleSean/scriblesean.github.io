@@ -50,9 +50,18 @@ try {
     await page.goto(base);
     await page.locator('[data-ready="true"]').waitFor();
     const settle = async (label) => {
-      await page.waitForTimeout(3500);
+      // Wait for the move to finish: frame time varies a lot between a GPU and software WebGL.
+      let settled = false;
+      for (let last = -1, waited = 0; waited < 30000; waited += 1500) {
+        const calls = await page.evaluate(() => window.__scenePerf.calls);
+        if (calls === last) { settled = true; break; }
+        last = calls;
+        await page.waitForTimeout(1500);
+      }
+      assert(settled, `${device.name}: ${label} kept rendering for 30 s`);
+      // Longer than the slowest software frame, so a loop that never idles can't slip between frames.
       const before = await page.evaluate(() => window.__scenePerf.calls);
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(3000);
       const after = await page.evaluate(() => window.__scenePerf.calls);
       assert.equal(after, before, `${device.name}: ${label} must stop rendering when idle`);
     };
@@ -61,16 +70,18 @@ try {
     const canvas = await page.locator('canvas').evaluate(c => ({ width: c.width, height: c.height }));
     assert(canvas.width <= device.viewport.width * device.deviceScaleFactor + 2, 'Canvas exceeds physical display width');
     const buffers = await page.evaluate(() => window.__scenePerf.buffers);
-    await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom' }).click();
+    await page.getByRole('button', { name: /^(click to approach · drag to rotate · scroll to zoom|tap to approach · drag to rotate)$/ }).click();
     await settle('desk');
     assert.equal(youtubeRequests, 1, 'Approach should initialize video once');
     const geometryRebuiltOnApproach = (await page.evaluate(() => window.__scenePerf.buffers)) !== buffers;
     await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
+    // With the "fullscreen" phone setting the room unmounts behind a flat desktop and redraws on the way back.
+    const flat = await page.locator('main').getAttribute('data-phone-desktop') === 'fullscreen' && page.url().includes('view=portfolio');
     await settle('entered');
     await page.getByRole('button', { name: 'Portfolio in Chrome', exact: true }).click();
-    await page.getByRole('heading', { name: 'Hi, I’m Sean.' }).waitFor();
+    await page.getByRole('heading', { name: 'I build AI agents and the tools around them.' }).waitFor();
     if (device.name === 'desktop') {
-      const selector = await page.getByRole('heading', { name: 'Hi, I’m Sean.' }).evaluate(el => {
+      const selector = await page.getByRole('heading', { name: 'I build AI agents and the tools around them.' }).evaluate(el => {
         let p = el.parentElement;
         while (p && !(p.scrollHeight > p.clientHeight && /auto|scroll/.test(getComputedStyle(p).overflowY))) p = p.parentElement;
         if (!p) throw Error('No native portfolio scroll container');
@@ -92,9 +103,15 @@ try {
       const after = await article.boundingBox();
       assert(after.x > before.x + 10, 'Window must drag in scaled coordinates');
     }
-    await page.getByRole('button', { name: '↖ back to desk', exact: true }).click();
+    if (flat) {
+      await page.getByRole('button', { name: 'Back to the desk', exact: true }).click();
+      await page.locator('[data-ready="true"]').waitFor({ timeout: 60000 });
+    } else await page.getByRole('button', { name: '↖ back to desk', exact: true }).click();
     await settle('back');
-    assert.equal(youtubeRequests, 1, 'Returning to room must keep the initialized player');
+    // The CRT path keeps its first player. The flat path mounts the player twice more (flat desktop, then the room),
+    // and each mount asks for the API again only if the last load failed, so at most one request per mount.
+    if (flat) assert(youtubeRequests <= 3, `Flat phone desktop loaded the player API ${youtubeRequests} times`);
+    else assert.equal(youtubeRequests, 1, 'Returning to room must keep the initialized player');
     assert.deepEqual(errors, []);
     results.push({ device: device.name, canvas, idleDraws: 0, geometryRebuiltOnApproach, lastFrame: await page.evaluate(() => window.__scenePerf.lastFrame) });
     await context.close();

@@ -115,7 +115,7 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
     const app = target.closest<HTMLElement>("[data-desktop-window]")?.dataset.desktopWindow as DesktopAppId | undefined;
     if (app) focusedElements.current[app] = target;
   }} data-desktop-root className={styles.desktop} style={{ backgroundImage: `linear-gradient(180deg, rgba(12, 13, 31, .22), rgba(8, 7, 26, .1)), url("${wallpaperUrl}")` }} aria-label="Sean's desktop">
-    <header className={styles.topBar}><div className={styles.activities}>Activities</div><div className={styles.clock}>{clock}</div><div className={styles.status} aria-label="System status"><span aria-hidden="true">◔</span><span aria-hidden="true">⌁</span><span aria-hidden="true">▰</span><button type="button" aria-label="Back to the desk" onClick={onBackToDesk}>×</button></div></header>
+    <header className={styles.topBar}><div className={styles.activities}>Activities</div><div className={styles.clock} data-desktop-clock>{clock}</div><div className={styles.status} aria-label="System status"><span aria-hidden="true">◔</span><span aria-hidden="true">⌁</span><span aria-hidden="true">▰</span><button type="button" aria-label="Back to the desk" onClick={onBackToDesk}>×</button></div></header>
     <aside className={styles.dock} aria-label="Desktop applications">
       {(["chrome", "files", ...(photos ? ["photos"] : []), "messages", "settings"] as DesktopAppId[]).map((app) => <button type="button" className={styles.dockButton} key={app} onClick={() => openApp(app)} aria-label={appLabels[app]} title={appLabels[app]}><Icon app={app}/><span>{app === "chrome" ? "Chrome" : app === "messages" ? "Messages" : app[0].toUpperCase() + app.slice(1)}</span></button>)}
       <div className={styles.dockDivider}/>

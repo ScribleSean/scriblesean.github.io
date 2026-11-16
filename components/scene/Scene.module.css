@@ -1,11 +1,11 @@
-.experience { position: relative; width: 100%; height: 100dvh; min-height: 0; overflow: hidden; background: #e7dece; color: #494238; isolation: isolate; }
+.experience { --ui: max(1, var(--inv, 1)); position: relative; width: 100%; height: 100dvh; min-height: 0; overflow: hidden; background: #e7dece; color: #494238; isolation: isolate; }
 .canvas { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease; }
 .canvas[data-ready="true"] { opacity: 1; visibility: visible; }
-.footer { position: absolute; bottom: max(27px, env(safe-area-inset-bottom)); left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: center; gap: 16px; padding: 0 16px; color: #4c463f; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .09em; }
-.footer a, .footer button { border: 0; background: transparent; padding: 6px 0; color: inherit; font: inherit; cursor: pointer; }
+.footer { position: absolute; bottom: max(calc(27px * var(--ui)), env(safe-area-inset-bottom)); left: 0; right: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0 calc(16px * var(--ui)); padding: 0 calc(16px * var(--ui)); color: #4c463f; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; font-size: max(12px, 11.5px * var(--inv, 1)); letter-spacing: .09em; }
+.footer a, .footer button { border: 0; background: transparent; padding: calc(6px * var(--ui)) 0; color: inherit; font: inherit; cursor: pointer; }
 .footer a:hover, .footer button:hover { color: #231f35; text-decoration: underline; text-underline-offset: 5px; }
 .footer span { color: #9c9386; }
-.back { position: absolute; top: 22px; left: 24px; z-index: 30; background: #f5eee1db; border: 1px solid #b8aea060; border-radius: 20px; padding: 9px 15px; color: #4c463f; font: 12px ui-monospace, monospace; cursor: pointer; }
+.back { position: absolute; top: calc(22px * var(--ui)); left: calc(24px * var(--ui)); z-index: 30; background: #f5eee1db; border: 1px solid #b8aea060; border-radius: calc(20px * var(--ui)); padding: calc(9px * var(--ui)) calc(15px * var(--ui)); color: #4c463f; font: 12px ui-monospace, monospace; font-size: max(12px, 11.5px * var(--inv, 1)); cursor: pointer; }
 .screen { width: 960px; height: 720px; position: relative; overflow: hidden; border-radius: 5.4% / 6.5%; background: #17171d; color: white; isolation: isolate; box-shadow: inset 0 0 12px #000; }
 .desktopLayer { position: absolute; inset: 0; }
 .gameLayer { position: absolute; inset: 0; z-index: 50; transform-origin: left top; background: #0d0c12; transition: transform .38s cubic-bezier(.2,.8,.2,1), opacity .25s ease; overflow: hidden; }
@@ -23,7 +23,8 @@
 .screenHint { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); border-radius: 6px; background: #17151dba; color: #f7f3e8; padding: 8px 16px; font: 14px ui-monospace, monospace; letter-spacing: .08em; opacity: 0; transition: opacity .12s; white-space: nowrap; }
 .screenHit:hover .screenHint, .screenHit:focus-visible .screenHint { opacity: 1; }
 .glass { position: absolute; inset: 0; border-radius: inherit; z-index: 60; pointer-events: none; box-shadow: inset 0 0 24px 6px #0008; background: linear-gradient(120deg, #ffffff0a, transparent 28%, transparent 75%, #c7b9e605); }
-.entryButton { position: absolute; z-index: 15; left: 50%; bottom: 75px; transform: translateX(-50%); padding: 8px 12px; border: 0; border-radius: 8px; background: #e7dececc; color: #756b5e; font: 12px ui-monospace, monospace; cursor: pointer; }
+.entryButton { position: absolute; z-index: 15; left: 50%; bottom: 75px; transform: translateX(-50%); padding: calc(8px * var(--ui)) calc(12px * var(--ui)); border: 0; border-radius: calc(8px * var(--ui)); background: #e7dececc; color: #756b5e; font: 12px ui-monospace, monospace; font-size: max(12px, 11.5px * var(--inv, 1)); white-space: nowrap; cursor: pointer; }
+.touchOnly { display: none; }
 .entryButton:hover { color: #373044; }
 .fallback { position: absolute; inset: 0; display: grid; place-items: center; background: #e7dece; }
 .loadingDesk { display: grid; justify-items: center; gap: 16px; color: #756b5e; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -33,6 +34,14 @@
 .loadingDesk button { border: 1px solid #b8aea060; border-radius: 20px; background: #f5eee180; color: #494238; padding: 9px 15px; cursor: pointer; }
 .loadingDesk button:hover { background: #f5eee1; }
 .fallbackDesktop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: auto; background: #e7dece; }
+/* Full-screen phone desktop: the CRT screen becomes the whole page at the device's own width. */
+.phoneDesktop { display: block; overflow: hidden; background: #383178; animation: phoneIn .28s cubic-bezier(.2,.8,.2,1) both; }
+.phoneScreen { width: 100%; height: 100%; border-radius: 0; box-shadow: none; }
+.phoneScreen .glass { display: none; }
+/* A tall phone crops the wide wallpaper; keep its tree and figure in view rather than the empty middle. */
+.phoneScreen [data-desktop-root] { background-position: 9% center; }
+.phoneDesktop:has(.reduceMotion) { animation: none; }
+@keyframes phoneIn { from { opacity: 0; transform: scale(.985); } }
 .loadingApp { display: grid; min-height: 200px; place-items: center; color: #777; font: 14px system-ui, sans-serif; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 760px) {
@@ -42,6 +51,18 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .canvas, .gameLayer, .screenHint, .youtube { transition: none; }
+  .phoneDesktop { animation: none; }
 }
 
 @media (hover: none) { .screenHint { opacity: 1; } }
+/* After the 760px rule so it wins on touch screens. The footer is two rows here, so the hint sits above both. */
+@media (hover: none) and (pointer: coarse) {
+  .mouseOnly, .footer span { display: none; }
+  .touchOnly { display: inline; }
+  .footer { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; row-gap: 0; column-gap: calc(28px * var(--ui)); letter-spacing: .03em; font-size: max(12px, 11.5px * var(--inv, 1)); bottom: max(calc(27px * var(--ui)), env(safe-area-inset-bottom)); }
+  .back { top: calc(22px * var(--ui)); left: calc(24px * var(--ui)); }
+  .entryButton { bottom: calc(100px * var(--ui)); }
+  /* The CRT label is also shrunk by the 3D screen, so it needs more than --ui to read at about 11.5px. */
+  .screenHint { bottom: calc(28px * var(--ui)); padding: calc(8px * var(--ui)) calc(16px * var(--ui)); border-radius: calc(6px * var(--ui)); font-size: calc(19.6px * var(--ui)); }
+  .experience[data-camera="entered"] .screenHint { font-size: calc(9.6px * var(--ui)); }
+}

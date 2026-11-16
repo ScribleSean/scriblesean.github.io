@@ -32,14 +32,22 @@ try {
   for (const name of ['click to approach · drag to rotate · scroll to zoom', 'Enter the CRT', '↖ back to desk', 'click to approach · drag to rotate · scroll to zoom']) {
     await page.evaluate(() => { window.__drawTimes = []; window.__playTimes = []; window.__motionStarted = performance.now(); });
     await page.getByRole('button', { name, exact: true }).click();
-    await page.waitForTimeout(3000);
+    // A move is a fixed number of frames, so wait for drawing to stop rather than a fixed time.
+    let settled = false;
+    for (let last = -1, waited = 0; waited < 30000; waited += 1500) {
+      await page.waitForTimeout(1500);
+      const count = await page.evaluate(() => window.__drawTimes.length);
+      if (count === last) { settled = true; break; }
+      last = count;
+    }
+    assert(settled, `${name}: transition kept drawing for 30 s`);
     const result = await page.evaluate(() => {
       const times = window.__drawTimes;
       const gaps = times.slice(1).map((time, index) => time - times[index]).filter(time => time > 1).sort((a, b) => a - b);
       return { durationMs: Math.round(times.at(-1) - times[0]), frames: times.length, p95FrameMs: Math.round(gaps[Math.floor(gaps.length * .95)]) };
     });
     assert(result.frames > 1, 'The test must observe animated frames');
-    assert(result.durationMs < 3000, `${name}: restored transition must settle`);
+    assert(result.frames < 120, `${name}: restored transition must settle (${result.frames} frames)`);
     if (name.startsWith('click to approach')) {
       await page.evaluate(() => { window.__drawTimes = []; });
       await page.getByRole('button', { name: 'Enter the CRT', exact: true }).hover();

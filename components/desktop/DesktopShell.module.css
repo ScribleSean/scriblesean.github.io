@@ -13,3 +13,22 @@
 .messageContent { height: 100%; min-height: 0; overflow: hidden; }
 
 .titleBar, .resizeHandle { touch-action: none; }
+
+/* Touch phones with the full-screen desktop: finger-sized controls, and 16px fields so focusing one does not zoom the page. */
+@media (pointer: coarse) {
+  @container desktop (max-width: 640px) {
+    .topBar { height: 44px; padding: 0 4px 0 16px; font-size: 14px; font-weight: 650; }
+    .status { gap: 10px; }
+    .status button { width: 40px; height: 40px; background: rgba(255,255,255,.12); font-size: 22px; }
+    .dock { bottom: 12px; gap: 2px; padding: 6px; border-radius: 20px; }
+    .dockButton { width: min(50px, 13.5cqw); padding: 7px 0; border-radius: 13px; }
+    .dockButton svg { width: 34px; height: 34px; }
+    .dockDivider { height: 34px; margin: 0 3px; }
+    .window { border-radius: 12px; }
+    .titleBar { height: 44px; flex-basis: 44px; padding-left: 16px; }
+    .windowTitle { font-size: 13px; }
+    .windowControls button { width: 44px; font-size: 18px; }
+    .resizeHandle { display: none; }
+    .window .windowBody input, .window .windowBody textarea { font-size: 16px; }
+  }
+}

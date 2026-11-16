@@ -39,3 +39,12 @@ export function subscribeVisibility(callback: () => void) {
   return () => document.removeEventListener("visibilitychange", callback);
 }
 export const getVisibility = () => document.visibilityState === "visible";
+
+// A touch phone: touch-only input and a short screen side of a phone, not a tablet.
+const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
+export function subscribePhone(callback: () => void) {
+  const query = window.matchMedia(TOUCH_QUERY);
+  query.addEventListener("change", callback);
+  return () => query.removeEventListener("change", callback);
+}
+export const getPhone = () => window.matchMedia(TOUCH_QUERY).matches && Math.min(window.screen.width, window.screen.height) <= 600;
