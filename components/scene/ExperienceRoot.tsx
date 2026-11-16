@@ -105,21 +105,24 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   // --inv is 1 / that shrink; the footer and hints use it to stay readable on screen.
   const mainRef = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
-    const viewport = window.visualViewport;
     const update = () => {
       const touch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-      const shrink = viewport ? viewport.scale : window.screen.width / document.documentElement.clientWidth;
+      // Layout-based fit, not the live pinch scale, so zooming in still enlarges this text.
+      const shrink = window.screen.width / document.documentElement.clientWidth;
       mainRef.current?.style.setProperty("--inv", String(touch && shrink > 0 && shrink < 1 ? 1 / shrink : 1));
     };
     update();
-    (viewport ?? window).addEventListener("resize", update);
-    return () => (viewport ?? window).removeEventListener("resize", update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   // The home page lays out 1200px wide; the full-screen phone desktop needs the device's own width while it is open.
   const phoneOpen = phoneFull && state.mobileOpen;
+  const metaReset = useRef<{ frame: number; apply: () => void } | null>(null);
   useLayoutEffect(() => {
     if (!phoneOpen) return;
+    // A reset still pending from a quick close must not overwrite this open; apply it now so the original content is read.
+    if (metaReset.current) { cancelAnimationFrame(metaReset.current.frame); metaReset.current.apply(); metaReset.current = null; }
     const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
     if (!meta) return;
     const previous = meta.content;
@@ -128,7 +131,8 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       // iOS keeps the current zoom when the width changes back, so first ask for the zoom that fits the 1200px room.
       const fit = Math.min(1, document.documentElement.clientWidth / 1200);
       meta.content = `${previous}, initial-scale=${fit.toFixed(4)}`;
-      requestAnimationFrame(() => { meta.content = previous; });
+      const apply = () => { meta.content = previous; };
+      metaReset.current = { apply, frame: requestAnimationFrame(() => { metaReset.current = null; apply(); }) };
     };
   }, [phoneOpen]);
 
