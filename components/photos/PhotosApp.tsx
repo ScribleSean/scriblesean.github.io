@@ -6,7 +6,7 @@ import styles from "./PhotosApp.module.css";
 
 const photos = [
   { src: "/scene/interactive-scene.jpg", title: "A little world on my desk", note: "Interactive portfolio · project screenshot" },
-  { src: "/scene/observatory-demo.jpg", title: "What I've been building", note: "Workspace Observatory · synthetic demo" },
+  { src: "/scene/observatory-demo.jpg", title: "What I've been building", note: "Observatory · synthetic demo" },
   { src: "/scene/mobile-setup.webp", title: "The setup, up close", note: "Portfolio scene · rendered artwork" },
 ];
 

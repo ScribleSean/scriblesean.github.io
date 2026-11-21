@@ -1,7 +1,7 @@
 {
   "checkedThrough": "2026-11-13",
   "heading": "Things I'm building",
-  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory says when my AI limits run out. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
+  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory shows where my AI limits and spend went, and when the limits run out. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
   "projects": [
     {
       "slug": "beeline",
@@ -75,10 +75,10 @@
       "slug": "observatory",
       "name": "Observatory",
       "verb": "Watch",
-      "kind": "Menu bar app · Mac and Windows",
+      "kind": "Menu bar app and dashboard · Mac, Windows and Linux",
       "status": "Open source",
-      "tagline": "A menu bar app that tells me when my Claude Code and Codex limits will run out.",
-      "summary": "Each limit says when it runs out at my current pace, or that it has room. Screen time and what the day cost are one click away. It runs on my own computer and doesn't change any of the tools it reads.",
+      "tagline": "A menu bar app and dashboard that shows which sessions used my Claude Code and Codex limits, what each one shipped, and when each limit runs out.",
+      "summary": "Each limit says when it runs out at my current pace, or that it has room. Seven dashboard views show sessions, limits, tokens and screen time over a day up to all time. It runs on my own computer and doesn't change any of the tools it reads.",
       "mark": "telescope",
       "card": "/projects/observatory/card.jpg",
       "film": {
@@ -87,21 +87,34 @@
         "poster": "/projects/observatory/observatory.jpg",
         "width": 1920,
         "height": 1080,
-        "label": "Observatory with fictional data: the menu bar panel shows how much of the Grok, Claude and Codex limits is left and opens the dashboard, which shows the same tiles, then switches its limit charts to 30 days",
+        "label": "An earlier version of Observatory with fictional data: the menu bar panel shows how much of the Grok, Claude and Codex limits is left and opens the dashboard",
         "sound": false
       },
       "sections": [
         {
           "title": "Run out, or room",
           "body": [
-            "The dashboard opens on one tile per engine: percent left, and a sentence like “runs out Thu 4 PM at this pace” or “has room”. The menu bar shows whichever engine has less room.",
-            "The pace blends the last hour with the average since the limit last reset, so a burst of use fades toward the average over about two hours. Once a few days of readings are stored, it gives a range taken from how far its own earlier forecasts missed, like “may run out Thu 3–6 PM”. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
+            "Each limit window is forecast once per reading, and the dashboard, menu bar and tray all show that same sentence, like “Claude runs out Wed 3–7 PM at this pace” or “has room”. The pace ignores readings from before a reset, and once a few days of readings are stored it gives a range taken from how far its own earlier forecasts missed. A window that has only just reset says it is too early to forecast.",
+            "The menu bar and tray icon is a ring that fills as the weekly limit is used. A dot in the center means it lasts until the reset, and a bar means it runs out first. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
+          ]
+        },
+        {
+          "title": "Seven views",
+          "body": [
+            "Overview, Sessions, Limits, Tokens, Screen time, Drift and Settings share one scope bar. It picks the computers and sources, and a period from a day to all time. Overview shows spend, branches merged and commits on main for the week, each against the previous period, and every number opens into its parts.",
+            "Sessions reads as “[Builder] Lantern”: a role and what it worked on, with its computer, models, spend and commits on main. Repeated runs fold into one row."
+          ]
+        },
+        {
+          "title": "Ask, and saved views",
+          "body": [
+            "An Ask field and pinned questions such as “Where did today's spend go?” rearrange the same blocks on the screen. Nothing in the dashboard calls a model. An optional read-only MCP server lets my own Claude client compose a view and save it. A saved view holds queries, never numbers or session titles."
           ]
         },
         {
           "title": "History",
           "body": [
-            "A History button opens limit charts for a day, 7 days, 30 days or all time, then screen time by app and category, and tokens priced at public API rates. Dollar figures are estimates, not a bill. Token counts are saved per day, so history stays after Claude Code deletes its old transcripts."
+            "History goes back to the first day each source has data, and a day stays counted after Claude Code deletes its old transcripts. Dollar figures are estimates at public API prices, not a bill."
           ]
         },
         {
@@ -118,9 +131,9 @@
           ]
         },
         {
-          "title": "One computer first",
+          "title": "Several computers",
           "body": [
-            "Setup is one command. It builds the dashboard and a small menu bar app on my own computer and starts them at login, with no account and no installer. A Mac and a Windows PC can share one view over SSH, and the dashboard labels combined sums as not deduplicated."
+            "Setup is one command. It builds the dashboard and a small menu bar app on my own computer and starts them at login, with no account and no installer. A Mac, a Windows PC and a Linux computer can share one view over SSH, and the dashboard labels combined sums as not deduplicated."
           ]
         }
       ],
@@ -128,6 +141,7 @@
         "Claude Code and Codex get equal weight everywhere, and Grok is an optional third tile",
         "Screen time from ActivityWatch, grouped by app and category",
         "Tests plant fake prompts and keys in session logs and check none come out in Observatory’s data",
+        "Tests run on macOS, Windows and Linux",
         "MIT licensed, with a demo that uses fictional data"
       ],
       "connects": [
@@ -155,12 +169,19 @@
       ],
       "gallery": [
         {
-          "src": "/projects/observatory/limits-light.jpg",
-          "darkSrc": "/projects/observatory/limits-dark.jpg",
+          "src": "/projects/observatory/r2-overview-light.jpg",
+          "darkSrc": "/projects/observatory/r2-overview-dark.jpg",
+          "width": 1440,
+          "height": 1307,
+          "alt": "The Observatory Overview: spend, branches merged and commits on main for the week, spend per day over what landed, the sessions table and Limits now",
+          "caption": "The Overview, with every number compared to the previous period. Fictional data."
+        },
+        {
+          "src": "/projects/observatory/r2-limits-dark.jpg",
           "width": 1440,
           "height": 900,
-          "alt": "The Observatory dashboard with a tile each for Grok, Claude and Codex showing percent left, above History charts of each limit over 7 days",
-          "caption": "One tile per engine, with limit history underneath. Fictional data."
+          "alt": "The Observatory Limits view: the weekly limit with its forecast sentence and how much of the week is gone",
+          "caption": "Limits, with the stored forecast. Fictional data."
         }
       ]
     },
