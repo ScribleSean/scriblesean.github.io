@@ -48,16 +48,18 @@
 /* Name and one line about Sean, shown in the room view. */
 .identity { position: absolute; top: 32px; left: 36px; z-index: 20; max-width: 30em; color: #2f2a24; pointer-events: none; transition: opacity .3s ease; }
 .identity[data-hidden="true"] { opacity: 0; }
-.identity h1 { margin: 0; font: 650 26px/1.15 var(--sans); letter-spacing: -.02em; }
+.identity h1 { margin: 0; font: 400 36px/1 var(--serif); letter-spacing: -.01em; }
 .identity p { margin: 6px 0 0; font: 16px/1.45 var(--sans); color: #5f5649; }
 @media (prefers-reduced-motion: reduce) { .identity { transition: none; } }
+.time { position: absolute; top: 30px; right: 32px; z-index: 20; }
 @media (max-width: 760px) {
   .experience { min-height: 0; }
   .footer { gap: 0 20px; }
   .bottom { bottom: max(14px, env(safe-area-inset-bottom)); gap: 8px; }
   .back { top: 14px; left: 14px; }
-  .identity { top: 20px; left: 20px; right: 20px; }
-  .identity h1 { font-size: 22px; }
+  .identity { top: 20px; left: 20px; right: 120px; }
+  .time { top: 18px; right: 16px; }
+  .identity h1 { font-size: 30px; }
   .identity p { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -76,3 +78,17 @@
   .screenHint { font-size: 30px; padding: 12px 24px; border-radius: 9px; }
   .experience[data-camera="entered"] .screenHint { font-size: 15px; padding: 6px 12px; border-radius: 5px; }
 }
+
+/* Golden hour and night: the page around the 3D room matches its lighting (lib/time-of-day.ts sets data-phase). */
+:global(html[data-phase="golden"]) .experience, :global(html[data-phase="golden"]) .fallback, :global(html[data-phase="golden"]) .fallbackDesktop { background: #e8cfb1; }
+:global(html[data-phase="night"]) .experience, :global(html[data-phase="night"]) .fallback, :global(html[data-phase="night"]) .fallbackDesktop { background: #1a1a21; color: #d9d5e2; }
+:global(html[data-phase="night"]) .identity { color: #ecebe4; }
+:global(html[data-phase="night"]) .identity p, :global(html[data-phase="night"]) .loadingDesk { color: #b9b4c6; }
+:global(html[data-phase="night"]) .footer { color: #dcd8e4; }
+:global(html[data-phase="night"]) .footer a:hover, :global(html[data-phase="night"]) .footer button:hover { color: #fff; }
+:global(html[data-phase="night"]) .entryButton, :global(html[data-phase="night"]) .back { background: #2a2933e6; border-color: #ffffff1f; color: #ecebe4; }
+:global(html[data-phase="night"]) .loadingDesk button { background: #2a2933; border-color: #ffffff1f; color: #ecebe4; }
+:global(html[data-phase="night"]) .loadingMark { border-color: #6d6880; }
+:global(html[data-phase="night"]) .loadingMark::after { background: #6d6880; }
+:global(html[data-phase="golden"] body:has([data-camera])) { background: #e8cfb1; }
+:global(html[data-phase="night"] body:has([data-camera])) { background: #1a1a21; }

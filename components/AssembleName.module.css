@@ -1,0 +1,5 @@
+.name { display: inline-block; }
+.letter { display: inline-block; animation: rise .8s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i) * 38ms + 80ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(.32em) rotate(4deg); filter: blur(6px); } }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .letter { animation: none; } }

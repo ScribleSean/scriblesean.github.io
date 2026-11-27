@@ -6,6 +6,8 @@ import { OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import DeskModels from "./DeskModels";
+import RoomWindow from "./RoomWindow";
+import type { Phase } from "@/lib/time-of-day";
 import type { CameraView } from "@/lib/scene-state";
 
 const studioBackdrop = (() => {
@@ -26,6 +28,22 @@ const studioBackdrop = (() => {
   geometry.computeVertexNormals();
   return geometry;
 })();
+
+// One room, three lighting moods that follow the visitor's clock.
+type Look = {
+  room: string; frame: string;
+  sky: [string, string, number];
+  key: { at: [number, number, number]; color: string; intensity: number };
+  fill: { color: string; intensity: number };
+  glow: number;
+};
+const looks: Record<Phase, Look> = {
+  day: { room: "#e7dece", frame: "#f1ebe0", sky: ["#fff9ec", "#b6a58e", 2.3], key: { at: [-3, 8, 6], color: "#ffffff", intensity: 3.1 }, fill: { color: "#e8e5ff", intensity: 1.2 }, glow: 0 },
+  // Low warm sun from the left, long shadows, a cool fill from the other side.
+  golden: { room: "#e8cfb1", frame: "#f0e0c8", sky: ["#ffe1bd", "#a2806a", 1.7], key: { at: [-9, 3.4, 3], color: "#ffb36e", intensity: 3.6 }, fill: { color: "#b7a9ff", intensity: .55 }, glow: .8 },
+  // Dark room: faint moonlight through the window, and the CRT is the brightest light.
+  night: { room: "#1a1a21", frame: "#2b2a33", sky: ["#3b4566", "#0d0c12", .55], key: { at: [-5, 7, -6], color: "#9fb0e0", intensity: .9 }, fill: { color: "#ffb877", intensity: .15 }, glow: 9 },
+};
 
 const cameraPositions: Record<CameraView, [number, number, number]> = {
   room: [8.5, 6.4, 12.5],
@@ -146,8 +164,9 @@ function ContextRecovery({ onFailure }: { onFailure: () => void }) {
   return null;
 }
 
-export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onFailure, resetKey }: {
+export default function SceneCanvas({ view, reducedMotion, screen, onReady, onApproach, onFailure, resetKey, phase = "day" }: {
   view: CameraView;
+  phase?: Phase;
   resetKey: number;
   reducedMotion: boolean;
   screen: ReactNode;
@@ -167,6 +186,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
       window.visualViewport?.removeEventListener("resize", update);
     };
   }, []);
+  const look = looks[phase];
   return <><Canvas
     shadows={{ type: THREE.PCFShadowMap }}
     frameloop="demand"
@@ -175,24 +195,26 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
     gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
     onCreated={({ gl, events }) => {
       events.connect?.(gl.domElement);
-      gl.setClearColor("#e7dece");
     }}
   >
-    <color attach="background" args={["#e7dece"]} />
-    <fog attach="fog" args={["#e7dece", 23, 45]} />
-    <hemisphereLight args={["#fff9ec", "#b6a58e", 2.3]} />
-    <directionalLight position={[-3, 8, 6]} intensity={3.1} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-normalBias={.035} shadow-bias={-.0001} shadow-radius={5} />
-    <directionalLight position={[5, 4, -5]} intensity={1.2} color="#e8e5ff" />
+    <color attach="background" args={[look.room]} />
+    {/* Fixed args so the camera rig keeps its fog distances; only the color follows the phase. */}
+    <fog attach="fog" args={["#e7dece", 23, 45]} color={look.room} />
+    <hemisphereLight args={look.sky} />
+    <directionalLight position={look.key.at} color={look.key.color} intensity={look.key.intensity} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-normalBias={.035} shadow-bias={-.0001} shadow-radius={5} />
+    <directionalLight position={[5, 4, -5]} intensity={look.fill.intensity} color={look.fill.color} />
+    {look.glow > 0 && <pointLight position={[-.58, 2.5, 2.3]} color="#a3b2ff" intensity={look.glow} distance={7} decay={1.6} />}
     <Suspense fallback={null}>
       <group onClick={(event) => { event.stopPropagation(); if (event.delta < 5) onApproach(); }}><DeskModels /></group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.72, 0]} receiveShadow
         onClick={(event) => event.stopPropagation()}>
         <planeGeometry args={[200, 200]} />
-        <meshStandardMaterial color="#e7dece" roughness={1} />
+        <meshStandardMaterial color={look.room} roughness={1} />
       </mesh>
       <mesh geometry={studioBackdrop} receiveShadow onClick={(event) => event.stopPropagation()}>
-        <meshStandardMaterial color="#e7dece" roughness={1} side={THREE.FrontSide} />
+        <meshStandardMaterial color={look.room} roughness={1} side={THREE.FrontSide} />
       </mesh>
+      <RoomWindow phase={phase} frame={look.frame} />
       <ScreenSurface element={screenElement} />
       <SceneReady onReady={onReady} />
     </Suspense>

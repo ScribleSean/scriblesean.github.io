@@ -3,6 +3,7 @@ import { validateProjectFilm, validateProjectSections } from "@/lib/project-vali
 import { featured, getProject, projectHref, projectPages, type FeaturedProject, type ProjectImage } from "@/data/featured-projects";
 import ProjectFilm from "./ProjectFilm";
 import ProjectMark from "./ProjectMark";
+import TimeToggle from "@/components/TimeToggle";
 import styles from "./ProjectPage.module.css";
 
 const updated = new Date(`${featured.checkedThrough}T12:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
@@ -28,6 +29,7 @@ export function ProjectsShell({ children }: { children: React.ReactNode }) {
             <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Résumé ↗</a>
             <Link href="/">3D site ↗</Link>
           </nav>
+          <TimeToggle className={styles.time} />
         </div>
       </header>
       {children}

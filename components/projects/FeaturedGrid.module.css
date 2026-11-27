@@ -1,7 +1,7 @@
 .wrap { container-type: inline-size; }
 .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius); background: var(--raised); box-shadow: var(--shadow); color: var(--text); transition: box-shadow .2s, transform .2s; }
-.card:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+.card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius); background: var(--raised); box-shadow: var(--shadow); color: var(--text); transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0)); transition: box-shadow .2s, transform .25s cubic-bezier(.2, .8, .2, 1); }
+.card:hover { box-shadow: var(--shadow-lift); --lift: -2px; }
 .poster { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; background: var(--sunken); border-bottom: 1px solid var(--line); }
 .body { display: flex; flex: 1; flex-direction: column; gap: 8px; padding: 18px 20px 20px; }
 .top { display: flex; align-items: center; gap: 10px; }
@@ -23,4 +23,4 @@
 .teaser :is(h2, h3) { color: var(--muted); }
 
 @container (max-width: 640px) { .grid { grid-template-columns: 1fr; gap: 16px; } .body { padding: 16px 16px 18px; } }
-@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; transform: none; } }

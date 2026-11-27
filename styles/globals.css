@@ -11,20 +11,33 @@
   --shadow: 0 1px 2px rgb(41 45 40 / 6%), 0 8px 24px rgb(41 45 40 / 7%);
   --shadow-lift: 0 2px 4px rgb(41 45 40 / 7%), 0 18px 48px rgb(41 45 40 / 13%);
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  --serif: var(--font-serif), "Instrument Serif", Georgia, "Times New Roman", serif;
   --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
   --radius: 14px; --radius-sm: 9px;
   --gutter: clamp(16px, 5vw, 48px);
   --page: 1120px;
 }
 .ledger-light { color-scheme: light; }
-@media (prefers-color-scheme: dark) {
-  :root {
+:root[data-theme="light"] { color-scheme: light; }
+/* Dark tokens: set by the visitor's clock (lib/time-of-day.ts) through data-theme; the system setting is the fallback without script. */
+:root[data-theme="dark"] {
     --bg: #191b18; --surface: #20231f; --raised: #272a25; --sunken: #151714;
     --text: #ecebe4; --body: #c9cbc1; --muted: #a3a79a; --faint: #81857a;
     --line: #33362f; --line-strong: #43473e;
     --accent: #a5bf95; --accent-hover: #c2d6b3; --accent-soft: #2a3227; --clay: #d98a62;
     --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 25%);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 35%), 0 18px 48px rgb(0 0 0 / 40%);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #191b18; --surface: #20231f; --raised: #272a25; --sunken: #151714;
+    --text: #ecebe4; --body: #c9cbc1; --muted: #a3a79a; --faint: #81857a;
+    --line: #33362f; --line-strong: #43473e;
+    --accent: #a5bf95; --accent-hover: #c2d6b3; --accent-soft: #2a3227; --clay: #d98a62;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 25%);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / 35%), 0 18px 48px rgb(0 0 0 / 40%);
+    color-scheme: dark;
   }
 }
 

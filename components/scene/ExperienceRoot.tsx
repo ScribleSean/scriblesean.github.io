@@ -9,6 +9,9 @@ import { phoneDesktop } from "@/lib/site";
 import { createThreadStore } from "@/lib/message-thread";
 import type { AppOpenRequest } from "@/components/desktop/DesktopShell";
 import MeleePlayer from "./MeleePlayer";
+import TimeToggle from "@/components/TimeToggle";
+import AssembleName from "@/components/AssembleName";
+import { currentPhase, subscribeTime, type Phase } from "@/lib/time-of-day";
 import styles from "./Scene.module.css";
 
 const SceneCanvas = dynamic(() => import("./SceneCanvas"), { ssr: false });
@@ -82,6 +85,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
   const reducedMotion = useSyncExternalStore(subscribeMotion, getMotionPreference, () => true);
   const documentVisible = useSyncExternalStore(subscribeVisibility, getVisibility, () => true);
   const phone = useSyncExternalStore(subscribePhone, getPhone, () => false);
+  const phase = useSyncExternalStore(subscribeTime, currentPhase, (): Phase => "day");
   // With the "fullscreen" setting, touch phones open the desktop flat and full size instead of inside the CRT.
   const phoneFull = phoneDesktop === "fullscreen" && phone;
   const phoneFullRef = useRef(phoneFull);
@@ -208,9 +212,10 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
 
   return <main data-phone-desktop={phoneDesktop} data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
     {!state.mobileOpen && <header className={styles.identity} data-hidden={state.camera !== "room"}>
-      <h1>Sean Arackal</h1>
+      <h1><AssembleName text="Sean Arackal" /></h1>
       <p>I build AI agents and the tools around them.</p>
     </header>}
+    {!state.mobileOpen && state.camera === "room" && <TimeToggle className={styles.time} />}
     {degraded || state.mobileOpen ? fallback : <SceneBoundary fallback={fallback} onFailure={recoverDesktop}>
       {!sceneReady && fallback}
       <div className={styles.canvas} data-ready={sceneReady}
@@ -219,7 +224,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
           const pointer = scenePointer.current;
           if (!pointer.hit && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 5) backToDesk();
         }}>
-        <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screenSlot} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onFailure={recoverDesktop} />
+        <SceneCanvas phase={phase} resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screenSlot} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onFailure={recoverDesktop} />
       </div>
     </SceneBoundary>}
     {!state.mobileOpen && <div className={styles.bottom}>

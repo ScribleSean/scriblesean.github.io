@@ -1,0 +1,4 @@
+.toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--muted); font: 500 13px var(--sans); white-space: nowrap; cursor: pointer; }
+.toggle:hover { color: var(--text); border-color: var(--accent); }
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+.toggle svg { width: 16px; height: 16px; fill: currentColor; flex: none; }

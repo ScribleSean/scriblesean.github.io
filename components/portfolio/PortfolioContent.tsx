@@ -5,6 +5,8 @@ import Link from "next/link";
 import { contact, education, projects, resumeExperience } from "@/data/resume";
 import OpenSourceContributions from "@/components/contributions/OpenSourceContributions";
 import FeaturedGrid from "@/components/projects/FeaturedGrid";
+import TimeToggle from "@/components/TimeToggle";
+import AssembleName from "@/components/AssembleName";
 import styles from "./PortfolioContent.module.css";
 
 type PortfolioContentProps = { onContact?: () => void; embedded?: boolean };
@@ -50,12 +52,13 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
           <a href="#research">Research</a>
           <a href={resumeHref} {...external}>Résumé</a>
         </nav>
+        {!embedded && <TimeToggle className={styles.time} />}
       </div>
     </header>
 
     <section className={`${styles.hero} ${styles.wrap}`} aria-labelledby="name">
       <p className={styles.status}><span className={styles.dot} aria-hidden="true" />Open to AI roles · Worcester, MA</p>
-      <h1 id="name">Sean Arackal</h1>
+      <h1 id="name"><AssembleName text="Sean Arackal" /></h1>
       <p className={styles.lede}>I build AI agents and the tools around them.</p>
       <p className={styles.bio}>Recent work: a Mac assistant that acts on typed or spoken requests, a menu bar app that tracks Claude Code and Codex limits, and video analysis for research recordings. I studied computer science at WPI and taught programming for three years.</p>
       <div className={styles.actions}>
