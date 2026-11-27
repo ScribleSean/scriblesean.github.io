@@ -1,7 +1,7 @@
 {
   "checkedThrough": "2026-11-21",
   "heading": "Things I'm building",
-  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory shows where my AI limits and spend went, and when the limits run out. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game. One more is on the way.",
+  "intro": "Beeline controls my Mac from typed or spoken requests. Observatory shows where my AI limits and spend went, and when the limits run out. Career Bridge surveys workers on how they use AI, and cube·type turns a Rubik’s cube into a typing game.",
   "projects": [
     {
       "slug": "beeline",

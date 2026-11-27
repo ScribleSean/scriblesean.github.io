@@ -36,16 +36,16 @@ export default function FeaturedGrid({ newTab = false, teasers = true, headingLe
               <span className={styles.status}>{project.status}</span>
             </div>
             <p className={styles.summary}>{project.tagline ?? project.summary}</p>
-            <p className={styles.meta}>
-              <span>{project.kind ?? "In private"}</span>
-              {project.links && (
+            {project.kind && (
+              <p className={styles.meta}>
+                <span>{project.kind}</span>
                 <span className={styles.links}>
-                  {project.links.map((link) => (
+                  {project.links?.map((link) => (
                     <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label} ↗</a>
                   ))}
                 </span>
-              )}
-            </p>
+              </p>
+            )}
             </div>
           </li>
         );

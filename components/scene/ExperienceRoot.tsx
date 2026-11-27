@@ -228,7 +228,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
         <a href={prototype ? "/prototype/" : "/portfolio/"}>Portfolio</a>
         <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Résumé</a>
         <button type="button" onClick={() => enter(true)}>Contact</button>
-        <button type="button" className={styles.videoToggle} onClick={() => setVideoPaused(!gamePaused)}>{gamePaused ? "Play video" : "Pause video"}</button>
+        <button type="button" onClick={() => setVideoPaused(!gamePaused)}>{gamePaused ? "Play video" : "Pause video"}</button>
       </footer>}
     </div>}
     {!degraded && !phoneOpen && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ Back to desk</button>}

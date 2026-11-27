@@ -7,7 +7,7 @@
 .page h1, .page h2 { text-wrap: balance; }
 .wrap { width: min(var(--page), 100% - 2 * var(--gutter)); margin-inline: auto; }
 
-.bar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--line); }
+.bar { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
 .barInner { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .wordmark { font-size: 15px; font-weight: 650; letter-spacing: -.01em; white-space: nowrap; }
 .bar nav { display: flex; gap: clamp(14px, 3vw, 28px); font-size: 14px; color: var(--muted); }

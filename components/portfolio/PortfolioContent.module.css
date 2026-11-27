@@ -13,7 +13,7 @@
 .note { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
 
 /* Header */
-.siteHeader { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--line); }
+.siteHeader { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
 .headerInner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; }
 .wordmark { font-size: 15px; font-weight: 650; letter-spacing: -.01em; white-space: nowrap; }
 .navigation { display: flex; align-items: center; gap: clamp(14px, 3cqw, 28px); font-size: 14px; color: var(--muted); }

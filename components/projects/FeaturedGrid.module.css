@@ -13,11 +13,12 @@
 .card:has(.cardLink:focus-visible) { outline: 2px solid var(--accent); outline-offset: 0; }
 .status { flex: none; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-hover); font-size: 13px; font-weight: 500; }
 .summary { margin: 0; flex: 1; color: var(--body); font-size: 15px; line-height: 1.55; }
-.meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px; margin: 6px 0 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+.meta { display: grid; grid-template-rows: auto 22px; align-content: start; gap: 6px; margin: 6px 0 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+.meta > span:first-child { min-height: 1.5em; }
 .links { position: relative; z-index: 1; display: flex; gap: 18px; }
 .links a { padding-block: 8px; margin-block: -8px; color: var(--accent); font-size: 14px; font-weight: 550; }
 .links a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.teaser { background: transparent; box-shadow: none; border: 1px dashed var(--line-strong); }
+.teaser { grid-column: 1 / -1; background: transparent; box-shadow: none; border: 1px dashed var(--line-strong); }
 .teaser:hover { box-shadow: none; transform: none; }
 .teaser :is(h2, h3) { color: var(--muted); }
 

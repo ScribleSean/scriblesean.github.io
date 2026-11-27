@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { validateProjectFilm, validateProjectSections } from "@/lib/project-validation";
-import { featured, featuredProjects, getProject, projectHref, projectPages, type FeaturedProject, type ProjectImage } from "@/data/featured-projects";
+import { featured, getProject, projectHref, projectPages, type FeaturedProject, type ProjectImage } from "@/data/featured-projects";
 import ProjectFilm from "./ProjectFilm";
 import ProjectMark from "./ProjectMark";
 import styles from "./ProjectPage.module.css";
@@ -45,7 +45,6 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
   const index = projectPages.findIndex((item) => item.slug === project.slug);
   const previous = projectPages[(index - 1 + projectPages.length) % projectPages.length];
   const next = projectPages[(index + 1) % projectPages.length];
-  const teaser = featuredProjects.find((item) => item.teaser);
   const heroImage: ProjectImage | undefined = project.hero && { src: project.hero.light, darkSrc: project.hero.dark, width: project.hero.width, height: project.hero.height, alt: project.hero.alt };
   const hasHero = Boolean(project.film || project.hero || project.heroPlaceholder);
 
@@ -159,7 +158,7 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
 
         <nav className={`${styles.wrap} ${styles.pager}`} aria-label="More projects">
           <Link href={projectHref(previous.slug)}><span>Previous</span>{previous.name}</Link>
-          <Link href="/projects/" className={styles.pagerAll}>All projects{teaser ? " · one more coming" : ""}</Link>
+          <Link href="/projects/" className={styles.pagerAll}>All projects</Link>
           <Link href={projectHref(next.slug)}><span>Next</span>{next.name}</Link>
         </nav>
       </main>

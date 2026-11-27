@@ -140,10 +140,7 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
           <p className={styles.label}>Contact</p>
           <h2><a href={`mailto:${contact.email}`}>{contact.email}</a></h2>
         </div>
-        <div className={styles.contactActions}>
-          {onContact && <button type="button" className={styles.primary} onClick={onContact}>Send a message</button>}
-          <a className={onContact ? styles.secondary : styles.primary} href={resumeHref} {...external}>Résumé</a>
-        </div>
+        {onContact && <div className={styles.contactActions}><button type="button" className={styles.primary} onClick={onContact}>Send a message</button></div>}
       </div>
       <div className={styles.footerMeta}>
         <span>Sean Arackal</span>
