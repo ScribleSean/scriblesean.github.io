@@ -81,7 +81,7 @@
         "poster": "/projects/observatory/observatory.jpg",
         "width": 1920,
         "height": 1080,
-        "label": "An earlier version of Observatory with fictional data: the menu bar panel shows how much of the Grok, Claude and Codex limits is left and opens the dashboard",
+        "label": "Observatory's limit history with fictional data, switching between 7-day and 30-day charts for Claude Code and Codex 5-hour and weekly limits.",
         "sound": false
       },
       "sections": [
@@ -190,12 +190,6 @@
       "icon": "/projects/career-bridge/icon.png",
       "card": "/projects/career-bridge/card.jpg",
       "iconFullBleed": true,
-      "hero": {
-        "light": "/projects/career-bridge/results.jpg",
-        "width": 1100,
-        "height": 700,
-        "alt": "The Career Bridge home page asking how people in these jobs actually use AI, above a What we found section"
-      },
       "sections": [
         {
           "title": "The gap",
@@ -262,7 +256,16 @@
           "label": "Source code",
           "href": "https://github.com/ScribleSean/career-bridge"
         }
-      ]
+      ],
+      "film": {
+        "src": "/projects/career-bridge/career-bridge.mp4",
+        "loop": "/projects/career-bridge/career-bridge-loop.mp4",
+        "poster": "/projects/career-bridge/career-bridge.jpg",
+        "width": 1920,
+        "height": 1080,
+        "label": "Career Bridge's sample survey results switching between administrative assistants, customer service representatives and retail salespeople, with the four AI-use percentages changing.",
+        "sound": false
+      }
     },
     {
       "slug": "cube-type",
@@ -280,8 +283,8 @@
         "poster": "/projects/cube-type/cube-type.jpg",
         "width": 1920,
         "height": 1080,
-        "label": "A demo run of cube·type: each typed word turns a layer of the 3D cube, move after move, until it is solved",
-        "sound": true
+        "label": "cube·type close-up: typing roam and unfurl with Enter turns the right and top faces of a Rubik's cube twice each, repeating until the cube is back where it started.",
+        "sound": false
       },
       "sections": [
         {
@@ -337,7 +340,8 @@
           "alt": "cube·type with a 3D cube and the word for each turn placed beside its face",
           "caption": "Each move’s word sits beside its face. Daylight and the default dark theme."
         }
-      ]
+      ],
+      "card": "/projects/cube-type/card.jpg"
     },
     {
       "slug": "next",

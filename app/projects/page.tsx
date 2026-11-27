@@ -19,7 +19,7 @@ export default function ProjectsPage() {
           </div>
         </section>
         <div className={`${styles.wrap} ${styles.overviewGrid}`}>
-          <FeaturedGrid />
+          <FeaturedGrid headingLevel={2} />
         </div>
       </main>
     </ProjectsShell>

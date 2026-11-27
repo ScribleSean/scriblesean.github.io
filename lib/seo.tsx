@@ -36,7 +36,7 @@ export const websiteJsonLd = {
   name: personName,
   alternateName: "ScribleSean",
   url: `${siteUrl}/`,
-  author: { "@id": person["@id"] },
+  author: person,
 };
 
 export const profileJsonLd = {

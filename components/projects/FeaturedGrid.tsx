@@ -6,7 +6,9 @@ function poster(project: FeaturedProject) {
   return project.card ?? project.film?.poster ?? project.hero?.light;
 }
 
-export default function FeaturedGrid({ newTab = false, teasers = true }: { newTab?: boolean; teasers?: boolean }) {
+// headingLevel follows the page: h3 under the portfolio's Projects heading, h2 on /projects.
+export default function FeaturedGrid({ newTab = false, teasers = true, headingLevel = 3 }: { newTab?: boolean; teasers?: boolean; headingLevel?: 2 | 3 }) {
+  const Title = headingLevel === 2 ? "h2" : "h3";
   const target = newTab ? { target: "_blank", rel: "noreferrer" } : {};
   const projects = teasers ? featuredProjects : featuredProjects.filter((project) => !project.teaser);
   return (
@@ -22,7 +24,7 @@ export default function FeaturedGrid({ newTab = false, teasers = true }: { newTa
             <div className={styles.body}>
             <div className={styles.top}>
               <ProjectMark project={project} size={30} />
-              <h3>
+              <Title>
                 {project.teaser ? (
                   project.name
                 ) : (
@@ -30,7 +32,7 @@ export default function FeaturedGrid({ newTab = false, teasers = true }: { newTa
                     {project.name}
                   </a>
                 )}
-              </h3>
+              </Title>
               <span className={styles.status}>{project.status}</span>
             </div>
             <p className={styles.summary}>{project.tagline ?? project.summary}</p>
