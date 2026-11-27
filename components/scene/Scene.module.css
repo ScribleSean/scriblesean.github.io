@@ -92,3 +92,7 @@
 :global(html[data-phase="night"]) .loadingMark::after { background: #6d6880; }
 :global(html[data-phase="golden"] body:has([data-camera])) { background: #e8cfb1; }
 :global(html[data-phase="night"] body:has([data-camera])) { background: #1a1a21; }
+/* The lit golden-hour wall renders a deeper orange than the page color, so text there goes darker. */
+:global(html[data-phase="golden"]) .identity p { color: #3f352a; }
+:global(html[data-phase="golden"]) .time { color: #3f352a; border-color: #3f352a40; }
+:global(html[data-phase="night"]) .time { color: #dcd8e4; border-color: #ffffff2e; }
