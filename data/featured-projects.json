@@ -63,12 +63,6 @@
         "Speech",
         "Foundation Models",
         "Accessibility API"
-      ],
-      "links": [
-        {
-          "label": "Source code",
-          "href": "https://github.com/ScribleSean/beeline"
-        }
       ]
     },
     {
