@@ -39,7 +39,7 @@ function paintSky(phase: Phase) {
   if (phase === "night") {
     // Fixed star positions, so every visit draws the same sky.
     let seed = 7;
-    const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const random = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
     for (let i = 0; i < 70; i++) {
       g.fillStyle = `rgba(230,236,255,${.35 + random() * .6})`;
       g.beginPath();
