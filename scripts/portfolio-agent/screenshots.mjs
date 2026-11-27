@@ -6,6 +6,7 @@
 // Serve the static export first (npm run build, then serve out/), then:
 //   node scripts/portfolio-agent/screenshots.mjs [--base http://127.0.0.1:3124] [--out dir] [--phones]
 // --phones adds a phone-width shot of every page; by default only the home page gets one.
+// --matrix shoots every page at 375, 768, 1280 and 1920 wide in light and dark.
 
 import { spawn } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -27,6 +28,7 @@ const chromePath = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/C
 
 const data = JSON.parse(readFileSync(path.join(root, "data/featured-projects.json"), "utf8"));
 const phones = args.includes("--phones");
+const matrix = args.includes("--matrix");
 const both = ["light", "dark"];
 const pages = [
   { name: "home", path: "/", schemes: both, phone: true, waitFor: '[data-ready="true"]', viewportOnly: true },
@@ -34,9 +36,16 @@ const pages = [
   { name: "portfolio-projects-section", path: "/portfolio/", schemes: both, selector: "#work" },
   { name: "projects-overview", path: "/projects/", schemes: both },
   ...data.projects.filter((p) => !p.teaser).map((p) => ({ name: `project-${p.slug}`, path: `/projects/${p.slug}/`, schemes: both })),
+  { name: "resume", path: "/resume/", schemes: both },
 ];
 const desktop = { name: "desktop", width: 1280, height: 860, mobile: false, scale: 1 };
 const phone = { name: "phone", width: 390, height: 844, mobile: true, scale: 2 };
+const sizes = [
+  { name: "375", width: 375, height: 812, mobile: true, scale: 2 },
+  { name: "768", width: 768, height: 1024, mobile: true, scale: 2 },
+  { name: "1280", width: 1280, height: 800, mobile: false, scale: 1 },
+  { name: "1920", width: 1920, height: 1080, mobile: false, scale: 1 },
+];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -63,7 +72,7 @@ async function main() {
     await page("Page.enable");
 
     const written = [];
-    const shots = pages.flatMap((entry) => [
+    const shots = matrix ? pages.filter((entry) => !entry.selector).flatMap((entry) => sizes.flatMap((viewport) => both.map((scheme) => ({ entry, scheme, viewport })))) : pages.flatMap((entry) => [
       ...entry.schemes.map((scheme) => ({ entry, scheme, viewport: desktop })),
       ...(entry.phone || phones ? [{ entry, scheme: "light", viewport: phone }] : []),
     ]);

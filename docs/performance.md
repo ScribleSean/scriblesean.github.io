@@ -4,7 +4,7 @@ The camera uses the original easing, orbit damping, and hover focus, and muted v
 
 The restore brought back the baseline's camera easing, orbit damping, hover focus, desk geometry, original Fox, and muted video autoplay on first load. It removed the 600 ms fixed transitions, static batching, delayed video start, and the playback gate tied to transitions. It kept the newer portfolio content, mobile scaling, loading screen, and browser usability fixes.
 
-The camera's distance and polar-angle limits, clipping, and fog still fit the scaled mobile viewport, so every target stays reachable. The canvas resolution follows the physical mobile viewport, capped at the baseline's maximum pixel ratio of 1.5. The scene still recovers from a lost graphics context.
+The home page lays out at the device width. On narrow screens the camera backs off to fit the desk, a little less in the room view so a phone isn't mostly floor, and its distance limits, clipping and fog follow, so every target stays reachable. The canvas resolution follows the physical viewport, capped at a pixel ratio of 1.5, or 2 on touch screens so phones stay sharp. The scene still recovers from a lost graphics context.
 
 Build the static export with `npm run build`, the same Turbopack build that CI deploys, then serve `out/`. The browser checks read three environment variables. `PLAYWRIGHT_MODULE` and `CHROME_PATH` point to an existing Playwright and Chrome install, and `TEST_URL` sets the local or deployed URL to test.
 

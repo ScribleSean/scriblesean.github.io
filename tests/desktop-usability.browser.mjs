@@ -15,13 +15,13 @@ try {
   await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
   await page.locator('[data-ready="true"]').waitFor();
   await page.screenshot({ path: path.join(tmpdir(), 'portfolio-lighter-scene.png') });
-  await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom' }).click();
+  await page.getByRole('button', { name: 'Click to approach · drag to rotate · scroll to zoom' }).click();
   await page.waitForTimeout(3500);
   await page.screenshot({ path: path.join(tmpdir(), 'portfolio-lighter-detail.png') });
   await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
   await page.waitForTimeout(3500);
   const launch = page.getByRole('button', { name: 'Portfolio in Chrome', exact: true });
-  const heading = page.getByRole('heading', { name: 'I build AI agents and the tools around them.' });
+  const heading = page.locator('[data-desktop-window="chrome"]').getByRole('heading', { name: 'Sean Arackal', level: 1 });
   const title = 'Sean Arackal • Google Chrome';
   await launch.click();
   await heading.waitFor();

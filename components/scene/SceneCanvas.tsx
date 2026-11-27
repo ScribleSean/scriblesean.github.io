@@ -56,7 +56,9 @@ function CameraRig({ view, reducedMotion, resetKey }: { view: CameraView; reduce
       const distance = Math.max(3.3, 1.34 / (Math.tan(37 * Math.PI / 360) * aspect));
       targetPosition.current.z = .92 + distance;
     } else {
-      targetPosition.current.sub(targetLook.current).multiplyScalar(Math.max(1, 1.35 / aspect)).add(targetLook.current);
+      // Narrow screens back the camera off so the desk still fits; the room view fits tighter so a phone isn't mostly floor.
+      const fit = view === "room" ? .95 : 1.35;
+      targetPosition.current.sub(targetLook.current).multiplyScalar(Math.max(1, fit / aspect)).add(targetLook.current);
     }
     const distance = targetPosition.current.distanceTo(targetLook.current);
     if (controls.current) controls.current.maxDistance = Math.max(30, distance * 1.1);
@@ -156,7 +158,7 @@ export default function SceneCanvas({ view, reducedMotion, screen, onReady, onAp
   const screenElement = useRef<HTMLDivElement>(null);
   const [pixelRatio, setPixelRatio] = useState(1);
   useEffect(() => {
-    const update = () => setPixelRatio(Math.min(1.5, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
+    const update = () => setPixelRatio(Math.min(window.matchMedia("(pointer: coarse)").matches ? 2 : 1.5, window.devicePixelRatio * (window.visualViewport?.scale ?? 1)));
     update();
     window.addEventListener("resize", update);
     window.visualViewport?.addEventListener("resize", update);

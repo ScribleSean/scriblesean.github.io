@@ -36,7 +36,7 @@ try {
     const variant = await page.locator('main').getAttribute('data-phone-desktop');
     assert(variant === 'crt' || variant === 'fullscreen', `unknown phone desktop variant ${variant}`);
     const name = `${variant}-${phone.width}`;
-    await page.getByRole('button', { name: 'tap to approach · drag to rotate' }).tap();
+    await page.getByRole('button', { name: 'Tap to approach · drag to rotate' }).tap();
     await page.waitForFunction(() => document.querySelector('main').dataset.camera === 'desk');
     await page.waitForTimeout(2500);
     await page.getByRole('button', { name: 'Enter the CRT', exact: true }).tap();
@@ -48,7 +48,7 @@ try {
 
     if (variant === 'crt') {
       assert(await page.locator('[data-crt-surface]').count() === 1, 'crt: desktop stays on the 3D screen');
-      assert.equal(entered.layoutWidth, 1200, 'crt: page keeps its 1200px layout');
+      assert.equal(entered.layoutWidth, phone.width, 'crt: page lays out at the phone width');
       assert(!page.url().includes('view=portfolio'), 'crt: no full-screen route');
     } else {
       assert(page.url().includes('view=portfolio'), 'fullscreen: opens the full-screen route');
@@ -62,7 +62,7 @@ try {
     }
 
     await chrome.tap();
-    await page.getByRole('heading', { name: 'I build AI agents and the tools around them.' }).waitFor({ timeout: 30000 });
+    await page.locator('[data-desktop-window="chrome"]').getByRole('heading', { name: 'Sean Arackal', level: 1 }).waitFor({ timeout: 30000 });
     await page.waitForTimeout(1200);
     await page.screenshot({ path: path.join(out, `phone-${name}-chrome.png`) });
     if (variant === 'fullscreen') {
@@ -75,19 +75,19 @@ try {
       await field.waitFor();
       assert(parseFloat(await field.evaluate((el) => getComputedStyle(el).fontSize)) >= 16, 'fullscreen: message field is 16px');
       await page.screenshot({ path: path.join(out, `phone-${name}-messages.png`) });
-      // Back to the room: the 1200px layout and the 3D scene come back.
+      // Back to the room: the 3D scene comes back at the phone width.
       await page.getByRole('button', { name: 'Back to the desk', exact: true }).tap();
       await page.locator('[data-ready="true"]').waitFor({ timeout: 60000 });
       await page.waitForFunction(() => document.querySelector('main').dataset.camera === 'room');
       assert(!page.url().includes('view=portfolio'), 'fullscreen: back leaves the full-screen route');
-      await page.waitForFunction(() => document.documentElement.clientWidth === 1200, null, { timeout: 5000 });
+      assert.equal(await page.evaluate(() => document.documentElement.clientWidth), phone.width, 'fullscreen: room stays at phone width');
       // The footer contact link opens Messages full screen too.
-      await page.getByRole('button', { name: 'contact', exact: true }).tap();
+      await page.getByRole('button', { name: 'Contact', exact: true }).tap();
       await page.locator('[data-desktop-window="messages"]').waitFor();
       assert.equal(await page.evaluate(() => document.documentElement.clientWidth), phone.width, 'fullscreen: contact opens at phone width');
       await page.goBack();
       await page.locator('[data-ready="true"]').waitFor({ timeout: 60000 });
-      assert.equal(await page.evaluate(() => document.documentElement.clientWidth), 1200, 'fullscreen: system back restores the room');
+      assert.equal(await page.evaluate(() => document.documentElement.clientWidth), phone.width, 'fullscreen: system back restores the room');
     }
     assert.deepEqual(errors, [], 'no page errors');
     console.log(`PASS: ${name} ${JSON.stringify({ dock: entered.dockButtons[0], clockText: entered.clockText, scale: entered.scale })}`);

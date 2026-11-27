@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { initialSceneState, sceneReducer, shouldPlayGame } from "@/lib/scene-state";
@@ -101,40 +100,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     setOpenRequest({ app, id: openRequestCount.current });
   }, []);
 
-  // Phones lay this page out 1200px wide and shrink it to fit, so 12px text lands near 4px.
-  // --inv is 1 / that shrink; the footer and hints use it to stay readable on screen.
-  const mainRef = useRef<HTMLElement>(null);
-  useLayoutEffect(() => {
-    const update = () => {
-      const touch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-      // Layout-based fit, not the live pinch scale, so zooming in still enlarges this text.
-      const shrink = window.screen.width / document.documentElement.clientWidth;
-      mainRef.current?.style.setProperty("--inv", String(touch && shrink > 0 && shrink < 1 ? 1 / shrink : 1));
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  // The home page lays out 1200px wide; the full-screen phone desktop needs the device's own width while it is open.
   const phoneOpen = phoneFull && state.mobileOpen;
-  const metaReset = useRef<{ frame: number; apply: () => void } | null>(null);
-  useLayoutEffect(() => {
-    if (!phoneOpen) return;
-    // A reset still pending from a quick close must not overwrite this open; apply it now so the original content is read.
-    if (metaReset.current) { cancelAnimationFrame(metaReset.current.frame); metaReset.current.apply(); metaReset.current = null; }
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-    if (!meta) return;
-    const previous = meta.content;
-    meta.content = "width=device-width, initial-scale=1";
-    return () => {
-      // iOS keeps the current zoom when the width changes back, so first ask for the zoom that fits the 1200px room.
-      const fit = Math.min(1, document.documentElement.clientWidth / 1200);
-      meta.content = `${previous}, initial-scale=${fit.toFixed(4)}`;
-      const apply = () => { meta.content = previous; };
-      metaReset.current = { apply, frame: requestAnimationFrame(() => { metaReset.current = null; apply(); }) };
-    };
-  }, [phoneOpen]);
 
   useEffect(() => {
     const section = window.location.hash.slice(1);
@@ -234,14 +200,17 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       onFocus={() => dispatch({ type: "hover", over: true })}
       onBlur={() => dispatch({ type: "hover", over: false })}
       onClick={(event) => { event.stopPropagation(); activateScreen(); }}
-    ><span className={styles.screenHint}>{state.camera === "entered" ? "minimize to desktop" : <><span className={styles.mouseOnly}>click to enter</span><span className={styles.touchOnly}>tap to enter</span></>}</span></button>}
+    ><span className={styles.screenHint}>{state.camera === "entered" ? "Minimize to desktop" : <><span className={styles.mouseOnly}>Click to enter</span><span className={styles.touchOnly}>Tap to enter</span></>}</span></button>}
     <div className={styles.glass} />
   </div>;
 
   const screenSlot = screenHost ? <ScreenSlot host={screenHost} onSlotChange={onSlotChange} /> : null;
 
-  return <main ref={mainRef} data-phone-desktop={phoneDesktop} data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
-    <h1 className={styles.srOnly}>Sean Arackal</h1>
+  return <main data-phone-desktop={phoneDesktop} data-camera={state.camera} data-camera-reset={cameraResetKey} className={styles.experience} aria-label="Sean Arackal's interactive portfolio">
+    {!state.mobileOpen && <header className={styles.identity} data-hidden={state.camera !== "room"}>
+      <h1>Sean Arackal</h1>
+      <p>I build AI agents and the tools around them.</p>
+    </header>}
     {degraded || state.mobileOpen ? fallback : <SceneBoundary fallback={fallback} onFailure={recoverDesktop}>
       {!sceneReady && fallback}
       <div className={styles.canvas} data-ready={sceneReady}
@@ -253,14 +222,16 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
         <SceneCanvas resetKey={cameraResetKey} view={state.camera} reducedMotion={reducedMotion} screen={screenSlot} onReady={onReady} onApproach={() => { scenePointer.current.hit = true; approach(); }} onFailure={recoverDesktop} />
       </div>
     </SceneBoundary>}
-    {!state.mobileOpen && <footer className={styles.footer}>
-      <Link href="/" prefetch={false} aria-label="Sean Arackal, home">sean arackal</Link><span aria-hidden="true">·</span>
-      <button type="button" onClick={() => enter(true)}>contact</button><span aria-hidden="true">·</span>
-      <a href={prototype ? "/prototype/" : "/portfolio/"}>skip to portfolio</a><span aria-hidden="true">·</span>
-      <button type="button" onClick={() => setVideoPaused(!gamePaused)}>{gamePaused ? "play video" : "pause video"}</button>
-    </footer>}
-    {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}><span className={styles.mouseOnly}>click to approach · drag to rotate · scroll to zoom</span><span className={styles.touchOnly}>tap to approach · drag to rotate</span></button>}
-    {!degraded && !phoneOpen && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ back to desk</button>}
+    {!state.mobileOpen && <div className={styles.bottom}>
+      {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}><span className={styles.mouseOnly}>Click to approach · drag to rotate · scroll to zoom</span><span className={styles.touchOnly}>Tap to approach · drag to rotate</span></button>}
+      {state.camera !== "entered" && <footer className={styles.footer}>
+        <a href={prototype ? "/prototype/" : "/portfolio/"}>Portfolio</a>
+        <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Résumé</a>
+        <button type="button" onClick={() => enter(true)}>Contact</button>
+        <button type="button" className={styles.videoToggle} onClick={() => setVideoPaused(!gamePaused)}>{gamePaused ? "Play video" : "Pause video"}</button>
+      </footer>}
+    </div>}
+    {!degraded && !phoneOpen && state.camera !== "room" && <button type="button" className={styles.back} onClick={backToDesk}>↖ Back to desk</button>}
     {state.mobileOpen && <div className={`${styles.fallbackDesktop} ${phoneOpen ? styles.phoneDesktop : ""}`}>{screenSlot}</div>}
     {screenHost && slot.count > 0 && createPortal(<DesktopBoundary>{screen}</DesktopBoundary>, screenHost)}
   </main>;

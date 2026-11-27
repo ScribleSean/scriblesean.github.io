@@ -8,14 +8,14 @@ try {
   await page.locator('[data-ready="true"]').waitFor();
   const chunks = '**/_next/static/chunks/*.js';
   await page.route(chunks, route => route.abort());
-  await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom', exact: true }).click();
+  await page.getByRole('button', { name: 'Click to approach · drag to rotate · scroll to zoom', exact: true }).click();
   await page.waitForTimeout(1500);
   await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
   await page.getByRole('button', { name: 'Reload website', exact: true }).waitFor();
   await page.unroute(chunks);
   await page.getByRole('button', { name: 'Reload website', exact: true }).click();
   await page.locator('[data-ready="true"]').waitFor();
-  await page.getByRole('button', { name: 'click to approach · drag to rotate · scroll to zoom', exact: true }).click();
+  await page.getByRole('button', { name: 'Click to approach · drag to rotate · scroll to zoom', exact: true }).click();
   await page.waitForTimeout(1500);
   await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
   await page.getByRole('button', { name: 'Portfolio in Chrome', exact: true }).waitFor();

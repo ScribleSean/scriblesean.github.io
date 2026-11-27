@@ -1,8 +1,9 @@
-.contributions { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line, #ccc5b8); color: inherit; }
-.contributions h3 { margin: 0 0 8px; font-size: 18px; font-weight: 400; }
+.contributions { color: inherit; }
+.label { margin: 0 0 4px; font-size: 13px; font-weight: 500; color: var(--muted); }
 .contributions ul { list-style: none; padding: 0; margin: 0; }
-.contributions li + li { margin-top: 16px; }
-.title { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; }
-.title a { font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
-.title span { font-size: 11px; opacity: .65; }
-.contributions li p { margin: 6px 0 0; font-size: 13px; line-height: 1.6; opacity: .8; }
+.contributions li + li { margin-top: 14px; }
+.title { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.title a { font-size: 16px; font-weight: 600; color: var(--text); }
+.title a:hover { color: var(--accent); }
+.title span { font-size: 13px; color: var(--faint); }
+.contributions li p { margin: 4px 0 0; font-size: 14px; line-height: 1.55; color: var(--body); }

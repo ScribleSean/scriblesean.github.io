@@ -1,11 +1,14 @@
-.experience { --ui: max(1, var(--inv, 1)); position: relative; width: 100%; height: 100dvh; min-height: 0; overflow: hidden; background: #e7dece; color: #494238; isolation: isolate; }
+/* The hint and the footer stack at the bottom, so a wrapped footer pushes the hint up instead of covering it. */
+.bottom { position: absolute; left: 0; right: 0; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 20; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 0 16px; pointer-events: none; }
+.bottom > * { pointer-events: auto; }
+.experience { position: relative; width: 100%; height: 100dvh; min-height: 0; overflow: hidden; background: #e7dece; color: #494238; isolation: isolate; }
 .canvas { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease; }
 .canvas[data-ready="true"] { opacity: 1; visibility: visible; }
-.footer { position: absolute; bottom: max(calc(27px * var(--ui)), env(safe-area-inset-bottom)); left: 0; right: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0 calc(16px * var(--ui)); padding: 0 calc(16px * var(--ui)); color: #4c463f; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; font-size: max(12px, 11.5px * var(--inv, 1)); letter-spacing: .09em; }
-.footer a, .footer button { border: 0; background: transparent; padding: calc(6px * var(--ui)) 0; color: inherit; font: inherit; cursor: pointer; }
-.footer a:hover, .footer button:hover { color: #231f35; text-decoration: underline; text-underline-offset: 5px; }
-.footer span { color: #9c9386; }
-.back { position: absolute; top: calc(22px * var(--ui)); left: calc(24px * var(--ui)); z-index: 30; background: #f5eee1db; border: 1px solid #b8aea060; border-radius: calc(20px * var(--ui)); padding: calc(9px * var(--ui)) calc(15px * var(--ui)); color: #4c463f; font: 12px ui-monospace, monospace; font-size: max(12px, 11.5px * var(--inv, 1)); cursor: pointer; }
+.footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0 26px; color: #4c463f; font: 500 14px/1.5 var(--sans); }
+.footer a, .footer button { border: 0; background: transparent; padding: 10px 0; color: inherit; font: inherit; cursor: pointer; }
+.footer a:hover, .footer button:hover { color: #231f1a; text-decoration: underline; text-underline-offset: 5px; }
+.footer .videoToggle { color: #6a6154; font-weight: 400; }
+.back { position: absolute; top: 22px; left: 24px; z-index: 30; background: #f5eee1db; border: 1px solid #b8aea060; border-radius: 20px; padding: 9px 15px; color: #4c463f; font: 500 14px var(--sans); cursor: pointer; }
 .screen { width: 960px; height: 720px; position: relative; overflow: hidden; border-radius: 5.4% / 6.5%; background: #17171d; color: white; isolation: isolate; box-shadow: inset 0 0 12px #000; }
 .desktopLayer { position: absolute; inset: 0; }
 .gameLayer { position: absolute; inset: 0; z-index: 50; transform-origin: left top; background: #0d0c12; transition: transform .38s cubic-bezier(.2,.8,.2,1), opacity .25s ease; overflow: hidden; }
@@ -23,11 +26,11 @@
 .screenHint { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); border-radius: 6px; background: #17151dba; color: #f7f3e8; padding: 8px 16px; font: 14px ui-monospace, monospace; letter-spacing: .08em; opacity: 0; transition: opacity .12s; white-space: nowrap; }
 .screenHit:hover .screenHint, .screenHit:focus-visible .screenHint { opacity: 1; }
 .glass { position: absolute; inset: 0; border-radius: inherit; z-index: 60; pointer-events: none; box-shadow: inset 0 0 24px 6px #0008; background: linear-gradient(120deg, #ffffff0a, transparent 28%, transparent 75%, #c7b9e605); }
-.entryButton { position: absolute; z-index: 15; left: 50%; bottom: 75px; transform: translateX(-50%); padding: calc(8px * var(--ui)) calc(12px * var(--ui)); border: 0; border-radius: calc(8px * var(--ui)); background: #e7dececc; color: #756b5e; font: 12px ui-monospace, monospace; font-size: max(12px, 11.5px * var(--inv, 1)); white-space: nowrap; cursor: pointer; }
+.entryButton { padding: 8px 14px; border: 0; border-radius: 999px; background: #f3ede3d9; color: #6f6557; font: 14px var(--sans); white-space: nowrap; cursor: pointer; }
 .touchOnly { display: none; }
 .entryButton:hover { color: #373044; }
 .fallback { position: absolute; inset: 0; display: grid; place-items: center; background: #e7dece; }
-.loadingDesk { display: grid; justify-items: center; gap: 16px; color: #756b5e; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.loadingDesk { display: grid; justify-items: center; gap: 16px; color: #756b5e; font: 14px/1.5 var(--sans); }
 .loadingMark { width: 38px; height: 30px; border: 1px solid #a89c8b; border-radius: 5px; position: relative; }
 .loadingMark::after { content: ""; position: absolute; width: 12px; height: 1px; background: #a89c8b; bottom: -6px; left: 12px; }
 .loadingDesk p { margin: 0; letter-spacing: .04em; }
@@ -46,8 +49,12 @@
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 760px) {
   .experience { min-height: 0; }
-  .footer { gap: 9px; font-size: 11px; letter-spacing: .015em; bottom: max(22px, env(safe-area-inset-bottom)); }
-  .back { top: 12px; left: 12px; }
+  .footer { gap: 0 20px; }
+  .bottom { bottom: max(14px, env(safe-area-inset-bottom)); gap: 8px; }
+  .back { top: 14px; left: 14px; }
+  .identity { top: 20px; left: 20px; right: 20px; }
+  .identity h1 { font-size: 22px; }
+  .identity p { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .canvas, .gameLayer, .screenHint, .youtube { transition: none; }
@@ -55,14 +62,17 @@
 }
 
 @media (hover: none) { .screenHint { opacity: 1; } }
-/* After the 760px rule so it wins on touch screens. The footer is two rows here, so the hint sits above both. */
 @media (hover: none) and (pointer: coarse) {
-  .mouseOnly, .footer span { display: none; }
+  .mouseOnly { display: none; }
   .touchOnly { display: inline; }
-  .footer { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; row-gap: 0; column-gap: calc(28px * var(--ui)); letter-spacing: .03em; font-size: max(12px, 11.5px * var(--inv, 1)); bottom: max(calc(27px * var(--ui)), env(safe-area-inset-bottom)); }
-  .back { top: calc(22px * var(--ui)); left: calc(24px * var(--ui)); }
-  .entryButton { bottom: calc(100px * var(--ui)); }
-  /* The CRT label is also shrunk by the 3D screen, so it needs more than --ui to read at about 11.5px. */
-  .screenHint { bottom: calc(28px * var(--ui)); padding: calc(8px * var(--ui)) calc(16px * var(--ui)); border-radius: calc(6px * var(--ui)); font-size: calc(19.6px * var(--ui)); }
-  .experience[data-camera="entered"] .screenHint { font-size: calc(9.6px * var(--ui)); }
+  /* The CRT label shrinks with the 3D screen (about a fifth on a phone), so it starts large to land near 12px. */
+  .screenHint { font-size: 60px; padding: 24px 48px; border-radius: 18px; }
+  .experience[data-camera="entered"] .screenHint { font-size: 29px; padding: 12px 24px; border-radius: 9px; }
 }
+
+/* Name and one line about Sean, shown in the room view. */
+.identity { position: absolute; top: 32px; left: 36px; z-index: 20; max-width: 30em; color: #2f2a24; pointer-events: none; transition: opacity .3s ease; }
+.identity[data-hidden="true"] { opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s .3s; }
+.identity h1 { margin: 0; font: 650 26px/1.15 var(--sans); letter-spacing: -.02em; }
+.identity p { margin: 6px 0 0; font: 16px/1.45 var(--sans); color: #6a6154; }
+@media (prefers-reduced-motion: reduce) { .identity { transition: none; } }

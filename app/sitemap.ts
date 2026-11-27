@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { projectPages } from "@/data/featured-projects";
+import { featured, projectHref, projectPages } from "@/data/featured-projects";
+import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
-
 export default function sitemap(): MetadataRoute.Sitemap {
-  return ["/", "/portfolio/", "/resume/", "/projects/", ...projectPages.map((p) => `/projects/${p.slug}/`)].map((path) => ({ url: `${siteUrl}${path}` }));
+  const lastModified = featured.checkedThrough;
+  return ["/", "/portfolio/", "/projects/", ...projectPages.map((p) => projectHref(p.slug)), "/resume/"].map((path) => ({ url: `${siteUrl}${path}`, lastModified }));
 }

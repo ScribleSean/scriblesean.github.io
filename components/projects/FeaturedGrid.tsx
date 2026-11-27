@@ -19,8 +19,9 @@ export default function FeaturedGrid({ newTab = false, teasers = true }: { newTa
               // eslint-disable-next-line @next/next/no-img-element -- static export serves images as-is.
               <img className={styles.poster} src={image} alt="" width={16} height={9} loading="lazy" decoding="async" />
             )}
+            <div className={styles.body}>
             <div className={styles.top}>
-              <ProjectMark project={project} size={32} />
+              <ProjectMark project={project} size={30} />
               <h3>
                 {project.teaser ? (
                   project.name
@@ -43,6 +44,7 @@ export default function FeaturedGrid({ newTab = false, teasers = true }: { newTa
                 </span>
               )}
             </p>
+            </div>
           </li>
         );
       })}

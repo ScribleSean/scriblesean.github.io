@@ -29,7 +29,7 @@ try {
   await page.waitForTimeout(3000);
   assert((await page.evaluate(() => window.__playTimes.length)) > 0, 'Video must autoplay on initial load before interaction');
   const results = [];
-  for (const name of ['click to approach · drag to rotate · scroll to zoom', 'Enter the CRT', '↖ back to desk', 'click to approach · drag to rotate · scroll to zoom']) {
+  for (const name of ['Click to approach · drag to rotate · scroll to zoom', 'Enter the CRT', '↖ Back to desk', 'Click to approach · drag to rotate · scroll to zoom']) {
     await page.evaluate(() => { window.__drawTimes = []; window.__playTimes = []; window.__motionStarted = performance.now(); });
     await page.getByRole('button', { name, exact: true }).click();
     // A move is a fixed number of frames, so wait for drawing to stop rather than a fixed time.

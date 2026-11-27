@@ -1,39 +1,22 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "@/styles/globals.css";
+import { homeDescription, personName, siteUrl } from "@/lib/seo";
 import { ogImage } from "@/lib/site";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
-
 // themeColor matches the page background (styles/globals.css), so the browser bar blends into it.
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#e7dece" };
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#edeae5" }, { media: "(prefers-color-scheme: dark)", color: "#191b18" }],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: "Sean Arackal",
-    template: "%s · Sean Arackal",
-  },
-  description:
-    "Sean Arackal studied computer science at WPI and builds Mac apps, web tools, and AI research software.",
-  openGraph: {
-    title: "Sean Arackal",
-    description:
-      "Projects, work history, and a 3D interactive portfolio by a WPI computer science graduate.",
-    url: siteUrl,
-    siteName: "Sean Arackal",
-    locale: "en_US",
-    type: "website",
-    images: [ogImage],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Sean Arackal",
-    description:
-      "Projects, work history, and a 3D interactive portfolio by a WPI computer science graduate.",
-    images: [ogImage],
-  },
+  title: { default: personName, template: `%s · ${personName}` },
+  description: homeDescription,
+  openGraph: { siteName: personName, locale: "en_US", type: "website", images: [ogImage] },
+  twitter: { card: "summary_large_image", images: [ogImage] },
 };
 
 export default function RootLayout({

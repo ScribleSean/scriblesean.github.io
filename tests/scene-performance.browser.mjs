@@ -70,7 +70,7 @@ try {
     const canvas = await page.locator('canvas').evaluate(c => ({ width: c.width, height: c.height }));
     assert(canvas.width <= device.viewport.width * device.deviceScaleFactor + 2, 'Canvas exceeds physical display width');
     const buffers = await page.evaluate(() => window.__scenePerf.buffers);
-    await page.getByRole('button', { name: /^(click to approach · drag to rotate · scroll to zoom|tap to approach · drag to rotate)$/ }).click();
+    await page.getByRole('button', { name: /^(Click to approach · drag to rotate · scroll to zoom|Tap to approach · drag to rotate)$/ }).click();
     await settle('desk');
     assert.equal(youtubeRequests, 1, 'Approach should initialize video once');
     const geometryRebuiltOnApproach = (await page.evaluate(() => window.__scenePerf.buffers)) !== buffers;
@@ -79,9 +79,9 @@ try {
     const flat = await page.locator('main').getAttribute('data-phone-desktop') === 'fullscreen' && page.url().includes('view=portfolio');
     await settle('entered');
     await page.getByRole('button', { name: 'Portfolio in Chrome', exact: true }).click();
-    await page.getByRole('heading', { name: 'I build AI agents and the tools around them.' }).waitFor();
+    await page.locator('[data-desktop-window="chrome"]').getByRole('heading', { name: 'Sean Arackal', level: 1 }).waitFor();
     if (device.name === 'desktop') {
-      const selector = await page.getByRole('heading', { name: 'I build AI agents and the tools around them.' }).evaluate(el => {
+      const selector = await page.locator('[data-desktop-window="chrome"]').getByRole('heading', { name: 'Sean Arackal', level: 1 }).evaluate(el => {
         let p = el.parentElement;
         while (p && !(p.scrollHeight > p.clientHeight && /auto|scroll/.test(getComputedStyle(p).overflowY))) p = p.parentElement;
         if (!p) throw Error('No native portfolio scroll container');
@@ -106,7 +106,7 @@ try {
     if (flat) {
       await page.getByRole('button', { name: 'Back to the desk', exact: true }).click();
       await page.locator('[data-ready="true"]').waitFor({ timeout: 60000 });
-    } else await page.getByRole('button', { name: '↖ back to desk', exact: true }).click();
+    } else await page.getByRole('button', { name: '↖ Back to desk', exact: true }).click();
     await settle('back');
     // The CRT path keeps its first player. The flat path mounts the player twice more (flat desktop, then the room),
     // and each mount asks for the API again only if the last load failed, so at most one request per mount.
