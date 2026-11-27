@@ -64,7 +64,7 @@ export default function ProjectFilm({ film, name }: { film: Film; name: string }
           <span role="status" className={styles.srOnly}>{held && !playing ? "Paused" : ""}</span>
           <button type="button" className={styles.filmPlay} onClick={() => setFull(true)}>
             <span aria-hidden="true">▶</span>
-            {film.sound ? "Play with sound" : "Play film"}
+            <span className={styles.playLabel}>{film.sound ? "Play with sound" : "Play film"}</span>
           </button>
           <button type="button" className={styles.filmPause} aria-label="Pause film loop" aria-pressed={!playing}
             onClick={() => setHeld((current) => loopToggle(current, reducedMotion))}>

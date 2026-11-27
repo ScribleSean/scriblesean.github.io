@@ -109,7 +109,8 @@
   .title img, .title > span { width: 48px !important; height: 48px !important; }
   .introFoot > p { font-size: 16px; }
   .shot img, .film video { border-radius: 10px; }
-  .filmPlay { left: 10px; bottom: 10px; min-height: 36px; padding: 0 12px; font-size: 13px; }
+  .filmPlay { left: 10px; bottom: 10px; width: 40px; height: 40px; min-height: 0; padding: 0; justify-content: center; }
+  .playLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .filmPause { right: 10px; bottom: 10px; width: 36px; height: 36px; }
   .sections section { grid-template-columns: 1fr; }
   .sectionIndex { grid-row: auto; margin: 0 0 6px; }
@@ -129,3 +130,6 @@
 .resumeSheet { display: block; width: 100%; height: auto; border-radius: 6px; background: #fff; box-shadow: var(--shadow-lift); }
 @media print { .bar, .footer, .resumeHead .actions { display: none; } .resumeSheet { box-shadow: none; } }
 .galleryNote { grid-column: 1 / -1; margin: -12px 0 0; color: var(--muted); font-size: 14px; }
+.shotDark { display: none !important; }
+:global(html[data-theme="dark"]) .shotDark { display: block !important; }
+:global(html[data-theme="dark"]) .shotLight { display: none !important; }

@@ -89,7 +89,7 @@ export default function RoomWindow({ phase, frame }: { phase: Phase; frame: stri
       ))}
       <mesh position={[0, 0, .05]}><boxGeometry args={[.06, HEIGHT, .06]} />{bar}</mesh>
       <mesh position={[0, 0, .05]}><boxGeometry args={[WIDTH, .06, .06]} />{bar}</mesh>
-      <mesh position={[0, -HEIGHT / 2 - .2, .2]} castShadow receiveShadow><boxGeometry args={[WIDTH + .5, .1, .4]} />{bar}</mesh>
+      <mesh position={[0, -HEIGHT / 2 - .2, .2]} receiveShadow><boxGeometry args={[WIDTH + .5, .1, .4]} />{bar}</mesh>
     </group>
   );
 }

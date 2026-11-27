@@ -42,7 +42,7 @@ const looks: Record<Phase, Look> = {
   // Low warm sun from the left, long shadows, a cool fill from the other side.
   golden: { room: "#e8cfb1", frame: "#f0e0c8", sky: ["#ffe1bd", "#a2806a", 1.7], key: { at: [-9, 3.4, 3], color: "#ffb36e", intensity: 3.6 }, fill: { color: "#b7a9ff", intensity: .55 }, glow: .8 },
   // Dark room: faint moonlight through the window, and the CRT is the brightest light.
-  night: { room: "#1a1a21", frame: "#2b2a33", sky: ["#3b4566", "#0d0c12", .55], key: { at: [-5, 7, -6], color: "#9fb0e0", intensity: .9 }, fill: { color: "#ffb877", intensity: .15 }, glow: 9 },
+  night: { room: "#1a1a21", frame: "#2b2a33", sky: ["#4a5578", "#16141c", 1.05], key: { at: [-5, 7, -6], color: "#9fb0e0", intensity: 1.4 }, fill: { color: "#ffb877", intensity: .15 }, glow: 9 },
 };
 
 const cameraPositions: Record<CameraView, [number, number, number]> = {

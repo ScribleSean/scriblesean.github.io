@@ -10,10 +10,13 @@ const updated = new Date(`${featured.checkedThrough}T12:00:00Z`).toLocaleDateStr
 
 function Shot({ image, priority = false }: { image: ProjectImage; priority?: boolean }) {
   return (
-    <picture className={styles.shot}>
-      {image.darkSrc && <source media="(prefers-color-scheme: dark)" srcSet={image.darkSrc} />}
-      <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading={priority ? "eager" : "lazy"} decoding="async" />
-    </picture>
+    // Light and dark shots follow the page's theme (the visitor's clock), not the system setting.
+    <span className={styles.shot}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- static export serves images as-is. */}
+      <img className={image.darkSrc ? styles.shotLight : undefined} src={image.src} alt={image.alt} width={image.width} height={image.height} loading={priority ? "eager" : "lazy"} decoding="async" />
+      {/* eslint-disable-next-line @next/next/no-img-element -- static export serves images as-is. */}
+      {image.darkSrc && <img className={styles.shotDark} src={image.darkSrc} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />}
+    </span>
   );
 }
 
