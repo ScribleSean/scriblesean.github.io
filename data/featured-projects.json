@@ -73,7 +73,7 @@
       "status": "Open source",
       "tagline": "A menu bar app and dashboard that shows which sessions used my Claude Code and Codex limits, what each one shipped, and when each limit runs out.",
       "summary": "Each limit says when it runs out at my current pace, or that it has room. Seven dashboard views show sessions, limits, tokens and screen time over a day up to all time. It runs on my own computer and doesn't change any of the tools it reads.",
-      "mark": "telescope",
+      "mark": "refractor",
       "card": "/projects/observatory/card.jpg",
       "film": {
         "src": "/projects/observatory/observatory.mp4",
@@ -89,7 +89,7 @@
           "title": "Run out, or room",
           "body": [
             "Each limit window is forecast once per reading, and the dashboard, menu bar and tray all show that same sentence, like “Claude runs out Wed 3–7 PM at this pace” or “has room”. The pace ignores readings from before a reset, and once a few days of readings are stored it gives a range taken from how far its own earlier forecasts missed. A window that has only just reset says it is too early to forecast.",
-            "The menu bar and tray icon is a ring that fills as the weekly limit is used. A dot in the center means it lasts until the reset, and a bar means it runs out first. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
+            "The menu bar and tray icon is a telescope whose tube fills as the Claude weekly limit is used. The star it points at is a dot when the limit lasts until the reset, a bar when it runs out first, and a hollow dot when the last reading is old. An engine that is signed out, on a free plan, or has had no reading for a day reads Off, not an old number."
           ]
         },
         {
@@ -133,7 +133,7 @@
       ],
       "highlights": [
         "Claude Code and Codex limits sit side by side, and Grok is optional",
-        "Screen time from ActivityWatch, grouped by app and category",
+        "Screen time from ActivityWatch, by kind of app and by the apps and sites I name",
         "Tests plant fake prompts and keys in session logs and check none come out in Observatory’s data",
         "Tests run on macOS, Windows and Linux",
         "MIT licensed, with a demo that uses fictional data"

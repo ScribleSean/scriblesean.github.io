@@ -32,7 +32,7 @@ export type FeaturedProject = {
   icon?: string;
   card?: string;
   iconFullBleed?: boolean;
-  mark?: "telescope";
+  mark?: "refractor";
   heroPlaceholder?: string;
   film?: ProjectFilm;
   hero?: { light: string; dark?: string; width: number; height: number; alt: string };

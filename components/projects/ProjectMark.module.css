@@ -2,6 +2,13 @@
 .fullBleed { transform: scale(.82); border-radius: 22%; }
 .tile { display: grid; place-items: center; flex: none; border-radius: 23%; transform: scale(.84); }
 .tile svg { width: 52%; height: 52%; }
-.telescope { background: #586f50; color: #f4f1ec; box-shadow: 0 6px 14px rgb(36 43 39 / 18%); }
+.refractor { display: block; flex: none; transform: scale(.82); border-radius: 22.5%; box-shadow: 0 0 0 1px rgb(36 43 39 / 10%), 0 6px 14px rgb(36 43 39 / 16%); }
+.refractor svg { display: block; width: 100%; height: 100%; }
+.refractorTile { fill: #efece7; }
+.refractorInk { stroke: #b5562c; fill: #b5562c; }
+/* Dark follows the page's theme (the visitor's clock), like the rest of the site. */
+:global(html[data-theme="dark"]) .refractor { box-shadow: 0 0 0 1px rgb(255 255 255 / 10%), 0 6px 14px rgb(0 0 0 / 30%); }
+:global(html[data-theme="dark"]) .refractorTile { fill: #161715; }
+:global(html[data-theme="dark"]) .refractorInk { stroke: #d97f57; fill: #d97f57; }
 .blank { background: transparent; border: 1.5px dashed var(--faint); box-shadow: none; }
 .blank span { width: 22%; height: 22%; border-radius: 50%; background: var(--accent); }
