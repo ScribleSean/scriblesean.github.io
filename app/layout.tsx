@@ -6,7 +6,8 @@ import { ogImage } from "@/lib/site";
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://scriblesean.github.io";
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1 };
+// themeColor matches the page background (styles/globals.css), so the browser bar blends into it.
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#e7dece" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
