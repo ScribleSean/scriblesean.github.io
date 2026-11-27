@@ -335,11 +335,17 @@
       "gallery": [
         {
           "src": "/projects/cube-type/play-light.jpg",
-          "darkSrc": "/projects/cube-type/play-dark.jpg",
           "width": 1440,
           "height": 900,
-          "alt": "cube·type with a 3D cube and the word for each turn placed beside its face",
-          "caption": "Each move’s word sits beside its face. Daylight and the default dark theme."
+          "alt": "cube·type in its daylight theme, with a 3D cube and the word for each turn placed beside its face",
+          "caption": "Each move’s word sits beside its face, in the daylight theme."
+        },
+        {
+          "src": "/projects/cube-type/play-dark.jpg",
+          "width": 1440,
+          "height": 900,
+          "alt": "cube·type in its default dark theme, with the same cube and words",
+          "caption": "The default dark theme."
         }
       ],
       "card": "/projects/cube-type/card.jpg"
