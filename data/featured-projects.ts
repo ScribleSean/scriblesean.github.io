@@ -38,6 +38,7 @@ export type FeaturedProject = {
   hero?: { light: string; dark?: string; width: number; height: number; alt: string };
   sections?: { title: string; body: string[] }[];
   gallery?: ProjectImage[];
+  galleryNote?: string;
   highlights?: string[];
   connects?: { slug: string; text: string }[];
   stack?: string[];

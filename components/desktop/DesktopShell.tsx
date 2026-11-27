@@ -121,7 +121,6 @@ export default function DesktopShell({ portfolio, files, messages, photos, onRes
       <div className={styles.dockDivider}/>
       <button type="button" className={styles.dockButton} data-dock-app="slippi" onClick={onRestoreGame} aria-label={appLabels.slippi} title={appLabels.slippi}><Icon app="slippi"/><span>Slippi</span></button>
     </aside>
-    <div className={styles.desktopHint}>Click an app to begin</div>
     {(Object.keys(windows) as DesktopAppId[]).map((app) => {
       const frame = windows[app];
       if (!frame.mounted) return null;

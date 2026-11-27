@@ -15,9 +15,9 @@ const contributions = [
 
 export default function OpenSourceContributions() {
   return <article className={styles.contributions} aria-label="Open-source contributions">
-    <p className={styles.label}>Open source</p>
+    <p className={styles.label}>Open source pull requests</p>
     <ul>{contributions.map(contribution => <li key={contribution.url}>
-      <div className={styles.title}><a href={contribution.url} target="_blank" rel="noreferrer">{contribution.name} ↗</a><span>Pull request submitted</span></div>
+      <div className={styles.title}><a href={contribution.url} target="_blank" rel="noreferrer">{contribution.name} ↗</a></div>
       <p>{contribution.summary}</p>
     </li>)}</ul>
   </article>;

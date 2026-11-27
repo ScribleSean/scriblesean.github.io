@@ -70,7 +70,7 @@ try {
     const canvas = await page.locator('canvas').evaluate(c => ({ width: c.width, height: c.height }));
     assert(canvas.width <= device.viewport.width * device.deviceScaleFactor + 2, 'Canvas exceeds physical display width');
     const buffers = await page.evaluate(() => window.__scenePerf.buffers);
-    await page.getByRole('button', { name: /^(Click to approach · drag to rotate · scroll to zoom|Tap to approach · drag to rotate)$/ }).click();
+    await page.getByRole('button', { name: /^Go to the desk$/ }).click();
     await settle('desk');
     assert.equal(youtubeRequests, 1, 'Approach should initialize video once');
     const geometryRebuiltOnApproach = (await page.evaluate(() => window.__scenePerf.buffers)) !== buffers;

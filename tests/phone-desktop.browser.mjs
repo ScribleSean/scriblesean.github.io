@@ -36,7 +36,7 @@ try {
     const variant = await page.locator('main').getAttribute('data-phone-desktop');
     assert(variant === 'crt' || variant === 'fullscreen', `unknown phone desktop variant ${variant}`);
     const name = `${variant}-${phone.width}`;
-    await page.getByRole('button', { name: 'Tap to approach · drag to rotate' }).tap();
+    await page.getByRole('button', { name: 'Go to the desk' }).tap();
     await page.waitForFunction(() => document.querySelector('main').dataset.camera === 'desk');
     await page.waitForTimeout(2500);
     await page.getByRole('button', { name: 'Enter the CRT', exact: true }).tap();

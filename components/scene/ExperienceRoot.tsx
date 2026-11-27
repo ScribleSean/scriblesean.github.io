@@ -165,7 +165,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
     <div className={styles.loadingDesk}>
       <span className={styles.loadingMark} aria-hidden="true" />
       <p role="status">{degraded ? "The desktop is ready." : "Opening the desk…"}</p>
-      <button type="button" onClick={() => enter()} aria-label="Open Sean's desktop">open desktop</button>
+      <button type="button" onClick={() => enter()} aria-label="Open Sean's desktop">Open desktop</button>
     </div>
   </div>;
 
@@ -200,7 +200,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       onFocus={() => dispatch({ type: "hover", over: true })}
       onBlur={() => dispatch({ type: "hover", over: false })}
       onClick={(event) => { event.stopPropagation(); activateScreen(); }}
-    ><span className={styles.screenHint}>{state.camera === "entered" ? "Minimize to desktop" : <><span className={styles.mouseOnly}>Click to enter</span><span className={styles.touchOnly}>Tap to enter</span></>}</span></button>}
+    ><span className={styles.screenHint}>{state.camera === "entered" ? "Minimize to desktop" : "Open the desktop"}</span></button>}
     <div className={styles.glass} />
   </div>;
 
@@ -223,7 +223,7 @@ export default function ExperienceRoot({ prototype = false }: { prototype?: bool
       </div>
     </SceneBoundary>}
     {!state.mobileOpen && <div className={styles.bottom}>
-      {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}><span className={styles.mouseOnly}>Click to approach · drag to rotate · scroll to zoom</span><span className={styles.touchOnly}>Tap to approach · drag to rotate</span></button>}
+      {!degraded && state.camera === "room" && <button type="button" className={styles.entryButton} onClick={approach}>Go to the desk</button>}
       {state.camera !== "entered" && <footer className={styles.footer}>
         <a href={prototype ? "/prototype/" : "/portfolio/"}>Portfolio</a>
         <a href="/resume/sean-arackal-resume.pdf" target="_blank" rel="noreferrer">Résumé</a>

@@ -168,16 +168,17 @@
           "width": 1440,
           "height": 1307,
           "alt": "The Observatory Overview: spend, branches merged and commits on main for the week, spend per day over what landed, the sessions table and Limits now",
-          "caption": "The Overview, with every number compared to the previous period. Fictional data."
+          "caption": "The Overview, with every number compared to the previous period."
         },
         {
           "src": "/projects/observatory/r2-limits-dark.jpg",
           "width": 1440,
           "height": 900,
           "alt": "The Observatory Limits view: the weekly limit with its forecast sentence and how much of the week is gone",
-          "caption": "Limits, with when the week runs out at this pace. Fictional data."
+          "caption": "Limits, with when the week runs out at this pace."
         }
-      ]
+      ],
+      "galleryNote": "Both screenshots use fictional data."
     },
     {
       "slug": "career-bridge",

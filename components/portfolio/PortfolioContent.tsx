@@ -31,7 +31,9 @@ export default function PortfolioContent({ onContact, embedded = false }: Portfo
     if (!viewport) return;
     const bounds = viewport.getBoundingClientRect();
     const scale = bounds.height / viewport.offsetHeight || 1;
-    viewport.scrollTop += (section.getBoundingClientRect().top - bounds.top) / scale;
+    // Land below the sticky header, not under it.
+    const header = event.currentTarget.querySelector("header")?.offsetHeight ?? 0;
+    viewport.scrollTop += (section.getBoundingClientRect().top - bounds.top) / scale - (section.id === "top" ? 0 : header);
   }
 
   const contactAction = onContact

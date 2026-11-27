@@ -56,7 +56,7 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
           <div className={`${styles.wrap} ${styles.introInner}`}>
             <p className={styles.eyebrow}>
               <span className={styles.indicator} />
-              {project.kind}
+              {project.kind}{project.status && <> · {project.status}</>}
             </p>
             <div className={styles.title}>
               <ProjectMark project={project} size={76} />
@@ -66,7 +66,6 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
             <div className={styles.introFoot}>
               <p>{project.summary}</p>
               <div className={styles.actions}>
-                <span className={styles.status}>{project.status}</span>
                 {project.links?.map((link, i) => (
                   <a key={link.href} className={i === 0 ? styles.primary : styles.secondary} href={link.href} target="_blank" rel="noreferrer">
                     {link.label} ↗
@@ -133,6 +132,7 @@ export default function ProjectPage({ project }: { project: FeaturedProject }) {
                 {image.caption && <figcaption>{image.caption}</figcaption>}
               </figure>
             ))}
+            {project.galleryNote && <p className={styles.galleryNote}>{project.galleryNote}</p>}
           </div>
         )}
 

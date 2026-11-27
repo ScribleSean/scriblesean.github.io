@@ -3,7 +3,7 @@
 :global(body):has(.page) { background: var(--bg); }
 
 .page a { color: inherit; text-decoration: none; }
-.page :is(a, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.page :is(a, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 0; border-radius: 4px; }
 .page h1, .page h2 { text-wrap: balance; }
 .wrap { width: min(var(--page), 100% - 2 * var(--gutter)); margin-inline: auto; }
 
@@ -17,7 +17,7 @@
 .intro { padding-block: clamp(40px, 7vw, 80px) 0; }
 .introInner { display: grid; gap: 0; }
 .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 18px; color: var(--muted); font-size: 14px; }
-.indicator { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--clay); }
+.indicator { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--accent); }
 .title { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
 .title h1 { margin: 0; font-size: clamp(40px, 7vw, 72px); font-weight: 650; letter-spacing: -.04em; line-height: 1; }
 .tagline { max-width: 30em; margin: 0 0 28px; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.3; letter-spacing: -.015em; color: var(--text); }
@@ -36,7 +36,7 @@
 .shot img { display: block; width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--shadow-lift); background: var(--surface); }
 .film { position: relative; }
 .film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--radius); box-shadow: var(--shadow-lift); background: var(--sunken); }
-.film video:focus-visible, .filmPlay:focus-visible, .filmPause:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.film video:focus-visible, .filmPlay:focus-visible, .filmPause:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
 .filmPlay { position: absolute; left: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 9px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: rgb(250 248 244 / 92%); color: #292d28; font: inherit; font-size: 14px; font-weight: 550; cursor: pointer; box-shadow: 0 4px 14px rgb(0 0 0 / 18%); backdrop-filter: blur(8px); }
 .filmPlay span { font-size: 10px; }
 .filmPlay:hover { background: #fff; }
@@ -102,7 +102,8 @@
   .actions { justify-content: start; }
 }
 @media (max-width: 640px) {
-  .bar nav a:nth-child(1) { display: none; }
+  .barInner { flex-wrap: wrap; gap: 0 16px; padding-block: 10px 2px; }
+  .bar nav { width: 100%; justify-content: space-between; }
   .title { gap: 12px; }
   .title img, .title > span { width: 48px !important; height: 48px !important; }
   .introFoot > p { font-size: 16px; }
@@ -117,8 +118,7 @@
   .pager .pagerAll { grid-column: 1 / -1; grid-row: 2; }
   .placeholder { aspect-ratio: 4 / 3; }
 }
-/* The wordmark already links to the portfolio, so the narrowest phones drop that link. */
-@media (max-width: 400px) { .bar nav a:nth-child(2) { display: none; } }
+
 @media (prefers-reduced-motion: reduce) { .connects li a, .primary, .secondary { transition: none; } }
 .lead { max-width: 40em; margin: 4px 0 36px; color: var(--body); font-size: 17px; line-height: 1.65; }
 
@@ -127,3 +127,4 @@
 .resumeHead h1 { margin: 0; font-size: clamp(32px, 5vw, 48px); font-weight: 650; letter-spacing: -.035em; }
 .resumeSheet { display: block; width: 100%; height: auto; border-radius: 6px; background: #fff; box-shadow: var(--shadow-lift); }
 @media print { .bar, .footer, .resumeHead .actions { display: none; } .resumeSheet { box-shadow: none; } }
+.galleryNote { grid-column: 1 / -1; margin: -12px 0 0; color: var(--muted); font-size: 14px; }

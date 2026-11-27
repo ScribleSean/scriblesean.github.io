@@ -19,7 +19,7 @@ try {
       await page.close();
       continue;
     }
-    await page.getByRole('button', { name: /^(Click to approach · drag to rotate · scroll to zoom|Tap to approach · drag to rotate)$/ }).click();
+    await page.getByRole('button', { name: /^Go to the desk$/ }).click();
     await page.waitForTimeout(1800);
     await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();
     await page.waitForTimeout(2200);

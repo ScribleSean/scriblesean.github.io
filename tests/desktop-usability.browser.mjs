@@ -15,7 +15,7 @@ try {
   await page.goto(process.env.TEST_URL || 'http://127.0.0.1:3124');
   await page.locator('[data-ready="true"]').waitFor();
   await page.screenshot({ path: path.join(tmpdir(), 'portfolio-lighter-scene.png') });
-  await page.getByRole('button', { name: 'Click to approach · drag to rotate · scroll to zoom' }).click();
+  await page.getByRole('button', { name: 'Go to the desk' }).click();
   await page.waitForTimeout(3500);
   await page.screenshot({ path: path.join(tmpdir(), 'portfolio-lighter-detail.png') });
   await page.getByRole('button', { name: 'Enter the CRT', exact: true }).click();

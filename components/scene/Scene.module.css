@@ -27,7 +27,6 @@
 .screenHit:hover .screenHint, .screenHit:focus-visible .screenHint { opacity: 1; }
 .glass { position: absolute; inset: 0; border-radius: inherit; z-index: 60; pointer-events: none; box-shadow: inset 0 0 24px 6px #0008; background: linear-gradient(120deg, #ffffff0a, transparent 28%, transparent 75%, #c7b9e605); }
 .entryButton { padding: 8px 14px; border: 0; border-radius: 999px; background: #f3ede3d9; color: #6f6557; font: 14px var(--sans); white-space: nowrap; cursor: pointer; }
-.touchOnly { display: none; }
 .entryButton:hover { color: #373044; }
 .fallback { position: absolute; inset: 0; display: grid; place-items: center; background: #e7dece; }
 .loadingDesk { display: grid; justify-items: center; gap: 16px; color: #756b5e; font: 14px/1.5 var(--sans); }
@@ -69,8 +68,6 @@
 
 @media (hover: none) { .screenHint { opacity: 1; } }
 @media (hover: none) and (pointer: coarse) {
-  .mouseOnly { display: none; }
-  .touchOnly { display: inline; }
   /* The CRT label shrinks with the 3D screen (about a fifth on a phone), so it starts large to land near 12px. */
   .screenHint { font-size: 60px; padding: 24px 48px; border-radius: 18px; }
   .experience[data-camera="entered"] .screenHint { font-size: 29px; padding: 12px 24px; border-radius: 9px; }

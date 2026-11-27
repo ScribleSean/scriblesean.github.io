@@ -29,7 +29,7 @@ try {
   await page.waitForTimeout(3000);
   assert((await page.evaluate(() => window.__playTimes.length)) > 0, 'Video must autoplay on initial load before interaction');
   const results = [];
-  for (const name of ['Click to approach · drag to rotate · scroll to zoom', 'Enter the CRT', '↖ Back to desk', 'Click to approach · drag to rotate · scroll to zoom']) {
+  for (const name of ['Go to the desk', 'Enter the CRT', '↖ Back to desk', 'Go to the desk']) {
     await page.evaluate(() => { window.__drawTimes = []; window.__playTimes = []; window.__motionStarted = performance.now(); });
     await page.getByRole('button', { name, exact: true }).click();
     // A move is a fixed number of frames, so wait for drawing to stop rather than a fixed time.
@@ -48,7 +48,7 @@ try {
     });
     assert(result.frames > 1, 'The test must observe animated frames');
     assert(result.frames < 120, `${name}: restored transition must settle (${result.frames} frames)`);
-    if (name.startsWith('click to approach')) {
+    if (name === 'Go to the desk') {
       await page.evaluate(() => { window.__drawTimes = []; });
       await page.getByRole('button', { name: 'Enter the CRT', exact: true }).hover();
       await page.waitForTimeout(700);
