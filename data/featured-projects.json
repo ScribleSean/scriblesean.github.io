@@ -81,7 +81,7 @@
         "poster": "/projects/observatory/observatory.jpg",
         "width": 1920,
         "height": 1080,
-        "label": "Observatory's Limits view with fictional data: a forecast of when the weekly limit may run out, switching between this week and the month's past weeks.",
+        "label": "Observatory's Limits view with fictional data: a forecast of when the weekly limit may run out, with past weeks for the month, switching to this week and back.",
         "sound": false
       },
       "sections": [
@@ -166,16 +166,17 @@
           "src": "/projects/observatory/r2-overview-light.jpg",
           "darkSrc": "/projects/observatory/r2-overview-dark.jpg",
           "width": 1440,
-          "height": 1307,
-          "alt": "The Observatory Overview: spend, branches merged and commits on main for the week, spend per day over what landed, the sessions table and Limits now",
+          "height": 900,
+          "alt": "The Observatory Overview: the week's spend, branches merged and commits on main, spend per day over what landed, and Limits now",
           "caption": "The Overview, with every number compared to the previous period."
         },
         {
-          "src": "/projects/observatory/r2-limits-dark.jpg",
+          "src": "/projects/observatory/r2-limits-light.jpg",
           "width": 1440,
           "height": 900,
-          "alt": "The Observatory Limits view: the weekly limit with its forecast sentence and how much of the week is gone",
-          "caption": "Limits, with when the week runs out at this pace."
+          "alt": "The Observatory Limits view: the forecast of when the weekly limit may run out, the week so far against an even pace, and past weeks",
+          "caption": "Limits, with when the week runs out at this pace.",
+          "darkSrc": "/projects/observatory/r2-limits-dark.jpg"
         }
       ],
       "galleryNote": "Both screenshots use fictional data."
