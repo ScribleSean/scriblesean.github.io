@@ -81,7 +81,7 @@
         "poster": "/projects/observatory/observatory.jpg",
         "width": 1920,
         "height": 1080,
-        "label": "Observatory's limit history with fictional data, switching between 7-day and 30-day charts for Claude Code and Codex 5-hour and weekly limits.",
+        "label": "Observatory's Limits view with fictional data: a forecast of when the weekly limit may run out, switching between this week and the month's past weeks.",
         "sound": false
       },
       "sections": [
